@@ -61,6 +61,23 @@
 * This work just coincides my thoughts before, namely, view deep NN as RG flow with the depth of NN as flowing paramter as energy scale. Moreover, we might view the layer of NN as CFT while the bulk of NN as Ads.
 
 
+### Phase Diagram Sampling by Active Learning
+
+**Reference**: arXiv: 1803.03296
+
+**Keywords**: active learning, Gaussian process
+
+**Basics**:
+
+* Recommendation system of active learning for trial state point outperforms the traditional grid search approach to get the phase diagram. 
+* BTW, this paper has a fantastic explanation on E&E trade-off.
+* The authors also propose the algorithm for batch recommendation. Recommend several points at one time. To do this, we need extra penalty term to avoid choosing two close points. 
+
+**Comments**: 
+
+* Very interesting idea in this work. There are two types of work on ML to solve physics problem. The first class: some fancy approach representing some function or something else to try to solve the physics problem by ML. In this class, actually we have no confidence on the correctness of the results from ML unless we have previous benchmark from theory or numerical study (which, in trun, weaken the meaning of ML approach in the same problem). Most of the study on ML in physics fall into this class. The second class: utilize ML approach to accelerate the algorithm in physics. This class of approaches have nothing to do with the correctness of final results. It is more or less a recommendation system. You can judge it as more or less effective but nothing to do with right or wrong. In this class, we can solve the physics problem faster without worrying the correctness or intrinsic meaning of the ML models behind. This work and series wirk on SLMC(self-learning Monte Carlo) fall into this class. And the idea on RBM wavefunction is also somewhat within this class.
+* This work is the automatic realization of phase diagram calculation. In fact, we never use grid search to get the phase boundary if the calculation time is long. What we actually do is to see the existing points and find a most informative point manually to calculate the phase. Active learning is just doing the same thing but we don't need to do it by ourselves now.
+
 ## Misc in Reading and Thoughts
 
 ### Interesting or Involved Aspects
