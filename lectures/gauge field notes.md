@@ -34,8 +34,15 @@
 graph TD
 A(Lagrangian) -->|impose commutation relation|B(canonical quantization)
     B --> |plane wave expansion|C(correlation of free fields)
-    C --> |interaction picture of time evolution: Peskin 4.31|D(correlation of interacting fields)
-    D --> |LSZ reduction formula| E(S matrix)
+    C --> |interaction picture of time evolution: Peskin 4.31 /connected diagrams/|D(correlation of interacting fields)
+    D --> |LSZ reduction formula  /fully connected, amputated diagrams/| E(S matrix)
     E --> |scattering theory: Peskin 4.79 4.86| F(Decay rates or cross section)
     
 ```
+* $$S=1+i T = 1+(2\pi)^4\delta^4(\Delta \vec{k})i M$$,  the common procedure for Feynman diagrams are designed for the calculation of amplitude $$i M$$, something between S matrix and multi-field correlation functions of interaction field theory.
+
+* Optical theorem: due to the unitary (conservation of probability flow) of the scattering matrix S, we have
+
+  $$-i (T-T^\dagger)=2Im\; T=T^\dagger T.$$
+
+* ​

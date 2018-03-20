@@ -112,7 +112,11 @@ Everytime we are faced with a dataset, how can we deal with it. So called data i
   In statistics, additive smoothing, also called Laplace smoothing or Lidstone smoothing, is a technique used to smooth estimate probability of categorical data. Given an observation x = (x1, …, xd) N trials, a "smoothed" version of the data gives the probability estimator:
   $${\hat {\theta }}_{i}={\frac {x_{i}+\alpha }{N+\alpha d}}\qquad (i=1,\ldots ,d),$$
 
-  where $$\alpha$$ is a small number called pseudocount. The original version of such formula comes from the [rule of succession](https://en.wikipedia.org/wiki/Rule_of_succession) ($$\alpha=1$$) which is designed to solve the [sunrise problem](https://en.wikipedia.org/wiki/Sunrise_problem). If you are confused with the prior ignorance and noninformative prior distributions, see [this doc](http://www.stats.org.uk/priors/noninformative/Smith.pdf).
+  where $$\alpha$$ is a small number called pseudocount. The original version of such formula comes from the [rule of succession](https://en.wikipedia.org/wiki/Rule_of_succession) ($$\alpha=1$$) which is designed to solve the [sunrise problem](https://en.wikipedia.org/wiki/Sunrise_problem). If you are confused with the prior ignorance and noninformative prior distributions, see [this doc](http://www.stats.org.uk/priors/noninformative/Smith.pdf) and [thie cheatsheet](http://www.stats.org.uk/priors/noninformative/YangBerger1998.pdf).
+
+* MLE vs. MAP
+
+  Frequentist vs. Bayesian: whether we have some nontrivial prior knowledge of this world and if the parameter $$\theta$$ a fixed value or random variable. Maximum likelihood estimation ($$P_\theta(X)$$) is equivalent to minmize the negative log likelihood. Maximum a posterior $$P(\theta|X)$$, has taken the prior $$P(\theta)$$ into consideration. The two approach are point estimation compared to full Bayes analysis, where the posterior distribution is calculated. You may refer [this article](https://zhuanlan.zhihu.com/p/32480810).
 
 
 
@@ -188,6 +192,14 @@ Everytime we are faced with a dataset, how can we deal with it. So called data i
 
   For example, so called confusion shceme is widely applied in physics study to determine the phase boundary (critical value). At the beginning, phase boundary location is in the supervised filed, training data should be with phase label. However, we can use different fake phase boundary to train the model and find the true boundary by require the maximum accuracy.
 
+* Gradient descent
+
+  Basically, one search for the extremum position of the function $$f(x)$$ using the iterative process
+
+  $$x_{new}=x_{old}-\eta \nabla f(x).$$
+
+  In machine learning, the function f is the loss function of the model. We try to search the minimum of the loss function utilizing such gradient descent method. Generally speaking, the loss function is the sum or expectation value across all data samples. It is time consuming if we update the paramters based on the original version of gradient descent. Therefore, everytime we only calculate a small fraction of the data, and derive the loss function. This is so called SGD(Stochastic Gradient Descent) approach.
+
 ## NNN (Non-Neural-Network) approaches
 
 ### k-Means clustering
@@ -242,7 +254,7 @@ Just a simple application of Bayes inference: $$P(A\vert B)=\frac{P(B\vert A)P(A
 
 $$posterior =\frac{likelyhood\times prior}{marginal}.$$
 
-In general, we use frequency of data to estimate the prior. And approximate the likelyhood in some funtion form before optimizing it.
+Empirical Bayes vs. full Bayes: the former estimates the prior from data while the latter using some fixed distribution for prior from the beginning. See different inference schemes in [this post](http://blog.csdn.net/lin360580306/article/details/51289543). Using Bayes inference, you can derive the distribution of the posterior which contains more info than simply MAP estimation.
 
 ### LDA (Linear Discriminant Analysis)
 
@@ -360,11 +372,51 @@ For tutorial on Gaussian process and its usage on regression and even more on cl
 
 Suppose we need to fit more complicated mapping with lots of parameters than cases in NNN approach, what is the efficient way to do this? This problem can be divided into two parts: structures of paramters to represent some map and efficient way to optimize these paramters. You may be able to name various approaches for how parameters can be organized to represent arbitrary mappings, however the second requirement restricts our imagination to very limit case. The one frequently used in CS field is so called neural networks. (Maybe tensor network in physics field is another possibility.)
 
-* Structure of paramters
+* Structure of parameters
 
-Take the simplest FFNN as an example, 
+Take the simplest full connected FFNN as an example, see fig below.
+
+![](http://upload-images.jianshu.io/upload_images/2256672-92111b104ce0d571.jpeg)
+
+The neurons are orginized as layers, and all the line arrows represent matrix multiplication. One can set as many hidden layers as he likes, though it may hard to train. From one layer to the next layer, we have
+
+$$f(\mathbf{w}\mathbf{x}+\mathbf{b}),$$
+
+where x is the vector with length the same as the first layer (say n), b is the bias vector with the length the same as the second layer (say m), w is the matrix with size $$m\times n$$ and f is called activate function which apply on the vector elementwise, i.e. $$f(\mathbf{x})_i=f(x_i)$$. As long as you stack all layers together and do the calculation between every neighborhood layers as mentioned above, we are arriving at the basic NN.
+
+The frequently used activation function includes sigmoid, tanh and RELU(Rectified Linear Unit). The only requirement of activation function is differentiable and non-linear. (suitable for back propagation and make multilayers meaningful)
+
+|sigmoid|tanh| RELU|softmax|
+|:-:|:-:|:-:|:--:|
+|$$\frac{1}{1+e^{-x}}$$|$$\tanh (x)$$|$$max(0,x)$$|$$\frac{e^{x_i}}{\sum_j e^{x_j}}$$|
+
+* How to train
+
+Now we have done the algorithom of prediction part of neural network. Namely, when an input data is given to the NN, how can the model give the output vector(prediction). But the remaining problem is how to decide the parameters of the model, namely matrix w (weight in arrows) and bias vector b (bias in neurons). The answer is the training algorithm of the NN. 
+
+We use the philosophy of SGD to train and update all parameters in the model. The algorithm is so called back propagation. It is just SGD of the loss function. Loss function is the aim we want to optimize for the model. See table below for frquently used loss functions, I omit the sum of output neuron and the sum over data for simplicity. We call it propagation due to the fact that we need the help from chain rules of derivatives to carry out gradient descent and that's it. For detailed derivation and implementation on the basic back propagation approach, see this [note](https://www.zybuluo.com/hanbingtao/note/476663). On training process, we train the model n epochs and in each epoch, we update parameters after each batch of data. Typical value for epochs is $$10^2$$ and for batch is $$10^1$$.
+
+|cross entropy|square loss| exponential loss | 0-1 loss |
+|:-:|:-:|:-:|:--:|
+|$$y_i\ln \hat{y_i}$$|$$(\hat{y_i}-y_i)^2$$|$$exp(-y_i\hat{y_i})$$|$$Boolean(\hat{y_i}-y_i)$$|
+
+But there are still some thing cannot be trained. For example, the number of layers, size of training batch and number of epochs, activation function for each layer and loss function. We call such things hyper paramter, they cannot simply determined by training but need to be fixed manually.
+
+* Three stage of training
+
+A general workflow to train a NN model is divided in three stages. The data must be divided into three part accordingly, i.e. training data, evaluation data and test data. 
+
+Traning data is for usual back propagation training process and parameters updates. Evaluation data is used in evaluation process, where the accuracy is calculated though the evaluation data is not used to update parameters. What is the use of evaluation? It aims to guide the hyperparamters update. We can change our settings of the NN (hyperparameters) to make the accuracy in evaluation process higher. And for test data, it is the final examination of the model. If the accuracy is acceptable, then the model is ready to go. You are NEVER allowed to adjust your model (no matter parameters or hyper parameters) based on the test data. Testing is merely a final examination, it is CHEATING if you train the model with any hints from the test process.  And it is also WRONG to evaluate your final model based on the evaluation data, since you have adjusted the model to satisfy them before (Frankly speaking, physicists usually get things wrong related to this paragraph, what they have done are mostly circular argument and make nonsense).
+
+Once we have the training algorithm and the prediction algorithm, we can fit every function in the world as long as we have enough paramters. (But if the number of parameters increases with the system size, the model is impossible to make sense in computers.)
+
+* Summary on the components of NN
+
+Layers, connections, activation functions in each layer, loss functions.
 
 ### Convolutional Neural Network
+
+
 
 ### Recurrent Neural Network
 
@@ -393,7 +445,7 @@ Take the simplest FFNN as an example,
 * Lei Wang's lecture notes: [link](http://wangleiphy.github.io/lectures/DL.pdf)
 * Andrew Moore's slides: [link](https://www.autonlab.org/tutorials)
 * Lectures of Universities: [Berkeley](https://people.eecs.berkeley.edu/~jrs/189/), [Stanford](http://cs229.stanford.edu/)
-* Other reference series: [gitbook](https://wizardforcel.gitbooks.io/dm-algo-top10)
+* Other reference series: [gitbook](https://wizardforcel.gitbooks.io/dm-algo-top10), [notes on NN](https://www.zybuluo.com/hanbingtao/note/476663)
 
 ### Papers or blogs
 
