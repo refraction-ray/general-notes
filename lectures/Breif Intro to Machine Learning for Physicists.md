@@ -12,6 +12,8 @@
 
 Everytime we are faced with a dataset, how can we deal with it. So called data is just a group of number and we can arrange each data as a vector (for each component of the vector, we call it a feature), with or without labels. Labels in general is another vector (usually only one component) associate with data vectors. Now we have two different views on the whole dataset. We can  stack all of the data vectors in rows and make the whole dataset as a matrix. Or we can treat the data vector as a random variable whose distribution is specified by the whole dataset implicitly. Therefore, we can play with dataset in the context of **linear algebra** or **statistical inference**. And we can further gain more insights if we note the intrinsic connections between the two fields in math.
 
+This note is about the algorithm, principles and philosopy of machine learning. For implementations and general idea in programming, ~~I may write a separate note in the future~~.
+
 ### Linear Algebra
 
 * SVD (sigular value decomposition)
@@ -112,7 +114,7 @@ Everytime we are faced with a dataset, how can we deal with it. So called data i
   In statistics, additive smoothing, also called Laplace smoothing or Lidstone smoothing, is a technique used to smooth estimate probability of categorical data. Given an observation x = (x1, …, xd) N trials, a "smoothed" version of the data gives the probability estimator:
   $${\hat {\theta }}_{i}={\frac {x_{i}+\alpha }{N+\alpha d}}\qquad (i=1,\ldots ,d),$$
 
-  where $$\alpha$$ is a small number called pseudocount. The original version of such formula comes from the [rule of succession](https://en.wikipedia.org/wiki/Rule_of_succession) ($$\alpha=1$$) which is designed to solve the [sunrise problem](https://en.wikipedia.org/wiki/Sunrise_problem). If you are confused with the prior ignorance and noninformative prior distributions, see [this doc](http://www.stats.org.uk/priors/noninformative/Smith.pdf) and [thie cheatsheet](http://www.stats.org.uk/priors/noninformative/YangBerger1998.pdf).
+  where $$\alpha$$ is a small number called pseudocount. The original version of such formula comes from the [rule of succession](https://en.wikipedia.org/wiki/Rule_of_succession) ($$\alpha=1$$) which is designed to solve the [sunrise problem](https://en.wikipedia.org/wiki/Sunrise_problem). If you are confused with the prior ignorance and noninformative prior distributions, see [this doc](http://www.stats.org.uk/priors/noninformative/Smith.pdf) ,[the cheatsheet](http://www.stats.org.uk/priors/noninformative/YangBerger1998.pdf) or [my blog](https://refraction-ray.github.io/%E8%B4%9D%E5%8F%B6%E6%96%AF%E6%8E%A8%E6%96%AD%E5%B0%8F%E8%AE%AE/).
 
 * MLE vs. MAP
 
@@ -208,7 +210,9 @@ The aim is to partition N data vectors into k-groups. The aim function is the su
 $$
 {\displaystyle {\underset {\mathbf {S} }{\operatorname {arg\,min} }}\sum _{i=1}^{k}\sum _{\mathbf {x} \in S_{i}}\left\|\mathbf {x} -{\boldsymbol {\mu }}_{i}\right\|^{2}={\underset {\mathbf {S} }{\operatorname {arg\,min} }}\sum _{i=1}^{k}|S_{i}|\operatorname {Var} S_{i}}.
 $$
-This is an NP hard problem. There is an [algorithm](https://en.wikipedia.org/wiki/K-means_clustering#Algorithms) utilizing the iterative process to do the classfication, but no guarantee for optimal solution. The initial center of clusters can be chosed based on so called [k-means++ algorithm](https://www.cnblogs.com/yixuan-xu/p/6272208.html).
+This is an NP hard problem. There is an [algorithm](https://en.wikipedia.org/wiki/K-means_clustering#Algorithms) utilizing the iterative process to do the classfication, but no guarantee for optimal solution. The basic procedure of the algorithm is assign each point a label according to the distance and update the cluster center.
+
+ The initial center of clusters can be chosed based on so called [k-means++ algorithm](https://www.cnblogs.com/yixuan-xu/p/6272208.html).
 
 ### KNN (K-Nearest Neighbor)
 
@@ -402,7 +406,7 @@ We use the philosophy of SGD to train and update all parameters in the model. Th
 
 But there are still some thing cannot be trained. For example, the number of layers, size of training batch and number of epochs, activation function for each layer and loss function. We call such things hyper paramter, they cannot simply determined by training but need to be fixed manually.
 
-* Three stage of training
+* Three stage of training model
 
 A general workflow to train a NN model is divided in three stages. The data must be divided into three part accordingly, i.e. training data, evaluation data and test data. 
 
@@ -416,19 +420,143 @@ Layers, connections, activation functions in each layer, loss functions.
 
 ### Convolutional Neural Network
 
+CNN is designed for image recongnition with special connection structures and suitable for systems with input data in higher dimension. Since the size of input data of images is very large, we are about to have too much paramters in the NN if insisting on full connected NN. Therefore, CNN utilize local connectivity and weight sharing to sole the above issue on full connected NN. Part of the images of this and the following section come from [this note](https://www.zybuluo.com/hanbingtao/note/485480).
 
+The general layer structure of CNN: 
+
+```mermaid
+graph LR
+A(Input layer)--> B(Convolution layer*N)
+B --> C(Pooling layer*?)
+C--> D(Full connected layer*K)
+```
+The structure of convolution and pooling layer together can repeat for M times. The example CNN looks like the figure below.
+
+![](http://upload-images.jianshu.io/upload_images/2256672-a36210f89c7164a7.png)
+
+Here, $$N=1,M=2,K=2$$. 
+
+* Convolution layer
+
+For image pixels, we label them as $$x_{ij}$$. To extract the feature maps from convolution, we use the formula
+
+$$a_{ij}=f(\sum_{m=0}^2\sum_{n=0}^2 w_{mn}x_{i+m,j+n}+w_b).$$
+
+See the fig below to get a more clear idea. In this case, the window move one pixel each time, the stride is one.
+
+![](http://upload-images.jianshu.io/upload_images/2256672-19110dee0c54c0b2.gif)
+
+The depth of the freture map (number of feature maps) equals the number of filters we used in this layer, the size of feature maps is related with stride and the size of original images.) See the figure below for a more complicated case, where we have some zero padding in the edge of images which is very helpful for recongnization of the edge feature of the image.
+
+![](http://upload-images.jianshu.io/upload_images/2256672-958f31b01695b085.gif)
+
+* Pooling layer
+
+By pooling layer, we further extract and compress info from the feature maps to reduce parameters and complexity of the model. For example, max pooling is the approach to extract the maximum value of each separate window from feture map. See figure below.
+
+![](http://upload-images.jianshu.io/upload_images/2256672-03bfc7683ad2e3ad.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/640)
+
+The principle of training and predicting of the model and the rest part of the model is similar with FFNN (actually the derivation of back propagation in this case is a bit involved).
+
+The most famous construction of CNN is LeNet-5, see figure below.
+
+![](http://upload-images.jianshu.io/upload_images/2256672-31b42c6c9daa16a4.png)
+
+* Graph CNN (GCN)
+
+Graph is one type of organization of big data, information is stored in the edges and nodes. In some sense one can develop CNN to distinguish graphs instead of images, which would extend the application of CNN broadly.  It is still a very new and active field, see [this post](https://tkipf.github.io/graph-convolutional-networks/) for a quick intro on GCN.
 
 ### Recurrent Neural Network
 
+* general idea
+
+RNN is designed for NLP (natural language processing) related tasks. A sentence may contain different number of words, but all the NN model we construct before only take fixed length input. To resolve this issue, we come to the construction of RNN. The basic structure is shown in the figure below.
+
+![](http://upload-images.jianshu.io/upload_images/2256672-cf18bb1f06e750a4.jpg)
+
+Each circle is a NN itself (all circles are the same NN in the sense that they share the same parameters), $$x_i$$ is  part of the input (the word or character) or all the $$x$$ can be viewed as the input (the sentence) and $$o_i$$ is the output (say prediction of next word) or the last $$o_{t=last}$$ can be viewed as single output (for sentence classfication). What makes the circle different for each input is the hidden states $$s_i$$ instead of the paramters. The forward prediction formula is 
+
+$$o_t=g(Vs_t);~~~~s_t=f(U x_t+W s_{t-1}).$$
+
+So the output $$o_t$$ is dependent on all the previous $$x_t$$ implicitly. And the state of neuron $$s_t$$ is kept for the next input $$x_{t+1}$$.
+
+If the circle is a deep NN, one can set hidden variables in neurons in each layer.
+
+* Bi-directional RNN
+
+Just two separate RNN, with different time direction, the two networks don't share the weight paramters. And the outpust is just the sum of the two output from the two RNN. Bi-directional RNN is designed for word completion in the middle of the sentence instead of predicting the next word.
+
+The training algorithm for RNN is so called BPTT (backpropagation through time) which shares the same philosophy as back propagation. See detailed derivation [here](https://zybuluo.com/hanbingtao/note/541458).
+
+RNN is very deep NN in the time direction, so it is faced with serious gradient exposion or gradient vanishing problem. For gradient explosion, you are going to meet NAN in the training and it is easier to handle (set the cutoff). However it is more subtle to deal with gradient vanishing problem. It is difficult to find the problem at the first place. To solve this problem, one tend to use RELU activation function or use the LSTM model, the substitute for the traditional RNN with similar structure.
+
+* Input and output structures
+
+By manipulating the structure of RNN and utilizing different perspectives on input and output, we can construct RNN type networks for different tasks.
+
+1. text auto generation (one to many)
+
+   Just treat each $$o_i$$ as the prediction of the next word and also use $$x_{t+1}=o_{t}$$ as the input of the next time. Therefore, by simply assign one word, we can generate the whole paragraph. To see how effectiveness of such text generation, see [this fantastic post](http://karpathy.github.io/2015/05/21/rnn-effectiveness/) for some interesting examples.
+
+2. video frame classification or prediction (many(N) to many(N))
+
+   Still vanilla RNN structure, but treat each $$o_t$$ as the label of input frame $$x_t$$.
+
+3. sentence classification (many to one)
+
+   Say we want to classify the sentiment of one sentence, whether it is happy or angry. We use all $$x_t$$ as the input words from the sentence and use the final $$o_{last}$$ as the classification output.
+
+4. seq2seq for translation (many(N) to many(M))
+
+   ![](http://www.wildml.com/wp-content/uploads/2015/09/Screen-Shot-2015-09-17-at-10.39.06-AM.png)
+
+   The input x is in one language and the output y is in the other language. The same meaning isn't necessary to have the same length of word in different languages. The final output of the input series  RNN (encoder) will be transported to the output RNN series (decoder). For more on seq2seq, see [this](https://chunml.github.io/ChunML.github.io/project/Sequence-To-Sequence/).
+
+   We can further introduce attention mechanism in seq2seq model. The rough idea is the input of decoder is not only the final output of encoder but also all original inputs through some transformation. The example structure is shown below. The context vector calculated from the input series together with the output of decoder give the final output (with an activation function). See [this post](https://medium.com/@Synced/a-brief-overview-of-attention-mechanism-13c578ba9129) for details and see [this review](http://www.cnblogs.com/robert-dlut/p/5952032.html) for more variants on attention mechanism in RNN.
+
+   ![](https://cdn-images-1.medium.com/max/1600/0*VrRTrruwf2BtW4t5.)
+
+   ​	
+
+* LSTM (long short term memory networks)
+
+* GRU (Gated recurrent units) and Other variants
+
 ### Autoencoder
+
+* Vanilla AE
+* Denoising AE (DAE)
+* Sparse AE (SAE)
+* Variational autoencoder (VAE)
+* CVAE (Conditional VAE)
 
 ### Boltzmann Machine
 
-### Adversarial Networks
+* Hopfield network
+* Boltzmann machine
+* Restricted Boltzmann machine (RBM)
+* Deep belief network (DBN)
+
+### More Generative Networks
+
+* Generative adversarial networks (GAN)
+* Nomalizing flows
 
 ## Advanced ML approaches
 
 ### Active Learning
+
+Components of active learning $$(C,L,S,Q,U)$$: C is the classifier trained for labeled data L, U is unlabeled data and Q is the query algorithm to pick most uninformative unlabeled data. Such data should be labeled by "expert" S then. Firstly, one have some data in L. Then one can train a C based on L. Then we use Q strategy to pick some data from U and label them via S. Next, retraining the model C based on new enlarged L. Repeat these steps until the C classifier is satisfying. 
+
+The core of such algorithm is the strategy of Q. One can query by uncertainty, by expected change, by error reduction, by trade-off between exploration and exploitation and so on. Therefore, active learning is a framework with algorithm and implementation dependent on specific problems. 
+
+### Semisupervised Learning
+
+Pure semisupervised learning: unlabeled data for training is not the data for predicting. 
+
+Transductive learning: unlabeled data is both for training and predicting.
+
+There are various algorithm developed for semisupervised learning.
 
 ### Reinforce Learning
 
@@ -436,11 +564,28 @@ Layers, connections, activation functions in each layer, loss functions.
 
 *Mainly from talks of March Meeting 2018 in LA*
 
+### As wavefunctions
+
+### As classifiers or calculators
+
+### As recommendation systems
+
+* SLMC (self-learning Mote Carlo)
+* Active learning on phase diagram searching
+
+### As other tools
+
+### Physics help ML
+
+* TNS
+
+
+
 ## Main Reference
 ### Series or books
 
-* Some blog sites in Chinese: [blog](http://www.cnblogs.com/LeftNotEasy/), [blog](http://blog.csdn.net/v_july_v)
-* Some blog sites in English: 
+* Some blog sites in Chinese: [blog](http://www.cnblogs.com/LeftNotEasy/), [blog](http://blog.csdn.net/v_july_v), [blog](http://www.cnblogs.com/robert-dlut/), [blog](http://bealin.github.io/), [blog](https://jlunevermore.github.io/)
+* Some blog sites in English: [blog](https://chunml.github.io/), [blog](http://www.wildml.com/), [blog](http://karpathy.github.io/), [blog](https://machinelearningmastery.com), [blog](http://colah.github.io/)
 
 * Lei Wang's lecture notes: [link](http://wangleiphy.github.io/lectures/DL.pdf)
 * Andrew Moore's slides: [link](https://www.autonlab.org/tutorials)
