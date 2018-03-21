@@ -166,7 +166,11 @@ This note is about the algorithm, principles and philosopy of machine learning. 
 
 * Exploitation vs. exploration
 
-  Here is a cool [explanation](https://medium.com/@dennybritz/exploration-vs-exploitation-f46af4cf62fe). Exploitation: learn one thing better (try to figure out what is the exactly average value). Exploration: learn something more (try to reduce the variance around). Scuh trade-off is common in recommendation system.
+  Here is a cool [explanation](https://medium.com/@dennybritz/exploration-vs-exploitation-f46af4cf62fe). Exploitation: learn one thing better (try to figure out what is the exactly average value). Exploration: learn something more (try to reduce the variance around). Scuh trade-off is common in recommendation system. $$\epsilon$$- greedy is an algorithm to find the optimal position between exploitation and exploration.
+
+* Prudent vs. greedy
+
+  The trade-off betwenn interest in near and far future (locally vs global rewards). A prudent algorithm is always welcome. However, in most cases, prudent consideration lead to NP hard algorithms. Therefore, we have to take greedy algorithm in many cases and hope finding local optimal settings step by step is not too far away from the true global minimum or maximum. 
 
 * Ensemble learning
 
@@ -186,7 +190,7 @@ This note is about the algorithm, principles and philosopy of machine learning. 
 
   Naively, one can agure that generative model are designed for create task, like image generation; while discriminative model is designed for recognition task, like image recongnition. Such understanding is too simple to be correct.
 
-  Suppose the data is $$x$$ and the label is $$y$$. Discriminative model learns $$P(y\vert x)$$ directly to make a predict on the label of newcoming data. Moreover, discriminative model can learn a hard boundary of categories rather than probability. Instead, generative model learns the join distribution $$P(x,y)$$ and use Bayes inference to make prediction (generative model can still work in classfication questions!). What is the advantage for learning the joint distribution? Instead of predicting $$P(y \vert x)$$, you can use it to generate data from $$P(x \vert y)$$. For more comparison on these two concepts, see [this question](https://stats.stackexchange.com/questions/12421/generative-vs-discriminative) and [this blog post](http://freemind.pluskid.org/machine-learning/discriminative-modeling-vs-generative-modeling/).
+  Suppose the data is $$x$$ and the label is $$y$$. Discriminative model learns $$P(y\vert x)$$ directly to make a predict on the label of newcoming data. Moreover, discriminative model can learn a hard boundary of categories rather than probability. Instead, generative model learns the join distribution $$P(x,y)$$ and use Bayes inference to make prediction (generative model can still work in classfication questions!). What is the advantage for learning the joint distribution? Instead of predicting $$P(y \vert x)$$, you can use it to generate data from $$P(x \vert y)$$ by sampling. For more comparison on these two concepts, see [this question](https://stats.stackexchange.com/questions/12421/generative-vs-discriminative) and [this blog post](http://freemind.pluskid.org/machine-learning/discriminative-modeling-vs-generative-modeling/).
 
 * Supervised vs. Unsupervised learning
 
@@ -201,6 +205,8 @@ This note is about the algorithm, principles and philosopy of machine learning. 
   $$x_{new}=x_{old}-\eta \nabla f(x).$$
 
   In machine learning, the function f is the loss function of the model. We try to search the minimum of the loss function utilizing such gradient descent method. Generally speaking, the loss function is the sum or expectation value across all data samples. It is time consuming if we update the paramters based on the original version of gradient descent. Therefore, everytime we only calculate a small fraction of the data, and derive the loss function. This is so called SGD(Stochastic Gradient Descent) approach.
+
+
 
 ## NNN (Non-Neural-Network) approaches
 
@@ -271,7 +277,7 @@ $$
 \lambda (\sum_{i=1}^k\Sigma_i )\omega= \Sigma_b \omega .
 $$
 
-It is worth noting that LDA is actually a generatibe model instead of discirminative one. LDA assume the likelihood as Gaussian distribution with different mean vector but the same variance, and we can then max the posterior probability to get the coefficients. Such approach based on Bayes inference can be generalized as Gaussian discriminant analysis. See [this tutorial](https://people.eecs.berkeley.edu/~jrs/189/lec/07.pdf) for details on GDA and Q(uadratic)DA. And if we use GDA framework to calculate the posterior probability, we are about to get the logistic functions. 
+It is worth noting that LDA is actually a generatibe model instead of discirminative one. LDA assume the likelihood as Gaussian distribution with different mean vector but the same variance, and we can then max the posterior probability to get the coefficients. Such approach based on Bayes inference can be generalized as **Gaussian discriminant analysis**. See [this tutorial](https://people.eecs.berkeley.edu/~jrs/189/lec/07.pdf) for details on GDA and Q(uadratic)DA. And if we use GDA framework to calculate the posterior probability, we are about to get the logistic functions. 
 
 
 ### PCA (Principle Components Analysis)
@@ -292,7 +298,7 @@ Map original data point $$x$$ to $$\phi(x)$$ in higher dimension, we only need t
 
 ### ICA (Independent Component Analysis)
 
-For comparision between ICA and PCA, see [this answer](https://www.zhihu.com/question/28845451). The idea is somewhat similar to PCA. The difference is the critiria for basis choice: maximize the standard deviation or nonGaussianity.
+For comparision between ICA and PCA, see [this answer](https://www.zhihu.com/question/28845451). The idea is somewhat similar to PCA. The difference is the critirion for basis choice: maximize the standard deviation or nonGaussianity.
 
 ### NMF (Non-negative Matrix Factorization)
 
@@ -310,7 +316,7 @@ See integrated [blog](http://blog.csdn.net/v_july_v/article/details/7624837) for
 
 ### Decision Trees
 
-Decison trees is just a tree with nodes as the features condition while final leaves as the classfication. It is supervised.  Classification tree predicts discrete classes while regression tree predicts real numbers. CART is the short for classification and regression trees.
+Decison trees is just a tree with nodes as the features condition while final leaves as the classfication. It is supervised.  Classification tree predicts discrete classes while regression tree predicts real numbers. **CART** is the short for classification and regression trees.
 
 To generate such a tree with least nodes and smallest path, usually we generate nodes from top to bottom, and keep some index the extrem value through the constructing of the node. Namely, from the top, we pick the features of the node based on some value evaluation dependent on features. Such value evaluation includes information gain , gini coefficient gain and variance reduction in continuum case (ie. regression trees).  For information gain, I have give the formula before. For gini coefficient, the value is defined as $$gini(X)=1-\sum_{X=x_i}p(x_i)^2$$. 
 
@@ -320,7 +326,7 @@ To avoid overfitting which is common in decision tree generation, we need some a
 
 ### Random Forest
 
-Lots of trees (bagging method) make the forest. To generate each tree, we need data samples from all the data (dataset N and features M). We sample with replacement N times of data and with $$m<<M$$ features for each tree. No pruning process is needed for the forest. Use the mode of all the trees as the final prediction. Typically, the number of trees is of size 100 to 1000. One can use cross validation to find the optimal number of trees. It is interesting that instead of the mode, the variation of predictions amonst trees is also of meaning.
+Lots of trees (bagging method) make the forest. To generate each tree, we need data samples from all the data (dataset N and features M). We sample with replacement N times of data and with $$m<<M$$ features for each tree. No pruning process is needed for the forest. Use the mode of all the trees as the final prediction. Typically, the number of trees is of size 100 to 1000. One can use cross validation to find the optimal number of trees. It is interesting that instead of the mode, the variation of predictions amonst trees is also meaningful.
 
 ### Regression
 
@@ -363,9 +369,10 @@ Gaussian process is the Gaussian distribution on infinite number of random varia
 
 Suppose you now have data $$(x_1,…x_n)$$ and $$(y_1,…y_n)$$, now you are given $$x_{n+1}$$, and be asked what is the most possible value of $$y_{n+1}$$. To make such a prediction, we usually first assume some form of the function $$y=f(x)$$, and use the given data to do a regression to fit the parameters of $$f$$. And finally, the prediction is $$\hat{y}_{n+1}=f(x_{n+1})$$. 
 
-The basic idea of GPR (Gaussian Process for Regression) is instead assuming all the $$y$$ follow Gaussian process and hence $$(y_1,…y_{n+1})$$ follow Gaussian distributions. If we further assume some function form of the covariance matrix (kernel functions) for this Gaussian distribution (the mean vector is usually zero by assumption), we can utilize the condition distribution of multivariate Gaussian distribution to predict $$P(y_n+1\vert (y_1,…y_n))$$. 
+The basic idea of **GPR** (Gaussian Process for Regression) is instead assuming all the $$y$$ follow Gaussian process and hence $$(y_1,…y_{n+1})$$ follow Gaussian distributions. If we further assume some function form of the covariance matrix (kernel functions) for this Gaussian distribution (the mean vector is usually zero by assumption), we can utilize the condition distribution of multivariate Gaussian distribution to predict $$P(y_n+1\vert (y_1,…y_n))$$. 
 
-For tutorial on Gaussian process and its usage on regression and even more on classification and dimension reduction (GP-LVM), I strongly recommend [this doc](https://www.robots.ox.ac.uk/~mebden/reports/GPtutorial.pdf).
+For tutorial on Gaussian process and its usage on regression and even more on classification and dimension reduction (**GP-LVM**), I strongly recommend [this doc](https://www.robots.ox.ac.uk/~mebden/reports/GPtutorial.pdf).
+
 
 
 ## NN (neural network) family
@@ -386,25 +393,25 @@ The neurons are orginized as layers, and all the line arrows represent matrix mu
 
 $$f(\mathbf{w}\mathbf{x}+\mathbf{b}),$$
 
-where x is the vector with length the same as the first layer (say n), b is the bias vector with the length the same as the second layer (say m), w is the matrix with size $$m\times n$$ and f is called activate function which apply on the vector elementwise, i.e. $$f(\mathbf{x})_i=f(x_i)$$. As long as you stack all layers together and do the calculation between every neighborhood layers as mentioned above, we are arriving at the basic NN.
+where x is the vector with length the same as the first layer (say n), b is the bias vector with the length the same as the second layer (say m), w is the matrix with size $$m\times n$$ and f is called **activation function** which apply on the vector elementwise, i.e. $$f(\mathbf{x})_i=f(x_i)$$. As long as you stack all layers together and do the calculation between every neighborhood layers as mentioned above, we are arriving at the basic NN.
 
-The frequently used activation function includes sigmoid, tanh and RELU(Rectified Linear Unit). The only requirement of activation function is differentiable and non-linear. (suitable for back propagation and make multilayers meaningful)
+The frequently used activation function includes **sigmoid**, tanh and **RELU**(Rectified Linear Unit). The only requirement of activation function is differentiable and non-linear. (suitable for back propagation and make multilayers meaningful)
 
-|sigmoid|tanh| RELU|softmax|
-|:-:|:-:|:-:|:--:|
-|$$\frac{1}{1+e^{-x}}$$|$$\tanh (x)$$|$$max(0,x)$$|$$\frac{e^{x_i}}{\sum_j e^{x_j}}$$|
+|sigmoid|tanh| RELU|leaky RELU|softmax|
+|:-:|:-:|:-:|:--:|:--:|
+|$$\frac{1}{1+e^{-x}}$$|$$\tanh (x)$$|$$max(0,x)$$|$${\displaystyle f(x)={\begin{cases}x&{\mbox{if }}x>0\\\lambda x&{\mbox{if }}x\leq 0\end{cases}}}$$|$$\frac{e^{x_i}}{\sum_j e^{x_j}}$$|
 
 * How to train
 
 Now we have done the algorithom of prediction part of neural network. Namely, when an input data is given to the NN, how can the model give the output vector(prediction). But the remaining problem is how to decide the parameters of the model, namely matrix w (weight in arrows) and bias vector b (bias in neurons). The answer is the training algorithm of the NN. 
 
-We use the philosophy of SGD to train and update all parameters in the model. The algorithm is so called back propagation. It is just SGD of the loss function. Loss function is the aim we want to optimize for the model. See table below for frquently used loss functions, I omit the sum of output neuron and the sum over data for simplicity. We call it propagation due to the fact that we need the help from chain rules of derivatives to carry out gradient descent and that's it. For detailed derivation and implementation on the basic back propagation approach, see this [note](https://www.zybuluo.com/hanbingtao/note/476663). On training process, we train the model n epochs and in each epoch, we update parameters after each batch of data. Typical value for epochs is $$10^2$$ and for batch is $$10^1$$.
+We use the philosophy of SGD to train and update all parameters in the model. The algorithm is so called **back propagation**. It is just SGD of the loss function. Loss function is the aim we want to optimize for the model. See table below for frquently used loss functions, I omit the sum of output neuron and the sum over data for simplicity. We call it propagation due to the fact that we need the help from chain rules of derivatives to carry out gradient descent and that's it. For detailed derivation and implementation on the basic back propagation approach, see this [note](https://www.zybuluo.com/hanbingtao/note/476663). On training process, we train the model n epochs and in each epoch, we update parameters after each batch of data. Typical value for epochs is $$10^2$$ and for batch is $$10^1$$.
 
 |cross entropy|square loss| exponential loss | 0-1 loss |
 |:-:|:-:|:-:|:--:|
 |$$y_i\ln \hat{y_i}$$|$$(\hat{y_i}-y_i)^2$$|$$exp(-y_i\hat{y_i})$$|$$Boolean(\hat{y_i}-y_i)$$|
 
-But there are still some thing cannot be trained. For example, the number of layers, size of training batch and number of epochs, activation function for each layer and loss function. We call such things hyper paramter, they cannot simply determined by training but need to be fixed manually.
+But there are still some thing cannot be trained. For example, the number of layers, size of training batch and number of epochs, activation function for each layer and loss function. We call such things **hyper parameters**, they cannot simply determined by training but need to be fixed manually.
 
 * Three stage of training model
 
@@ -412,11 +419,11 @@ A general workflow to train a NN model is divided in three stages. The data must
 
 Traning data is for usual back propagation training process and parameters updates. Evaluation data is used in evaluation process, where the accuracy is calculated though the evaluation data is not used to update parameters. What is the use of evaluation? It aims to guide the hyperparamters update. We can change our settings of the NN (hyperparameters) to make the accuracy in evaluation process higher. And for test data, it is the final examination of the model. If the accuracy is acceptable, then the model is ready to go. You are NEVER allowed to adjust your model (no matter parameters or hyper parameters) based on the test data. Testing is merely a final examination, it is CHEATING if you train the model with any hints from the test process.  And it is also WRONG to evaluate your final model based on the evaluation data, since you have adjusted the model to satisfy them before (Frankly speaking, physicists usually get things wrong related to this paragraph, what they have done are mostly circular argument and make nonsense).
 
-Once we have the training algorithm and the prediction algorithm, we can fit every function in the world as long as we have enough paramters. (But if the number of parameters increases with the system size, the model is impossible to make sense in computers.)
+Once we have the training algorithm and the prediction algorithm, we can fit every function in the world as long as we have enough paramters. But if the number of parameters increases with the system size, the model is impossible to make sense in computers. Therefore, it is still impressive why NN learning so effective with so cheap settings and so smalll number of parameters. We will talk the effectiveness from physics perspective in the application sections.
 
 * Summary on the components of NN
 
-Layers, connections, activation functions in each layer, loss functions.
+Layers, connections, activation functions in each layer, loss functions, initialize of parameters, batches and epochs.
 
 ### Convolutional Neural Network
 
@@ -466,11 +473,15 @@ The most famous construction of CNN is LeNet-5, see figure below.
 
 Graph is one type of organization of big data, information is stored in the edges and nodes. In some sense one can develop CNN to distinguish graphs instead of images, which would extend the application of CNN broadly.  It is still a very new and active field, see [this post](https://tkipf.github.io/graph-convolutional-networks/) for a quick intro on GCN.
 
+* deconvolution networks (DN)
+
+The inverse of CNN which is designed to generate images. The better name for DN may transpose convolution network.  See [this paper](https://arxiv.org/pdf/1603.07285.pdf) on convolution arithmetic and see [this](https://github.com/vdumoulin/conv_arithmetic) for animations of CN and DN calculation. Besides, here is [an example](https://zo7.github.io/blog/2016/09/25/generating-faces.html) of generating images from DN.
+
 ### Recurrent Neural Network
 
 * general idea
 
-RNN is designed for NLP (natural language processing) related tasks. A sentence may contain different number of words, but all the NN model we construct before only take fixed length input. To resolve this issue, we come to the construction of RNN. The basic structure is shown in the figure below.
+RNN is designed for **NLP** (natural language processing) related tasks. A sentence may contain different number of words, but all the NN model we construct before only take fixed length input. To resolve this issue, we come to the construction of RNN. The basic structure is shown in the figure below.
 
 ![](http://upload-images.jianshu.io/upload_images/2256672-cf18bb1f06e750a4.jpg)
 
@@ -486,7 +497,7 @@ If the circle is a deep NN, one can set hidden variables in neurons in each laye
 
 Just two separate RNN, with different time direction, the two networks don't share the weight paramters. And the outpust is just the sum of the two output from the two RNN. Bi-directional RNN is designed for word completion in the middle of the sentence instead of predicting the next word.
 
-The training algorithm for RNN is so called BPTT (backpropagation through time) which shares the same philosophy as back propagation. See detailed derivation [here](https://zybuluo.com/hanbingtao/note/541458).
+The training algorithm for RNN is so called **BPTT** (backpropagation through time) which shares the same philosophy as back propagation. See detailed derivation [here](https://zybuluo.com/hanbingtao/note/541458). As for practice on traning RNN, there are various subtle issues (stateful RNN, batch size vs sequence length, padding vs mask, embeding, etc.), which I won't mention in this note.
 
 RNN is very deep NN in the time direction, so it is faced with serious gradient exposion or gradient vanishing problem. For gradient explosion, you are going to meet NAN in the training and it is easier to handle (set the cutoff). However it is more subtle to deal with gradient vanishing problem. It is difficult to find the problem at the first place. To solve this problem, one tend to use RELU activation function or use the LSTM model, the substitute for the traditional RNN with similar structure.
 
@@ -510,9 +521,9 @@ By manipulating the structure of RNN and utilizing different perspectives on inp
 
    ![](http://www.wildml.com/wp-content/uploads/2015/09/Screen-Shot-2015-09-17-at-10.39.06-AM.png)
 
-   The input x is in one language and the output y is in the other language. The same meaning isn't necessary to have the same length of word in different languages. The final output of the input series  RNN (encoder) will be transported to the output RNN series (decoder). For more on seq2seq, see [this](https://chunml.github.io/ChunML.github.io/project/Sequence-To-Sequence/).
+   The input x is in one language and the output y is in the other language. The same meaning isn't necessary to have the same length of word in different languages. The final hidden states of the input series  RNN (encoder) will be transported to the output RNN series (decoder). For more on seq2seq, see [this](https://chunml.github.io/ChunML.github.io/project/Sequence-To-Sequence/).
 
-   We can further introduce attention mechanism in seq2seq model. The rough idea is the input of decoder is not only the final output of encoder but also all original inputs through some transformation. The example structure is shown below. The context vector calculated from the input series together with the output of decoder give the final output (with an activation function). See [this post](https://medium.com/@Synced/a-brief-overview-of-attention-mechanism-13c578ba9129) for details and see [this review](http://www.cnblogs.com/robert-dlut/p/5952032.html) for more variants on attention mechanism in RNN.
+   We can further introduce **attention mechanism** in seq2seq model. The rough idea is the input of decoder is not only the final output of encoder but also all original inputs through some transformation. The example structure is shown below. The context vector calculated from the input series together with the output of decoder give the final output (with an activation function). See [this post](https://medium.com/@Synced/a-brief-overview-of-attention-mechanism-13c578ba9129) for details and see [this](http://www.cnblogs.com/robert-dlut/p/5952032.html) and [this](https://distill.pub/2016/augmented-rnns/) for more variants on attention mechanism in NN.
 
    ![](https://cdn-images-1.medium.com/max/1600/0*VrRTrruwf2BtW4t5.)
 
@@ -520,13 +531,34 @@ By manipulating the structure of RNN and utilizing different perspectives on inp
 
 * LSTM (long short term memory networks)
 
+LSTM is a variant of vanilla RNN, the inner structure between them are somewhat different, but the APIs are all the same with RNN. So when people talk about RNN, all statements and applications also works in LSTM. It is designed to solve the gradient vanishing problem for deep RNN.
+
+The basic philosophy of LSTM is to keep two hidden states intead one in RNN, one for long time and the other one for shrot time memory.
+
+![](http://upload-images.jianshu.io/upload_images/2256672-715658c134b9d6f1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+For the detail gate structure and update protocol in the network, see figure below. For details of forward prediction and back propagation traning algrithom, see [this note](https://zybuluo.com/hanbingtao/note/581764) or [this post](http://colah.github.io/posts/2015-08-Understanding-LSTMs/).
+
+![](http://upload-images.jianshu.io/upload_images/2256672-7ea82e4f1ac6cd75.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
 * GRU (Gated recurrent units) and Other variants
+
+Since the inner structure of LSTM is complicated, as long as we change something there, we would have a bunch of variants of LSTM. The most famous one is GRU, which reduce the number of gates and cell states and improve the training speed. See [this post](https://distill.pub/) for all kinds of variants of vanilla LSTM.
+
+![](http://upload-images.jianshu.io/upload_images/2256672-b784d887bf693253.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+* Recursive Neural Network
+
+This type of NN has noting to do with recurrent neural network. But it is also abbreviated as RNN and suitable for NLP (syntax tree parser), so I list this item here. For details, see [this note](https://zybuluo.com/hanbingtao/note/626300).
 
 ### Autoencoder
 
 * Vanilla AE
 * Denoising AE (DAE)
 * Sparse AE (SAE)
+
+Just the inverse of AE. AE is with the hourglass shape while SAE is with football shape.
+
 * Variational autoencoder (VAE)
 * CVAE (Conditional VAE)
 
@@ -540,7 +572,40 @@ By manipulating the structure of RNN and utilizing different perspectives on inp
 ### More Generative Networks
 
 * Generative adversarial networks (GAN)
-* Nomalizing flows
+
+One neural network, called the generator, generates new data instances, while the other, the discriminator, evaluates them for authenticity; i.e. the discriminator decides whether each instance of data it reviews belongs to the actual training dataset or not. The discriminator is a usual CNN with sigmoid output for whether the input is fake or not. The generator is an inverse convolutional network, takes a vector of random noise and upsamples it to an image. The loss function is
+
+$$min_G max_D E_{x\sim p_{data}(x)}\ln D(x)+E_{z\sim p_z(z)}\ln (1-D(G(z)))$$
+
+where $$p_z(z)$$ is the noise input prior. 
+
+![](https://deeplearning4j.org/img/gan_schema.png)
+
+Comparison to VAE in generating image:  while GANs generate data in fine, granular detail, images generated by VAEs tend to be more blurred. See reference list in [this page](https://deeplearning4j.org/generative-adversarial-network) for more resource on GAN. See [this list](https://zhuanlan.zhihu.com/p/34016536) on variants of GAN.
+
+* Normalizing flows
+
+The basic formula for probability density under transformation of random variables $$y=f(x)$$ is
+
+$$p(y)=p(f^{-1}(y))\vert \det J(f^{-1}(y))\vert.$$
+
+We usually call the implementation of $$f(x),f^{-1}(y)$$ a **bijector**. If we stack multiple bijectors, we are arriving at so called normalizing flows. If the bijector $$f$$ has tunable parameters, such normalizing flow structure is similar with NN. Idealy, we can also optimize the model to maximize the probability of data.
+
+See [this post](https://blog.evjang.com/2018/01/nf1.html) on normalizing flow, and [this post](https://blog.evjang.com/2018/01/nf2.html) for its modern development with the help of autoregressive model.
+
+* Autoregressive models
+
+Assume $$p(\mathbf{x})=\prod_i p(x_i\vert x_{1;i-1})$$,  and all condition probability is governed by some Gaussian distribution whose mean and variance can be calculated by NN with inputs $$x_{1;i-1}$$. Though it seems the assumption denpends on the ordering of data exists, the model works pretty well in generating images. Actually if you consider the different order of data, you can come up with ensemble learning for this case. The general structure of the model and the sampling process are shown as below (**masked autoregressive flow**).
+
+![](https://1.bp.blogspot.com/-sVVtT3hM65U/Wl-h3S4XqmI/AAAAAAAAHks/WKKYZvx4iw0TTwBLEcYdy3ceN7DKnzvnQCLcBGAs/s0/autoregressive.png)
+
+
+
+There is also **inverse autoregressive flow** (IAF), the only change is the NN for mean and variance of $$x_i$$ now dependent on $$u_{1;i-1}$$ instead of $$x_{1;i-1}$$. MAF is quick for train while IAF is quick for sampling. See [this doc](http://homepages.inf.ed.ac.uk/imurray2/pub/17maf/maf.pdf) for more on MAF. **Parallel wavenet** is proposed by Deepmind combining MAF and IAF, so that the model is quick in both training and generating processes. Such **probability density distillation** approach (MAF as the teacher and IAF as the student) parallels GAN in some sense. See the [original paper](https://arxiv.org/pdf/1711.10433.pdf) for technical details (Part 4 especially). 
+
+A concluding remark of this NN section: there are still various types of NN we don't mention in this note, if you are interested in wandering in the NN zoo, refer [this](http://www.asimovinstitute.org/neural-network-zoo/) (definitely it is also not a complete list).
+
+
 
 ## Advanced ML approaches
 
@@ -560,9 +625,60 @@ There are various algorithm developed for semisupervised learning.
 
 ### Reinforce Learning
 
+* Components
+
+Agents and its actions A guided by policy, environment and states S, rewards $$r_t$$ and transition rate under action a $$P_a(s,s')$$. The whole settings is discrete in time steps. The goal for agent is to collect as much rewards as possible.
+
+* Value functions and discounting factor
+
+Assign the reward for each possible state. One can obtain value functions by iterative process until equilibrium is reached in simple settings (the below figure for [example](https://devblogs.nvidia.com/deep-learning-nutshell-reinforcement-learning/): S to G avoiding T).
+
+![](https://devblogs.nvidia.com/parallelforall/wp-content/uploads/2016/09/image00-624x610.png)
+
+Discounting factor discount the reward in further steps into value function to keep a balance between prudent or greedy actions. 
+
+$$R_t=r_t+\gamma r_{t+1}+…+\gamma^{n}r_{n+t}.$$
+
+$$\gamma$$ is the discount factor. We can have the iterative equation
+
+$$R_t=r_t+\gamma R_{t+1}.$$
+
+* Policy function 
+
+The policy function is a strategy to select the action based on value function. To make the policy robust and more adaptive, we make choice randomly based on probability propotional to value function for each state.
+
+Training process: (1) initialize the policy function randomly—for example, let each state be chosen with probability proportional to its reward—and initialize the value function with the rewards; that is, set the reward of all states to zero where no direct reward is defined. Then (2) train the value function until convergence as above illustration figure, and (3) increase the probability of the action (moving from A to B) for a given state (state A) which most increases the reward (going from A to C might have a low or even negative reward value. Finally, (4) repeat from step (1) until the policy no longer changes.
+
+* Q-learning
+
+By combining the policy and value functions (which are highly interdependent), we are now with Q function. It is difficult to assine value function for each state in complicated settings. The arguments of Q function is current states and possible next actions. 
+
+$$Q(s_t,a_t)=max R_{t+1}.$$
+
+$$Q(s,a)=r+\gamma \;max Q(s',a').$$
+
+If we treat state and action as row and column index, Q function is also a Q table. If the number of states is small enough, we can simply train the Q table by iterative similar as the above methods ([an example](http://blog.csdn.net/itplus/article/details/9361915) on this). To train Q function for complicated states settings, we introduce deep Q-Learning approach which is the method behind alphaGO. 
+
+We introduce the NN whose input is state and action and the output is the Q value (practically the more efficient way to do this is as follows: input is the states and many outputs corresponds Q value for different actions). The loss function for such deep NN is
+
+$$L=\frac{1}{2}[r+max_{a'}Q(s',a')-Q(s,a)]^2.$$
+
+Given $$\langle s,a,r,s' \rangle$$,  the update rule of Q table is as follows:
+
+1. Do a feedforward pass for the current state *s* to get predicted Q-values for all actions.
+2. Do a feedforward pass for the next state $$s’$$ and calculate maximum overall network outputs $$max_{a’} Q(s’, a’)$$.
+3. Set Q-value target for action to $$r+max_{a'}Q(s',a')$$ (use the max calculated in step 2). For all other actions, set the Q-value target to the same as originally returned from step 1, making the error 0 for those outputs.
+4. Update the weights using backpropagation.
+
+Additional, all experiences $$\langle s,a,r,s' \rangle$$ are stored in memory for training, this is called the **experience replay** trick. For a systematic introduction to Q-learning approach proposed by Deepmind, see [this page](https://ai.intel.com/demystifying-deep-reinforcement-learning/) and reference therein, for further development, see [this post](http://www.algorithmdog.com/drl). It is worth noting  there are lots of basic ideas and algorithms in the field of reinforce learning I don't mention there, see [this question](https://stats.stackexchange.com/questions/324819/overview-over-reinforcement-learning-algorithms) for an overview of more methods in reinforce learning.
+
+
+
 ##Applications in Physics
 
 *Mainly from talks of March Meeting 2018 in LA*
+
+First of all, as we can see from all previous examples in CS field, people invent new structures of model to fit the problem they are interested. So it is just the beginning of the game where physicits only use existing ML method and NN structure to study physics problem.  The ultimate goal of ML in physics is to invent new models which fit the nature of quantum or intrinsic property of related physic problems. You can never expect too much using tools for CV and NLP to solve problems in theoretical physics.  People all know using NLP tools to classify image might not be a good idea, the same fact applies to current status of ML study in physics.  
 
 ### As wavefunctions
 
@@ -570,7 +686,7 @@ There are various algorithm developed for semisupervised learning.
 
 ### As recommendation systems
 
-* SLMC (self-learning Mote Carlo)
+* SLMC (self-learning Monte Carlo)
 * Active learning on phase diagram searching
 
 ### As other tools
@@ -584,13 +700,12 @@ There are various algorithm developed for semisupervised learning.
 ## Main Reference
 ### Series or books
 
-* Some blog sites in Chinese: [blog](http://www.cnblogs.com/LeftNotEasy/), [blog](http://blog.csdn.net/v_july_v), [blog](http://www.cnblogs.com/robert-dlut/), [blog](http://bealin.github.io/), [blog](https://jlunevermore.github.io/)
-* Some blog sites in English: [blog](https://chunml.github.io/), [blog](http://www.wildml.com/), [blog](http://karpathy.github.io/), [blog](https://machinelearningmastery.com), [blog](http://colah.github.io/)
-
+* Some blog sites in Chinese: [blog](http://www.cnblogs.com/LeftNotEasy/), [blog](http://blog.csdn.net/v_july_v), [blog](http://www.cnblogs.com/robert-dlut/), [blog](http://bealin.github.io/), [blog](https://jlunevermore.github.io/), [blog](http://www.algorithmdog.com/)
+* Some blog sites in English: [blog](https://chunml.github.io/), [blog](http://www.wildml.com/), [blog](http://karpathy.github.io/), [blog](https://machinelearningmastery.com), [blog](http://colah.github.io/), [blog](http://philipperemy.github.io/), [blog](https://distill.pub/)
 * Lei Wang's lecture notes: [link](http://wangleiphy.github.io/lectures/DL.pdf)
 * Andrew Moore's slides: [link](https://www.autonlab.org/tutorials)
-* Lectures of Universities: [Berkeley](https://people.eecs.berkeley.edu/~jrs/189/), [Stanford](http://cs229.stanford.edu/)
-* Other reference series: [gitbook](https://wizardforcel.gitbooks.io/dm-algo-top10), [notes on NN](https://www.zybuluo.com/hanbingtao/note/476663)
+* Lectures of Universities: [Berkeley](https://people.eecs.berkeley.edu/~jrs/189/), [Stanford](http://cs229.stanford.edu/), [NLP@Stanford](http://web.stanford.edu/class/cs224n/), [reinforcement learning@Berkeley](http://rll.berkeley.edu/deeprlcourse/)
+* Other reference series: [gitbook on some NNN algorithms](https://wizardforcel.gitbooks.io/dm-algo-top10), [notes on NN](https://www.zybuluo.com/hanbingtao/note/476663), [Nvidia blogs with tag deep learning](https://devblogs.nvidia.com/tag/deep-learning/), [zhihuzhuanlan](https://zhuanlan.zhihu.com/lqfarmer)
 
 ### Papers or blogs
 
