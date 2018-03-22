@@ -8,11 +8,28 @@
 {:toc}
 ## Basic Concepts in Math and Machine Learning
 
+### Overview and History
+
+This note is about the algorithm, principles and philosopy of machine learning. For implementations and general ideas in programming, ~~I may write a separate note in the future~~. It is  just a roadmap to ML, the details are lack, hence it is more like a dictionary than a tutorial. The aim of this note is to make the readers have a general idea about ML approaches. If you are going to learn more, see links and references in the note and get your hands dirty: writting code and playing with the math.
+
+See the following posters to have a rough idea on tribes and history of ML.
+
+<img src="https://pic3.zhimg.com/v2-525e2b3825c3ead4a4c23753b202e135_r.jpg" style="zoom:80%" />
+
+<img src="https://pic4.zhimg.com/v2-c33d2dc4409f37af12156622c8dbce81_r.jpg" style="zoom:80%" />
+
+See this [wiki](https://en.wikipedia.org/wiki/Timeline_of_machine_learning) for timeline of machine learning. See [this post](http://www.erogol.com/brief-history-machine-learning/) and the figure below for the trend and milestones of ML in history.  
+
+<img src="http://www.erogol.com/wp-content/uploads/2014/05/test.jpg" style="zoom:80%"/>
+
+The two main communities in ML field:
+
+> - 「I do not come to AI to do statistics.」
+   - 「I do not have interest in AI.」
+
 ### General Settings
 
 Everytime we are faced with a dataset, how can we deal with it. So called data is just a group of number and we can arrange each data as a vector (for each component of the vector, we call it a feature), with or without labels. Labels in general is another vector (usually only one component) associate with data vectors. Now we have two different views on the whole dataset. We can  stack all of the data vectors in rows and make the whole dataset as a matrix. Or we can treat the data vector as a random variable whose distribution is specified by the whole dataset implicitly. Therefore, we can play with dataset in the context of **linear algebra** or **statistical inference**. And we can further gain more insights if we note the intrinsic connections between the two fields in math.
-
-This note is about the algorithm, principles and philosopy of machine learning. For implementations and general idea in programming, ~~I may write a separate note in the future~~.
 
 ### Linear Algebra
 
@@ -125,6 +142,24 @@ This note is about the algorithm, principles and philosopy of machine learning. 
 
   Frequentist vs. Bayesian: whether we have some nontrivial prior knowledge of this world and if the parameter $$\theta$$ a fixed value or random variable. Maximum likelihood estimation ($$P_\theta(X)$$) is equivalent to minmize the negative log likelihood. Maximum a posterior $$P(\theta|X)$$, has taken the prior $$P(\theta)$$ into consideration. The two approach are point estimation compared to full Bayes analysis, where the posterior distribution is calculated. You may refer [this article](https://zhuanlan.zhihu.com/p/32480810).
 
+* EM (expectation maximization) algorithm
+
+  EM is an iterative estimation of MLE when the data is incomplete or has missing (hidden) values. For the distribution parameter $$\theta$$ of data $$X$$, the final task (MLE) is
+
+  $$\theta^* = \underset{\theta}{arg\, max} \;ln \sum_z P(X,z\vert \theta).$$
+
+  The iterative process of EM includes two steps: E-step and M-step. In E-step, we maximize the likelihood with respect to the distribution of hidden variables and in M-step, we maximize it with respect to the parameter $$\theta$$. Specifically, in E step, we find the optimal distribution of latent variable z with fixed $$\theta$$, the update rule is
+
+  $$Q_n(z)=P(z\vert X,\theta_n).$$
+
+  In M step, the update rule is 
+
+  $$\theta_{n+1}=\underset{\theta}{arg\,max}E_{z\vert X,\theta_n} [\ln P(X,z\vert \theta)].$$
+
+  See the derivation and application (**Mixtures of Gaussians**) of EM algorithm in [this doc](http://www.cmlab.csie.ntu.edu.tw/~cyy/learning/tutorials/EM.pdf). See [this paper](https://www.nature.com/articles/nbt1406.pdf)  or the figure below from this paper for a simple example.
+
+  ![](https://pic1.zhimg.com/v2-a95770a0f41ed0873106d4a1f2dd6b7d_r.jpg)
+
 
 
 ### Jargon in ML
@@ -189,7 +224,7 @@ This note is about the algorithm, principles and philosopy of machine learning. 
 
   Another famous type of boosting method is [Adaboost](https://en.wikipedia.org/wiki/AdaBoost). This method assign a larger weight on the mislabeled data in the last round to train a new weak learner. At the same time, we give each weaker learner a weight for the final vote according to its accuracy. See [this post](http://www.csuldw.com/2016/08/28/2016-08-28-adaboost-algorithm-theory/) for more info.
 
-  Different types of boosting approach can be explained in the same framework of addition model with forward stagewise algorithm, the differences come from the different choice of the loss function.
+  Different types of boosting approach can be explained in the same framework of **addition model** with forward stagewise algorithm, the differences come from the different choice of the loss function.
 
 * Generative vs. Discriminative model
 
@@ -213,9 +248,19 @@ This note is about the algorithm, principles and philosopy of machine learning. 
 
   In machine learning, the function f is the loss function of the model. We try to search the minimum of the loss function utilizing such gradient descent method. Generally speaking, the loss function is the sum or expectation value across all data samples. It is time consuming if we update the paramters based on the original version of gradient descent. Therefore, everytime we only calculate a small fraction of the data, and derive the loss function. This is so called **SGD**(Stochastic Gradient Descent) approach.
 
+  <img src="http://www.bogotobogo.com/python/scikit-learn/images/Batch-vs-Stochastic-Gradient-Descent/stochastic-vs-batch-gradient-descent.png" style="zoom:60%" />
+
+  There are also various advanced optimizer to optimize loss function, such as **adam** (frequently used in NN training practice). For the improvements of all kinds of optimizers compared to SGD, see [this brief summary](https://zhuanlan.zhihu.com/p/22252270).
+
+
+
 
 
 ## NNN (Non-Neural-Network) approaches
+
+### KNN (K-Nearest Neighbor)
+
+KNN is supervised algorithm. The aim is to give the label of new input data based on original input data. The principle is to find the k neighbors of labeled data, and determine the label of the new one. For comparison between KNN and k-means, see [this post](http://blog.csdn.net/chlele0105/article/details/12997391).
 
 ### k-Means Clustering
 
@@ -225,15 +270,13 @@ $$
 $$
 This is an NP hard problem. There is an [algorithm](https://en.wikipedia.org/wiki/K-means_clustering#Algorithms) utilizing the iterative process to do the classfication, but no guarantee for optimal solution. The basic procedure of the algorithm is assign each point a label according to the distance and update the cluster center.
 
- The initial center of clusters can be chosed based on so called [k-means++ algorithm](https://www.cnblogs.com/yixuan-xu/p/6272208.html).
-
-### KNN (K-Nearest Neighbor)
-
-KNN is supervised algorithm. The aim is to give the label of new input data based on original input data. The principle is to find the k neighbors of labeled data, and determine the label of the new one. For comparison between KNN and k-means, see [this post](http://blog.csdn.net/chlele0105/article/details/12997391).
+ The initial center of clusters can be chosed based on so called [k-means++ algorithm](https://www.cnblogs.com/yixuan-xu/p/6272208.html). The philosophy behind k-Means clustering is EM algorithm, see [this blog](http://www.cnblogs.com/jerrylead/archive/2011/04/06/2006910.html) for the analysis on this connection.
 
 ### Mean Shift
 
 Algorithm to locate the most dense part of dataset in the feature space. The basic idea is quite straightforward. Just find some point in feature space and then calcualte the weight center within some sphere centered by the start point. Then, iteratively move to the new center and repeat the calculation. Until we come to some fixed point and this is the most dense part in the space.
+
+![](https://pic2.zhimg.com/v2-dc78b6abbe56deba9ecdb6253a1fda36_r.jpg)
 
 ### Spectral Clustering
 
@@ -327,7 +370,7 @@ Decison trees is just a tree with nodes as the features condition while final le
 
 To generate such a tree with least nodes and smallest path, usually we generate nodes from top to bottom, and keep some index the extrem value through the constructing of the node. Namely, from the top, we pick the features of the node based on some value evaluation dependent on features. Such value evaluation includes information gain , **gini coefficient gain** and variance reduction in continuum case (ie. regression trees).  For information gain, I have give the formula before. For gini coefficient, the value is defined as $$gini(X)=1-\sum_{X=x_i}p(x_i)^2$$. 
 
-For basic introduction on decision trees algorithm, see [here](https://www.ibm.com/developerworks/cn/analytics/library/ba-1507-decisiontree-algorithm/index.html). For the difference between different algorithms in decision trees (ID3, C4.5, CART), see [here](https://www.zhihu.com/question/27205203). The main difference is the index (information gain or its ratio or gini coefficients) and whether they can deal with continuum features (namely regression trees).
+For basic introduction on decision trees algorithm, see [here](https://www.ibm.com/developerworks/cn/analytics/library/ba-1507-decisiontree-algorithm/index.html). For the difference between different algorithms in decision trees (**ID3**, **C4.5**, **CART**), see [here](https://www.zhihu.com/question/27205203). The main difference is the index (information gain or its ratio or gini coefficients) and whether they can deal with continuum features (namely regression trees).
 
 To avoid overfitting which is common in decision tree generation, we need some algorithms on pre-pruning and post-pruning.  Besides, early stopping and return posterior probablity instead of categories in leaves might also be helful.
 
@@ -386,7 +429,7 @@ This family of approaches mainly focus on nonlinear dimension reduction. The bel
 
 * Isomap
 
-Use the distance matrix instead of position matrix for data. The distance is also not defined in Euclidean space but in abstract graphs. Using k-NN to link the edge of graph, and the distance is defined as the shortest distance (number of edges) between two nodes (data points). After we have the distance matrix of data, we use **MDS** (multidimension scaling) algorithm to carry out the dimension reduction (linear embedding). The philosophy of MDS is to project data into lower dimension and in the same time try to keep the distance between datapoints unchanged.
+Use the distance matrix instead of position matrix for data. The distance is also not defined in Euclidean space but in abstract graphs. Using k-NN to link the edge of graph, and the distance is defined as the shortest distance (number of edges) between two nodes (data points). After we have the distance matrix of data, we use **MDS** (multidimension scaling) algorithm to carry out the dimension reduction (linear embedding). The philosophy of MDS is to project data into lower dimension and at the same time try to keep the distance between datapoints unchanged.
 
 See [this post](http://blog.csdn.net/Dark_Scope/article/details/53229427) for more info on isomap and MDS and [this](http://blog.csdn.net/u010705209/article/details/53518772) on details of MDS.
 
@@ -397,6 +440,8 @@ The basic idea: only keep distances unchanged between nearby points intead of al
 * t-SNE (t-distributed stochastic neighbor embedding)
 
 See the algorithm [here](http://www.datakit.cn/blog/2015/08/06/t_SNE.html).
+
+To conclude the NNN approaches part, there are also various approaches closed to the ML field, like **genetic algorithm** (for its role in ML field, see [this discussion](https://www.reddit.com/r/MachineLearning/comments/3zv4fk/genetic_algorithms_in_machine_learning/)), **RVM**, **HMM**, **CRF** etc. We won't cover those methods in this note for now.
 
   
 
@@ -451,6 +496,8 @@ Once we have the training algorithm and the prediction algorithm, we can fit eve
 * Summary on the ingredients of NN
 
 Layers, connections, activation functions in each layer, loss functions, initialize of parameters, batches and epochs, optimizer, evaluation metrices, regularizer.
+
+You often have to combine all possibility of the above ingredients together, and try again and again until some combinations of hyperparamters are satisfying. Machine learning, in some sense, is alchemy in modern times.
 
 * Some simple NN-like models 
 
@@ -618,7 +665,7 @@ $$P(X\vert z)$$ and $$Q(z\vert X)$$ corresponds decoder and encoder in NN struct
 
 It is in supervised learning fashion different from all other types of AEs. By make the label as the input of both encoder and decoder part, we can generate image more distinct. This change is equivalent to make all distribution in VAE under a new condition.  See [this post](http://www.cnblogs.com/wangxiaocvpr/p/6231019.html) for explanations.
 
-<img src="https://images2015.cnblogs.com/blog/821593/201612/821593-20161228215644132-2091847015.png" style="zoom:50%" />
+<img src="https://github.com/refraction-ray/general-notes/raw/master/_src/cvae_illustration.png" style="zoom:50%" />
 
 
 
@@ -829,6 +876,5 @@ First of all, as we can see from all previous examples in CS field, people inven
 ### Papers or blogs
 
 * The nature review on deep learning: Yann LeCun,Yoshua Bengio, Geoffrey Hinton. [paper](https://www.nature.com/articles/nature14539.pdf)
-
-See corresponding references links in the main text for other papers. 
+* See corresponding references links in the main text for other papers (note some of the links require you have access to certain academic journals). 
 
