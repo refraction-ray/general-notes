@@ -14,13 +14,13 @@ This note is about the algorithm, principles and philosopy of machine learning. 
 
 See the following posters to have a rough idea on tribes and history of ML.
 
-<img src="https://pic3.zhimg.com/v2-525e2b3825c3ead4a4c23753b202e135_r.jpg" style="zoom:80%" />
+<img src="https://user-images.githubusercontent.com/35157286/37755572-015736c8-2de1-11e8-873e-a9a89bcf93ee.jpg" style="zoom:80%" />
 
-<img src="https://pic4.zhimg.com/v2-c33d2dc4409f37af12156622c8dbce81_r.jpg" style="zoom:80%" />
+<img src="https://user-images.githubusercontent.com/35157286/37755653-5a2ff1d6-2de1-11e8-8688-9d4613d45fe5.jpg" style="zoom:75%" />
 
 See this [wiki](https://en.wikipedia.org/wiki/Timeline_of_machine_learning) for timeline of machine learning. See [this post](http://www.erogol.com/brief-history-machine-learning/) and the figure below for the trend and milestones of ML in history.  
 
-<img src="http://www.erogol.com/wp-content/uploads/2014/05/test.jpg" style="zoom:80%"/>
+<img src="http://www.erogol.com/wp-content/uploads/2014/05/test.jpg" style="zoom:70%"/>
 
 The two main communities in ML field:
 
@@ -45,9 +45,9 @@ Everytime we are faced with a dataset, how can we deal with it. So called data i
 
 * Rayleigh quotient
   For a given Hermitian matrix M and nonzero vector x, the Rayleigh quotient is defined as:
-
-  $$R(M,x)=\frac{x^\dagger M x}{x^\dagger x}$$.
-
+  $$
+  R(M,x)=\frac{x^\dagger M x}{x^\dagger x}.
+  $$
   Such a value reaches the minimum value of the smallest eigenvalue of the matrix $$M$$, when the vector $$x$$ is the corresponding eigenvector. And the similar scenario applies to the max value of the quotient. One can easily project the vector x into the eigenvector basis to prove this. This quotient is nothing but energy functional in quantum physics.
 
 
@@ -134,8 +134,9 @@ Everytime we are faced with a dataset, how can we deal with it. So called data i
 
 * Additive smoothing
   In statistics, additive smoothing, also called Laplace smoothing or Lidstone smoothing, is a technique used to smooth estimate probability of categorical data. Given an observation x = (x1, …, xd) N trials, a "smoothed" version of the data gives the probability estimator:
-  $${\hat {\theta }}_{i}={\frac {x_{i}+\alpha }{N+\alpha d}}\qquad (i=1,\ldots ,d),$$
-
+  $$
+  {\hat {\theta }}_{i}={\frac {x_{i}+\alpha }{N+\alpha d}}\qquad (i=1,\ldots ,d),
+  $$
   where $$\alpha$$ is a small number called pseudocount. The original version of such formula comes from the [rule of succession](https://en.wikipedia.org/wiki/Rule_of_succession) ($$\alpha=1$$) which is designed to solve the [sunrise problem](https://en.wikipedia.org/wiki/Sunrise_problem). If you are confused with the prior ignorance and noninformative prior distributions, see [this doc](http://www.stats.org.uk/priors/noninformative/Smith.pdf) ,[the cheatsheet](http://www.stats.org.uk/priors/noninformative/YangBerger1998.pdf) or [my blog](https://refraction-ray.github.io/%E8%B4%9D%E5%8F%B6%E6%96%AF%E6%8E%A8%E6%96%AD%E5%B0%8F%E8%AE%AE/).
 
 * MLE vs. MAP
@@ -145,20 +146,20 @@ Everytime we are faced with a dataset, how can we deal with it. So called data i
 * EM (expectation maximization) algorithm
 
   EM is an iterative estimation of MLE when the data is incomplete or has missing (hidden) values. For the distribution parameter $$\theta$$ of data $$X$$, the final task (MLE) is
-
-  $$\theta^* = \underset{\theta}{arg\, max} \;ln \sum_z P(X,z\vert \theta).$$
-
+  $$
+  \theta^* = \underset{\theta}{arg\, max} \;ln \sum_z P(X,z\vert \theta).
+  $$
   The iterative process of EM includes two steps: E-step and M-step. In E-step, we maximize the likelihood with respect to the distribution of hidden variables and in M-step, we maximize it with respect to the parameter $$\theta$$. Specifically, in E step, we find the optimal distribution of latent variable z with fixed $$\theta$$, the update rule is
-
-  $$Q_n(z)=P(z\vert X,\theta_n).$$
-
+  $$
+Q_n(z)=P(z\vert X,\theta_n).
+  $$
   In M step, the update rule is 
-
-  $$\theta_{n+1}=\underset{\theta}{arg\,max}E_{z\vert X,\theta_n} [\ln P(X,z\vert \theta)].$$
-
+  $$
+  \theta_{n+1}=\underset{\theta}{arg\,max}E_{z\vert X,\theta_n} [\ln P(X,z\vert \theta)].
+  $$
   See the derivation and application (**Mixtures of Gaussians**) of EM algorithm in [this doc](http://www.cmlab.csie.ntu.edu.tw/~cyy/learning/tutorials/EM.pdf). See [this paper](https://www.nature.com/articles/nbt1406.pdf)  or the figure below from this paper for a simple example.
 
-  ![](https://pic1.zhimg.com/v2-a95770a0f41ed0873106d4a1f2dd6b7d_r.jpg)
+  ![](https://user-images.githubusercontent.com/35157286/37755688-799cad0c-2de1-11e8-9155-f7f4bc3bda5e.jpg)
 
 
 
@@ -224,7 +225,7 @@ Everytime we are faced with a dataset, how can we deal with it. So called data i
 
   Another famous type of boosting method is [Adaboost](https://en.wikipedia.org/wiki/AdaBoost). This method assign a larger weight on the mislabeled data in the last round to train a new weak learner. At the same time, we give each weaker learner a weight for the final vote according to its accuracy. See [this post](http://www.csuldw.com/2016/08/28/2016-08-28-adaboost-algorithm-theory/) for more info.
 
-  Different types of boosting approach can be explained in the same framework of **addition model** with forward stagewise algorithm, the differences come from the different choice of the loss function.
+  Different types of boosting approach can be explained in the same framework of **addition model** with forward stagewise algorithm, the differences come from the different choices of the loss function.
 
 * Generative vs. Discriminative model
 
@@ -244,9 +245,10 @@ Everytime we are faced with a dataset, how can we deal with it. So called data i
 
   Basically, one search for the extremum position of the function $$f(x)$$ using the iterative process
 
-  $$x_{new}=x_{old}-\eta \nabla f(x).$$
-
-  In machine learning, the function f is the loss function of the model. We try to search the minimum of the loss function utilizing such gradient descent method. Generally speaking, the loss function is the sum or expectation value across all data samples. It is time consuming if we update the paramters based on the original version of gradient descent. Therefore, everytime we only calculate a small fraction of the data, and derive the loss function. This is so called **SGD**(Stochastic Gradient Descent) approach.
+  $$
+  x_{new}=x_{old}-\eta \nabla f(x).
+  $$
+  In machine learning, the function f is the loss function of the model. We try to search the minimum of the loss function utilizing such gradient descent method. Generally speaking, the loss function is the sum or expectation value across all data samples. It is time consuming if we update the paramters based on the original version of gradient descent. Therefore, everytime we only calculate a small fraction of the data, and derive the loss function. This is so called **SGD** (Stochastic Gradient Descent) approach. SGD is not only fast in implementation but also helpful avoiding local minimum.
 
   <img src="http://www.bogotobogo.com/python/scikit-learn/images/Batch-vs-Stochastic-Gradient-Descent/stochastic-vs-batch-gradient-descent.png" style="zoom:60%" />
 
@@ -268,22 +270,26 @@ The aim is to partition N data vectors into k-groups. The aim function is the su
 $$
 {\displaystyle {\underset {\mathbf {S} }{\operatorname {arg\,min} }}\sum _{i=1}^{k}\sum _{\mathbf {x} \in S_{i}}\left\|\mathbf {x} -{\boldsymbol {\mu }}_{i}\right\|^{2}={\underset {\mathbf {S} }{\operatorname {arg\,min} }}\sum _{i=1}^{k}|S_{i}|\operatorname {Var} S_{i}}.
 $$
-This is an NP hard problem. There is an [algorithm](https://en.wikipedia.org/wiki/K-means_clustering#Algorithms) utilizing the iterative process to do the classfication, but no guarantee for optimal solution. The basic procedure of the algorithm is assign each point a label according to the distance and update the cluster center.
+This is an NP hard problem. There is an [algorithm](https://en.wikipedia.org/wiki/K-means_clustering#Algorithms) utilizing the iterative process to do the classfication, but no guarantee for optimal solution. Specifically, the algorithm is the following: 
 
- The initial center of clusters can be chosed based on so called [k-means++ algorithm](https://www.cnblogs.com/yixuan-xu/p/6272208.html). The philosophy behind k-Means clustering is EM algorithm, see [this blog](http://www.cnblogs.com/jerrylead/archive/2011/04/06/2006910.html) for the analysis on this connection.
+Assignment step: Assign each observation to the cluster whose mean has the least squared Euclidean distance, this is intuitively the "nearest" mean.
+
+Update step: Calculate the new means to be the centroids of the observations in the new clusters.
+
+The initial center of clusters can be chosed based on so called [k-means++ algorithm](https://www.cnblogs.com/yixuan-xu/p/6272208.html). The philosophy behind k-Means clustering is EM algorithm, see [this blog](http://www.cnblogs.com/jerrylead/archive/2011/04/06/2006910.html) for the analysis on this connection.
 
 ### Mean Shift
 
 Algorithm to locate the most dense part of dataset in the feature space. The basic idea is quite straightforward. Just find some point in feature space and then calcualte the weight center within some sphere centered by the start point. Then, iteratively move to the new center and repeat the calculation. Until we come to some fixed point and this is the most dense part in the space.
 
-![](https://pic2.zhimg.com/v2-dc78b6abbe56deba9ecdb6253a1fda36_r.jpg)
+![](https://user-images.githubusercontent.com/35157286/37755718-95c56e42-2de1-11e8-9a3e-10c94ef2cdf0.jpg)
 
 ### Spectral Clustering
 
 Define a graph with no self-edges. The wieght of edge is a measure of similarity. Therefore, we have the weight matrix of such graph. The goal is to divided the graph into pieces without cutting too much edges. A typical goal is called sparsity:
-
-$$goal=\frac{Cut(G_1,G_2)}{Mass(G_1)Mass(G_2)},$$ 
-
+$$
+goal=\frac{Cut(G_1,G_2)}{Mass(G_1)Mass(G_2)},
+$$
 where $$Mass()$$ is defined as the function for number of vertices. The denominator penalizes the imbalance cuts. We define the cut as indicator vector $$y\in R^n$$ (n is the number of vortice in graph G): 
 $$
 y_i=\left\{
@@ -293,16 +299,16 @@ y_i=\left\{
 \end{aligned}
 \right.
 $$
-
 One can show the $$Cut(G_1,G_2)$$ function can be expressed as 
 
-$$Cut=\frac{1}{4}y^TLy,$$
-
+$$
+Cut=\frac{1}{4}y^TLy,
+$$
 where $$L$$ is defined as the **Laplacian matrix** for graph G
-
-$$L_{ij}=\left\{\begin{aligned}  -w_{ij},~~~ i\neq j \\  \sum_{k\neq i} w_{ik},~~~i=j\end{aligned}  \right.$$
-
-The problem is NP hard unless we relax the restiction on vector $$y$$ to $$y^Ty=const$$. By doing this we can construct our optimal aim as Rayleigh ration of matrix $$L$$. Since the samllest eigenvalue is 0 for $$y=(1,1,…1)$$, the meaningful solution is the eigenvector of the second smallest eigenvalue (vertical to the first eigenvector means that the graph cut is an equally bisect), which is denoted as Fiedler vector. After we get the Fiedler vector, we use certain algorithm to make such vector mapping to $$\{0,1\}^n$$. (Usually choose a critical value leading min-sparsity for the mapping.)
+$$
+L_{ij}=\left\{\begin{aligned}  -w_{ij},~~~ i\neq j \\  \sum_{k\neq i} w_{ik},~~~i=j\end{aligned}  \right.
+$$
+The problem is NP hard unless we relax the restiction on vector $$y$$ to $$y^Ty=const$$. By doing this we can construct our optimal aim as Rayleigh ration of matrix $$L$$. Since the samllest eigenvalue is 0 for $$y=(1,1,…1)$$, the meaningful solution is the eigenvector of the second smallest eigenvalue (orthogonal to the first eigenvector means that the graph cut is an equally bisect), which is denoted as **Fiedler vector**. After we get the Fiedler vector, we use certain algorithm to make such vector mapping to $$\{0,1\}^n$$. (Usually choose a critical value leading min-sparsity for the mapping.)
 
 Alternatively one can get the first $$k$$ eigenvectors $$y_i$$, and transpose these vectors to carry out k-means clustering to find the cut.
 
@@ -310,10 +316,11 @@ For more details and derivations, see [this lecture](https://people.eecs.berkele
 
 ### Naive Bayes Classifier
 
-Just a simple application of Bayes inference: $$P(A\vert B)=\frac{P(B\vert A)P(A)}{P(B)}$$. Naive means that each feature B is statistical independet on each other. And **AODE classfier** is Bayes classifier without the naive indepedent assumptions. The famous formular can also be summarized as
+Just a simple application of Bayes inference: $$P(A\vert B)=\frac{P(B\vert A)P(A)}{P(B)}$$. Naive means that each feature B is statistical independet on each other. And **AODE classfier** (averaged one-dependence estimators) is Bayes classifier without the naive indepedent assumptions. The famous formular can also be summarized as
 
-$$posterior =\frac{likelyhood\times prior}{marginal}.$$
-
+$$
+posterior =\frac{likelyhood\times prior}{marginal}.
+$$
 Empirical Bayes vs. full Bayes: the former estimates the prior from data while the latter using some fixed distribution for prior from the beginning. See different inference schemes in [this post](http://blog.csdn.net/lin360580306/article/details/51289543). Using Bayes inference, you can derive the distribution of the posterior which contains more info than simply MAP estimation.
 
 ### LDA (Linear Discriminant Analysis)
@@ -322,12 +329,15 @@ Alias: *Fisher's linear discriminant*. (Especially for two classes problem)
 
 LDA is supervised learning whose aim is to find the optimal linear classifier for labeled high dimension data.  
 
-Suppose we have set of data vector labeled in k classes. Mean value and covariance matrix is $$\mu_i$$ and $$\Sigma_i$$ respectively. Then the variance intra-class are $$\sum_{i=1}^k \vec{\omega}^T \Sigma_i \vec{\omega}$$. The variance inter-classes are $$\vec{\omega}^T \Sigma_b\vec{\omega}$$, where $$\Sigma _{b}={\frac {1}{C}}\sum _{i=1}^{C}(\mu _{i}-\mu )(\mu _{i}-\mu )^{T}$$. We use the ratio between variance inter and intra classes as the effectiveness of the classfication. To maximize this ratio, by utilizing the Larangian factor, we have the conclusion for LDA transform vector $$\omega$$ (the eigenvalue $$\lambda$$ correspoding to the ratio $$S=\frac{\sum_{i=1}^k \vec{\omega}^T \Sigma_i \vec{\omega}}{\vec{\omega}^T \Sigma_b\vec{\omega}}$$):
+Suppose we have set of data vector labeled in k classes. Mean value and covariance matrix is $$\mu_i$$ and $$\Sigma_i$$ respectively. Then the variance intra-class are $$\sum_{i=1}^k \vec{\omega}^T \Sigma_i \vec{\omega}$$. The variance inter-classes are $$\vec{\omega}^T \Sigma_b\vec{\omega}$$, where $$\Sigma _{b}={\frac {1}{C}}\sum _{i=1}^{C}(\mu _{i}-\mu )(\mu _{i}-\mu )^{T}$$. We use the ratio between variance inter and intra classes as the effectiveness of the classfication. To maximize this ratio, by utilizing the Larangian factor, we have the conclusion for LDA transform vector $$\omega$$ (the eigenvalue $$\lambda$$ correspoding to the ratio $$S=\frac{\vec{\omega}^T \Sigma_b\vec{\omega}}{\sum_{i=1}^k \vec{\omega}^T \Sigma_i \vec{\omega}}$$):
 $$
 \lambda (\sum_{i=1}^k\Sigma_i )\omega= \Sigma_b \omega .
 $$
-
-It is worth noting that LDA is actually a generatibe model instead of discirminative one. LDA assume the likelihood as Gaussian distribution with different mean vector but the same variance, and we can then max the posterior probability to get the coefficients. Such approach based on Bayes inference can be generalized as **Gaussian discriminant analysis**. See [this tutorial](https://people.eecs.berkeley.edu/~jrs/189/lec/07.pdf) for details on GDA and Q(uadratic)DA. And if we use GDA framework to calculate the posterior probability, we are about to get the logistic functions. 
+It is worth noting that LDA is actually a generative model instead of discirminative one. LDA assume the likelihood as Gaussian distribution with different mean vector but the same variance, and we can then max the posterior probability to get the coefficients. Such approach based on Bayes inference can be generalized as **Gaussian discriminant analysis**, where we assusme data of each class can be summarized as Gaussian distributions. And we use MAP as follows to determine the class of data.
+$$
+P(Y=C\vert X=x)\propto P(X=x\vert Y=C)\pi_C
+$$
+See [this tutorial](https://people.eecs.berkeley.edu/~jrs/189/lec/07.pdf) for details on GDA and Q(uadratic)DA. And if we use GDA framework to calculate the posterior probability, we are about to get the logistic functions. 
 
 
 ### PCA (Principle Components Analysis)
@@ -338,17 +348,21 @@ $$
 $$
 Again, the larger the $$\lambda$$, the more effective of the dimension reduction axis.
 
-Note that $$X^TX$$ itself can be recognised as proportional to the empirical sample covariance matrix of the dataset **X** (which is the dataset with zero empirical mean each column). The structure of data set matrix X: each of the rows represents a different repetition of the experiment, and each of the columns gives a particular kind of feature.
+Note that $$XX^T$$ itself can be recognised as proportional to the empirical sample covariance matrix of the dataset **X** (which is the dataset with zero empirical mean each column). The structure of data set matrix X: each of the rows represents a different repetition of the experiment, and each of the columns gives a particular kind of feature.
 
-Or just get the principal values and vectors via SVD. $$\lambda$$ as eigenvalues for covariance matrix of $$X$$ is actually eqivalent to the squre of SVD value for $$X$$. In other words, SVD and PCA are the same thing (see the [explanation](https://math.stackexchange.com/questions/3869/what-is-the-intuitive-relationship-between-svd-and-pca/3871#3871) if you are confused with the equivalence).
+Or just get the principal values and vectors via SVD. $$\lambda$$ as eigenvalues for covariance matrix of $$X$$ is actually equivalent to the squre of SVD value for $$X$$. In other words, SVD and PCA are the same thing (see the [explanation](https://math.stackexchange.com/questions/3869/what-is-the-intuitive-relationship-between-svd-and-pca/3871#3871) if you are confused with the equivalence).
 
 ### Kernel PCA
 
-Map original data point $$x$$ to $$\phi(x)$$ in higher dimension, we only need to define the kernel function of inner product  $$\phi^T(x)\phi(y)=K(x,y)$$ for further calculation. See the [slides](http://www.cs.haifa.ac.il/~rita/uml_course/lectures/KPCA.pdf) or [blog](https://zhanxw.com/blog/2011/02/kernel-pca-%E5%8E%9F%E7%90%86%E5%92%8C%E6%BC%94%E7%A4%BA/) for details. In this way, by choosing appropriate kernel functions, PCA can handle non-linear knowledge in the data. 
+Map original data point $$x$$ to $$\phi(x)$$ in higher dimension, we only need to define the kernel function of inner product  $$\phi^T(x)\phi(y)=K(x,y)$$ for further calculation.  Because we are never working directly in the higher dimension feature space, the kernel-formulation of PCA is restricted in that it computes not the principal components themselves, but the projections of our data onto those components. Namely
+
+$$\phi(x)_k=(\sum_{i=1}^N a_i^k \phi(x_i))^T\phi(x).$$
+
+There are still some subtle issues left, see the [slides](http://www.cs.haifa.ac.il/~rita/uml_course/lectures/KPCA.pdf) or [blog](https://zhanxw.com/blog/2011/02/kernel-pca-%E5%8E%9F%E7%90%86%E5%92%8C%E6%BC%94%E7%A4%BA/) for details. In this way, by choosing appropriate kernel functions, PCA can handle non-linear knowledge and seperation in the data. Such **kernel trick** can be genralized to nearly all ML methods for linear classifier and make them more capable on dataset with non-linear nature.
 
 ### ICA (Independent Component Analysis)
 
-For comparision between ICA and PCA, see [this answer](https://www.zhihu.com/question/28845451). The idea is somewhat similar to PCA. The difference is the critirion for basis choice: maximize the standard deviation or nonGaussianity.
+For comparision between ICA and PCA, see [this answer](https://www.zhihu.com/question/28845451). The idea is somewhat similar to PCA. The difference is the critirion for basis choice: maximize the standard deviation or non-Gaussianity.
 
 ### NMF (Non-negative Matrix Factorization)
 
@@ -361,12 +375,12 @@ The way to find the two linear combination of two random variable vector respect
 ### SVM (Support Vector Machine)
 
 Basically, it is to find an optimal hyperplane to seperate data, which is also one type of linear classfier with supervised learning. The aim of the separation is based on the evaluation of distance to the hyperplane from nearest data point, specifically we need to minimize $${\displaystyle \|{\vec {w}}\|} $$ subject to $${\displaystyle y_{i}({\vec {w}}\cdot {\vec {x}}_{i}-b)\geq 1,} $$ for $$ {\displaystyle i=1,\,\ldots ,\,n} $$, where $$y_i$$ is the label $$\pm1$$ of the data $$x_i$$.
-The application of SVM require the data can be linearly separated. If not, either kernel trick or soft margin target can be applied.
+The application of SVM require the data can be linearly separated. If not, either kernel trick or **soft margin target** can be applied.
 See integrated [blog](http://blog.csdn.net/v_july_v/article/details/7624837) for more info on SVM (kernel trick and the formula derivation of optimal problem are included). For the difference between LDA and SVM, see [this question](https://stats.stackexchange.com/questions/243932/what-is-the-difference-between-svm-and-lda).
 
 ### Decision Trees
 
-Decison trees is just a tree with nodes as the features condition while final leaves as the classfication. It is supervised.  Classification tree predicts discrete classes while regression tree predicts real numbers. **CART** is the short for classification and regression trees.
+Decison trees is a tree with nodes as the features condition while final leaves as the classfication. It is supervised.  Classification tree predicts discrete classes while regression tree predicts real numbers. **CART** is the short for classification and regression trees.
 
 To generate such a tree with least nodes and smallest path, usually we generate nodes from top to bottom, and keep some index the extrem value through the constructing of the node. Namely, from the top, we pick the features of the node based on some value evaluation dependent on features. Such value evaluation includes information gain , **gini coefficient gain** and variance reduction in continuum case (ie. regression trees).  For information gain, I have give the formula before. For gini coefficient, the value is defined as $$gini(X)=1-\sum_{X=x_i}p(x_i)^2$$. 
 
@@ -439,9 +453,30 @@ The basic idea: only keep distances unchanged between nearby points intead of al
 
 * t-SNE (t-distributed stochastic neighbor embedding)
 
-See the algorithm [here](http://www.datakit.cn/blog/2015/08/06/t_SNE.html).
+See the algorithm [here](http://www.datakit.cn/blog/2015/08/06/t_SNE.html). The distance between data points is measured by some probability with Gaussian weight of Euclidean distance. Then we use KL divergence of such distance probability distribution for data in high and low dimension to train the projection. From original SNE to the improved t-SNE algorithm, see [here](http://qiancy.com/2016/11/12/sne-tsne/).
 
-To conclude the NNN approaches part, there are also various approaches closed to the ML field, like **genetic algorithm** (for its role in ML field, see [this discussion](https://www.reddit.com/r/MachineLearning/comments/3zv4fk/genetic_algorithms_in_machine_learning/)), **RVM**, **HMM**, **CRF** etc. We won't cover those methods in this note for now.
+### Probability Graphical Models
+
+See [this answer](https://www.zhihu.com/question/35866596/answer/236886066) for a general picture.
+
+* directed and undirected models
+
+
+* HMM (Hidden Markov Model)
+
+Markov chain with a latent variable. HMM is determined by the initial distribution of starting vector $$\pi$$, the transfer matrix A and the observation matrix B. 
+$$
+a_{ij}=P(i_{t+1}=q_j\vert i_t=q_i)~~~~b_{j}(k)=P(o_t=v_k\vert i_t =q_j)
+$$
+Three basic problems in HMM: 
+
+* CRF (Conditinal random field)
+
+See an introduction by tagging example [here](http://blog.echen.me/2012/01/03/introduction-to-conditional-random-fields/).
+
+
+
+To conclude the NNN approaches part, there are also various approaches closed to the ML field, like **genetic algorithm** (for its role in ML field, see [this discussion](https://www.reddit.com/r/MachineLearning/comments/3zv4fk/genetic_algorithms_in_machine_learning/)), **topic models** in NLP, etc. We won't cover those methods in this note for now.
 
   
 
@@ -605,9 +640,8 @@ By manipulating the structure of RNN and utilizing different perspectives on inp
 
    We can further introduce **attention mechanism** in seq2seq model. The rough idea is the input of decoder is not only the final output of encoder but also all original inputs through some transformation. The example structure is shown below. The context vector calculated from the input series together with the output of decoder give the final output (with an activation function). See [this post](https://medium.com/@Synced/a-brief-overview-of-attention-mechanism-13c578ba9129) for details and see [this](http://www.cnblogs.com/robert-dlut/p/5952032.html) and [this](https://distill.pub/2016/augmented-rnns/) for more variants on attention mechanism in NN.
 
-   ![](https://cdn-images-1.medium.com/max/1600/0*VrRTrruwf2BtW4t5.)
+   ![](https://user-images.githubusercontent.com/35157286/37755796-e41aaf58-2de1-11e8-9295-c0e5233a1cb5.png)	
 
-   ​	
 
 * LSTM (long short term memory networks)
 
