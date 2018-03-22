@@ -24,14 +24,14 @@ This note is about the algorithm, principles and philosopy of machine learning. 
   $$
   where $$U,V$$ is dimension $$m\times m, n\times n$$ unitary matrix in field $$K$$. The diagonal term of $$\Sigma$$ are single values. For singular vectors and construction of transformation matrix, see [here](https://en.wikipedia.org/wiki/Singular-value_decomposition#Singular_values,_singular_vectors,_and_their_relation_to_the_SVD).
 
-  Truncated SVD, use only $$r\times r$$ matrix as $$\Sigma$$ to dramatically reduce the freedom representing the large matrix. For an application of truncated SVD in LSI (latent semantic indexing), see [this post](http://www.cnblogs.com/LeftNotEasy/archive/2011/01/19/svd-and-applications.html).
+  **Truncated SVD**, use only $$r\times r$$ matrix as $$\Sigma$$ to dramatically reduce the freedom representing the large matrix. For an application of truncated SVD in LSI (latent semantic indexing), see [this post](http://www.cnblogs.com/LeftNotEasy/archive/2011/01/19/svd-and-applications.html).
 
 * Rayleigh quotient
   For a given Hermitian matrix M and nonzero vector x, the Rayleigh quotient is defined as:
 
   $$R(M,x)=\frac{x^\dagger M x}{x^\dagger x}$$.
 
-  Such a value reaches the minimum value of the smallest eigenvalue of the matrix $$M$$, when the vector $$x$$ is the corresponding eigenvector. And the similar scenario applies to the max value of the quotient. One can easily project the vector x into the eigenvector basis to prove this. This quotient is nothing but energy functinal in quantum physics.
+  Such a value reaches the minimum value of the smallest eigenvalue of the matrix $$M$$, when the vector $$x$$ is the corresponding eigenvector. And the similar scenario applies to the max value of the quotient. One can easily project the vector x into the eigenvector basis to prove this. This quotient is nothing but energy functional in quantum physics.
 
 
 ### Statistical Inference
@@ -46,7 +46,7 @@ This note is about the algorithm, principles and philosopy of machine learning. 
 
   $${\displaystyle \Sigma (\mathbf {X} )=\operatorname {cov} (\mathbf {X} ,\mathbf {X} ).}$$
 
-  Suppose X is a random vector and A is a fixed transform vector, then we have:
+  Suppose X is a random vector and A is a fixed transform vector, then we have the frequently used relation:
 
   $${\displaystyle \Sigma (\mathbf {A} \mathbf {X} )=\operatorname {E} [\mathbf {A} \mathbf {X} \mathbf {X} ^{\mathrm {T} }\mathbf {A} ^{\mathrm {T} }]-\operatorname {E} [\mathbf {A} \mathbf {X} ]\operatorname {E} [\mathbf {X} ^{\mathrm {T} }\mathbf {A} ^{\mathrm {T} }]=\mathbf {A} \Sigma (\mathbf {X} )\mathbf {A} ^{\mathrm {T} }.}$$
 
@@ -70,7 +70,7 @@ This note is about the algorithm, principles and philosopy of machine learning. 
 
 * KL divergence (Kullback–Leibler divergence)
 
-  Defined as $${\displaystyle D_{\mathrm {KL} }(P\|Q)=-\sum _{i}P(i)\,\log {\frac {Q(i)}{P(i)}}}$$, where $$P,Q$$ are two random variables and easily to be extended to the continuum version. Note this is not a symmtrical definition! This quantity chracterizes the 'difference' of the two distributions. It is positive definite and be zero iff $$P,Q$$ are the same distributions. 
+  Defined as $${\displaystyle D_{\mathrm {KL} }(P\|Q)=-\sum _{i}P(i)\,\log {\frac {Q(i)}{P(i)}}}$$, where $$P,Q$$ are two random variables and easily to be extended to the continuum version. Note this is not a symmtrical definition! This quantity characterizes the 'difference' of the two distributions. It is positive definite and be zero iff $$P,Q$$ are the same distributions. 
 
   KL divergence of two Gaussian distributions is 
 
@@ -80,7 +80,7 @@ This note is about the algorithm, principles and philosopy of machine learning. 
 
   For discrete random variable $$X$$, the entropy $$H$$ is defined as $$H(X)=E(-\ln (P(X))=-\sum_{x_i}P(x_i)\ln P(x_i)$$. 
 
-  We can also define conditional entropy as
+  We can also define **conditional entropy** as
 
   $${\displaystyle \mathrm {H} (X|Y)=E_X(H(Y\vert X=x))=\sum_x p(X=x)H(Y|X=x)=-\sum _{i,j}p(x_{i},y_{j})\log {\frac {p(x_{i},y_{j})}{p(y_{j})}}}.$$
 
@@ -90,7 +90,7 @@ This note is about the algorithm, principles and philosopy of machine learning. 
 
   The joint entropy is greater than any individual entropy while no greater than the sum of them.
 
-  Also there is concepts of information gain which measure the difference of information entropy $$IG(T,a)=H(T)-H(T\vert a)$$.
+  Also there is concepts of **information gain** which measure the difference of information entropy $$IG(T,a)=H(T)-H(T\vert a)$$.
 
 * Mutual information
 
@@ -105,6 +105,11 @@ This note is about the algorithm, principles and philosopy of machine learning. 
   Relation to KL divergence:
 
   $${\displaystyle \begin{aligned}I(X;Y)=&D(p(x,y)\vert\vert p(x)p(y))\\=& E_Y[D(p(x\vert y)\vert\vert p(x)))]\end{aligned}}$$
+
+* Perplexity
+
+  Perplexity of discrete distribution is defined as $$2^{H(p)}$$.  A low perplexity indicates the probability distribution is good at predicting the sample
+
 
 * Whitening transformation
 
@@ -194,9 +199,11 @@ This note is about the algorithm, principles and philosopy of machine learning. 
 
 * Supervised vs. Unsupervised learning
 
-  Denpend on whether the data has labels. If there are labels for part of data, we call it SSL (semi-supervised learning). Actually, various conventinal supervised learning model can also be used in unsupervised learning scenario as long as one can come up with some clever ideas and designs.
+  Denpend on whether the data has labels. If there are labels for part of data, we call it SSL (semi-supervised learning). Actually, various conventinal supervised learning model can also be used in unsupervised learning scenario as long as one can come up with some smart ideas and designs.
 
-  For example, so called confusion shceme is widely applied in physics study to determine the phase boundary (critical value). At the beginning, phase boundary location is in the supervised filed, training data should be with phase label. However, we can use different fake phase boundary to train the model and find the true boundary by require the maximum accuracy.
+  For example, so called **confusion shceme** is widely applied in physics study to determine the phase boundary (critical value). At the beginning, phase boundary location is in the supervised filed, training data should be with phase label. However, we can use different fake phase boundary to train the model and find the true boundary by require the maximum accuracy.
+
+  Besides, there are also approaches named after semi-supervised learning, there is a seperate section for this topic.
 
 * Gradient descent
 
@@ -204,13 +211,13 @@ This note is about the algorithm, principles and philosopy of machine learning. 
 
   $$x_{new}=x_{old}-\eta \nabla f(x).$$
 
-  In machine learning, the function f is the loss function of the model. We try to search the minimum of the loss function utilizing such gradient descent method. Generally speaking, the loss function is the sum or expectation value across all data samples. It is time consuming if we update the paramters based on the original version of gradient descent. Therefore, everytime we only calculate a small fraction of the data, and derive the loss function. This is so called SGD(Stochastic Gradient Descent) approach.
+  In machine learning, the function f is the loss function of the model. We try to search the minimum of the loss function utilizing such gradient descent method. Generally speaking, the loss function is the sum or expectation value across all data samples. It is time consuming if we update the paramters based on the original version of gradient descent. Therefore, everytime we only calculate a small fraction of the data, and derive the loss function. This is so called **SGD**(Stochastic Gradient Descent) approach.
 
 
 
 ## NNN (Non-Neural-Network) approaches
 
-### k-Means clustering
+### k-Means Clustering
 
 The aim is to partition N data vectors into k-groups. The aim function is the sum of intra group variance:
 $$
@@ -248,7 +255,7 @@ One can show the $$Cut(G_1,G_2)$$ function can be expressed as
 
 $$Cut=\frac{1}{4}y^TLy,$$
 
-where $$L$$ is defined as the Laplacian matrix for G
+where $$L$$ is defined as the **Laplacian matrix** for graph G
 
 $$L_{ij}=\left\{\begin{aligned}  -w_{ij},~~~ i\neq j \\  \sum_{k\neq i} w_{ik},~~~i=j\end{aligned}  \right.$$
 
@@ -260,7 +267,7 @@ For more details and derivations, see [this lecture](https://people.eecs.berkele
 
 ### Naive Bayes Classifier
 
-Just a simple application of Bayes inference: $$P(A\vert B)=\frac{P(B\vert A)P(A)}{P(B)}$$. Naive means that each feature B is statistical independet on each other. And AODE classfier is Bayes classifier without the naive indepedent assumptions. The famous formular can also be summarized as
+Just a simple application of Bayes inference: $$P(A\vert B)=\frac{P(B\vert A)P(A)}{P(B)}$$. Naive means that each feature B is statistical independet on each other. And **AODE classfier** is Bayes classifier without the naive indepedent assumptions. The famous formular can also be summarized as
 
 $$posterior =\frac{likelyhood\times prior}{marginal}.$$
 
@@ -318,7 +325,7 @@ See integrated [blog](http://blog.csdn.net/v_july_v/article/details/7624837) for
 
 Decison trees is just a tree with nodes as the features condition while final leaves as the classfication. It is supervised.  Classification tree predicts discrete classes while regression tree predicts real numbers. **CART** is the short for classification and regression trees.
 
-To generate such a tree with least nodes and smallest path, usually we generate nodes from top to bottom, and keep some index the extrem value through the constructing of the node. Namely, from the top, we pick the features of the node based on some value evaluation dependent on features. Such value evaluation includes information gain , gini coefficient gain and variance reduction in continuum case (ie. regression trees).  For information gain, I have give the formula before. For gini coefficient, the value is defined as $$gini(X)=1-\sum_{X=x_i}p(x_i)^2$$. 
+To generate such a tree with least nodes and smallest path, usually we generate nodes from top to bottom, and keep some index the extrem value through the constructing of the node. Namely, from the top, we pick the features of the node based on some value evaluation dependent on features. Such value evaluation includes information gain , **gini coefficient gain** and variance reduction in continuum case (ie. regression trees).  For information gain, I have give the formula before. For gini coefficient, the value is defined as $$gini(X)=1-\sum_{X=x_i}p(x_i)^2$$. 
 
 For basic introduction on decision trees algorithm, see [here](https://www.ibm.com/developerworks/cn/analytics/library/ba-1507-decisiontree-algorithm/index.html). For the difference between different algorithms in decision trees (ID3, C4.5, CART), see [here](https://www.zhihu.com/question/27205203). The main difference is the index (information gain or its ratio or gini coefficients) and whether they can deal with continuum features (namely regression trees).
 
@@ -350,7 +357,7 @@ Lots of trees (bagging method) make the forest. To generate each tree, we need d
 
     $$L_1= \sum_i \vert \theta_i \vert.$$
 
-  Of course, we have to tune hyperparamter $$\lambda$$ before regularization term to optimize the trade off between bias and variance.
+  Of course, we have to tune hyperparamter $$\lambda$$ before regularization term $$L_{1,2}$$ to optimize the trade off between bias and variance.
 
 
 * Logistic regression
@@ -363,7 +370,7 @@ Lots of trees (bagging method) make the forest. To generate each tree, we need d
 
   We are back to the linear class boundary and this is consitent with LDA derivation.
 
-### Gaussian process 
+### Gaussian Process 
 
 Gaussian process is the Gaussian distribution on infinite number of random variables (variables in continuum limit), and once several variables are picked up, they follow the multivariate Gaussian distribution.
 
@@ -373,7 +380,25 @@ The basic idea of **GPR** (Gaussian Process for Regression) is instead assuming 
 
 For tutorial on Gaussian process and its usage on regression and even more on classification and dimension reduction (**GP-LVM**), I strongly recommend [this doc](https://www.robots.ox.ac.uk/~mebden/reports/GPtutorial.pdf).
 
+### Manifold Learning
 
+This family of approaches mainly focus on nonlinear dimension reduction. The belief is that data in higher dimension Euclidean space are actually lie in certain lower dimension manifolds within this space. Sometimes kernel PCA is though as manifold learning, too. The list of approaches in manifold learning is very long, see [this doc](http://scikit-learn.org/stable/modules/manifold.html). We only list several methods below. Note in practice manifold learning techniques are so finicky that they are rarely used for anything more than simple qualitative visualization of high-dimensional data. See [this section](https://jakevdp.github.io/PythonDataScienceHandbook/05.10-manifold-learning.html#Some-Thoughts-on-Manifold-Methods) for its drawbacks.
+
+* Isomap
+
+Use the distance matrix instead of position matrix for data. The distance is also not defined in Euclidean space but in abstract graphs. Using k-NN to link the edge of graph, and the distance is defined as the shortest distance (number of edges) between two nodes (data points). After we have the distance matrix of data, we use **MDS** (multidimension scaling) algorithm to carry out the dimension reduction (linear embedding). The philosophy of MDS is to project data into lower dimension and in the same time try to keep the distance between datapoints unchanged.
+
+See [this post](http://blog.csdn.net/Dark_Scope/article/details/53229427) for more info on isomap and MDS and [this](http://blog.csdn.net/u010705209/article/details/53518772) on details of MDS.
+
+* Locally Linear Embedding
+
+The basic idea: only keep distances unchanged between nearby points intead of all points in MDS.
+
+* t-SNE (t-distributed stochastic neighbor embedding)
+
+See the algorithm [here](http://www.datakit.cn/blog/2015/08/06/t_SNE.html).
+
+  
 
 ## NN (neural network) family
 
@@ -419,11 +444,19 @@ A general workflow to train a NN model is divided in three stages. The data must
 
 Traning data is for usual back propagation training process and parameters updates. Evaluation data is used in evaluation process, where the accuracy is calculated though the evaluation data is not used to update parameters. What is the use of evaluation? It aims to guide the hyperparamters update. We can change our settings of the NN (hyperparameters) to make the accuracy in evaluation process higher. And for test data, it is the final examination of the model. If the accuracy is acceptable, then the model is ready to go. You are NEVER allowed to adjust your model (no matter parameters or hyper parameters) based on the test data. Testing is merely a final examination, it is CHEATING if you train the model with any hints from the test process.  And it is also WRONG to evaluate your final model based on the evaluation data, since you have adjusted the model to satisfy them before (Frankly speaking, physicists usually get things wrong related to this paragraph, what they have done are mostly circular argument and make nonsense).
 
+The training process is very difficult in complex cases and many method should be employed to avoid overfitting or gradient exposion, etc. The main solutions include **dropout layer**, regularization terms, early stopping, etc. You may find [this post](http://blog.csdn.net/u012162613/article/details/44261657) interesting on training tricks.
+
 Once we have the training algorithm and the prediction algorithm, we can fit every function in the world as long as we have enough paramters. But if the number of parameters increases with the system size, the model is impossible to make sense in computers. Therefore, it is still impressive why NN learning so effective with so cheap settings and so smalll number of parameters. We will talk the effectiveness from physics perspective in the application sections.
 
-* Summary on the components of NN
+* Summary on the ingredients of NN
 
-Layers, connections, activation functions in each layer, loss functions, initialize of parameters, batches and epochs.
+Layers, connections, activation functions in each layer, loss functions, initialize of parameters, batches and epochs, optimizer, evaluation metrices, regularizer.
+
+* Some simple NN-like models 
+
+And there are several simple NN-like model with shallow layers but a bit different from the full connected NN we mentioned above. For example, **SOM** networks (designed for clustering, see detailed [series](http://blog.csdn.net/xbinworld/article/details/50818803)), **ART** networks ([ref](http://blog.csdn.net/lg1259156776/article/details/47780695)), **Elman** networks (origin of RNN) or **RBF** networks (just using a uncommon activation function in NN). For a quick overview of these networks and terminology, see the second half of [this blog](http://bealin.github.io/2017/02/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97%E2%80%948-%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/). 
+
+Among them, SOM (sel organizing maps) is of great interest and it is an example of compete learning. See [comparison](https://www.cnblogs.com/sylvanas2012/p/5117056.html) between SOM and k-means on clustering problem.
 
 ### Convolutional Neural Network
 
@@ -475,7 +508,7 @@ Graph is one type of organization of big data, information is stored in the edge
 
 * deconvolution networks (DN)
 
-The inverse of CNN which is designed to generate images. The better name for DN may transpose convolution network.  See [this paper](https://arxiv.org/pdf/1603.07285.pdf) on convolution arithmetic and see [this](https://github.com/vdumoulin/conv_arithmetic) for animations of CN and DN calculation. Besides, here is [an example](https://zo7.github.io/blog/2016/09/25/generating-faces.html) of generating images from DN.
+The inverse of CNN which is designed to generate images. The better name for DN may be transpose convolution network.  See [this paper](https://arxiv.org/pdf/1603.07285.pdf) on convolution arithmetic and see [this](https://github.com/vdumoulin/conv_arithmetic) for animations of CN and DN calculation. Besides, here is [an example](https://zo7.github.io/blog/2016/09/25/generating-faces.html) of generating images from DN.
 
 ### Recurrent Neural Network
 
@@ -554,20 +587,96 @@ This type of NN has noting to do with recurrent neural network. But it is also a
 ### Autoencoder
 
 * Vanilla AE
+
+Nothing special, just a conventional NN (FFNN or CNN) with bottleneck structure. By make the loss function as the difference between input and output data, we achieve unsupervised learning via NN. And from the latent layer, we can extract lower dimension representation of input. The encoder part behaves like information compress and the decoder part is responsible for recovering the input from the latent space representations.
+
+<img src="https://cdn-images-1.medium.com/max/1574/1*44eDEuZBEsmG_TCAKRI3Kw@2x.png" style="zoom:40%" />
+
 * Denoising AE (DAE)
+
+Add noise to the input data for training. But the loss function still refers to the original input (maybe an extra regularization term in loss function). Such design makes the model more robust in extracting real features of input.
+
 * Sparse AE (SAE)
 
-Just the inverse of AE. AE is with the hourglass shape while SAE is with football shape.
+Just the inverse of AE. AE is with the hourglass shape while SAE is with football shape. To avoid the trivial latent space distribution, one definitely have to add more constraints in this model. The penalty term we add into the loss function is 
+
+$$L=\sum_{j=1}^s KL(\rho\vert\vert \rho_j),$$
+
+where $$s$$ is the dimension of latent space and $$\rho_{(j)}$$ represents Bernoulli random variable with mean value $$\rho$$. Practically, we fix a small $$\rho$$, and by this term, we make the neurons in latent layer more inactive (the value of neuron is close to 0 instead of 1).
+
+ For more on SAE, see [this lecture](https://web.stanford.edu/class/cs294a/sparseAutoencoder.pdf) (from page 13). 
 
 * Variational autoencoder (VAE)
+
+The structure of VAE is similar as AE (the difference lies in loss function where a new regularization term sets in), but it has nothing to do with AE. Instead, VAE has a strong background from statistics inference. By using Gaussian sampling in the latent layer, the model is more capable to generate image or grasp lower dimension representations compared to AE.  The key objective formula is
+
+$$ELBO(X)=\ln P(X)-D(Q(z\vert X)\vert \vert P(z\vert X))=E_{z\sim Q}(\ln P(X\vert z))-D(Q(z\vert X)\vert \vert P(z)).$$
+
+$$P(X\vert z)$$ and $$Q(z\vert X)$$ corresponds decoder and encoder in NN structure. For everything about VAE, just see [my blog](https://refraction-ray.github.io/VAE%E7%9A%84%E9%80%BB%E8%BE%91%E4%B8%8E%E5%AE%9E%E8%B7%B5/) and reference therein.
+
 * CVAE (Conditional VAE)
+
+It is in supervised learning fashion different from all other types of AEs. By make the label as the input of both encoder and decoder part, we can generate image more distinct. This change is equivalent to make all distribution in VAE under a new condition.  See [this post](http://www.cnblogs.com/wangxiaocvpr/p/6231019.html) for explanations.
+
+<img src="https://images2015.cnblogs.com/blog/821593/201612/821593-20161228215644132-2091847015.png" style="zoom:50%" />
+
+
 
 ### Boltzmann Machine
 
 * Hopfield network
+
+Complete undirected graph with the node as binary neuron (can take value $$\pm 1$$) and weight on edges as $$\omega_{ij}$$.  Update rule for neuron in this network:
+
+$$s_{i}\leftarrow \left\{{\begin{array}{ll}+1&{\mbox{if }}\sum _{{j}}{w_{{ij}}s_{j}}\geq \theta _{i},\\-1&{\mbox{otherwise.}}\end{array}}\right.$$
+
+The neuron update can be asynchronous or sync (dangerous though).
+
+All the models in this section have energy based explanation and classical spin system analogy so it is friendly for physicists to study. Energy for Hopfield network is
+
+$${\displaystyle E=-{\frac {1}{2}}\sum _{i,j}{w_{ij}{s_{i}}{s_{j}}}-\sum _{i}{\theta _{i}}{s_{i}}}.$$
+
+The above update rules for the model lead to the minimum (maybe local though) in this energy. But this model is of limited usage; the original aim of this model is to imitate the behavior of human memory: training weight for a configuration (remember) and recover the configuration based on minimizing the energy (recall).
+
 * Boltzmann machine
+
+The units (neurons) of Boltzmann machine are stochastic (finite temperature) compare to Hopfield network (zero temperature). The energy form is the same as Hopfield network (but we usually use 1 and 0 for neuron states of BM and following RBM). But since we are at finite temperature $$T$$ this time, the aim is not to minimize the energy (this time the probability of some state is proportional to the Boltzman weight). By simple derivation, we have 
+
+$$p_{i=1}=\frac{1}{1+e^{-\frac{\Delta E_i}{T}}}.$$
+
+The training of BM seems to take exponential long time. So we stop here and trun our attention to RBM. Many aspects we talked below also apply to BM case.
+
 * Restricted Boltzmann machine (RBM)
+
+Divide all neuron in BM into two layers (visible layer and hidden layer), and set the link weight within the layer to zero.
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Restricted_Boltzmann_machine.svg/1200px-Restricted_Boltzmann_machine.svg.png" style="zoom:30%" />
+
+The probability of a state $$s$$ is just 
+
+$$P(s)=P(v,h)=\frac{e^{-\beta E_s}}{Z}.$$
+
+To grasp the spirit of this stochastic model, we label each neuron by its probabilty to activate (i.e. $$s_i=1$$ instead of 0). Therefore, we have the following relation
+
+$$ P(h_{j}=1|v)=\sigma \left(b_{j}+\sum _{i=1}^{m}w_{i,j}v_{i}\right)~~~\mathrm{and}~~~\,P(v_i=1|h) = \sigma \left(a_i + \sum_{j=1}^n w_{i,j} h_j \right),$$
+
+where $$\sigma$$ is the sigmoid function (we meet sigmoid again and again).
+
+Now let's see how to train such a model with unlabeled input dataset V. The aim is to minimize $$P(V)=\Pi\; P(v_i)$$ or $$\sum_i \ln P(v_i)$$.
+
+We can show that gradient of the above aim lead to the result as
+
+$$\nabla_\omega \ln P(v_n)= E[hv^T\vert v=v_n]-E[hv^T].$$
+
+The first term is the expectation value across the training data: $$ E[h|v=v_n]v_n=v_n\sigma(Wv_n+b)$$ and the second term is the expectation value across samples from the model which is hard to calculate.  Using a Markov chain to update the neuron by layers iteratively until thermal equilibrium, and then we can calculate the expectation value. This is so-called **MCMC** (Markov chain Monte Carlo) method. To make the calculation more fast, we further introduce **CD-k** (contrastive divergence) algorithm. It is simply use the result from the first k updates.
+
+See details on the training algorithm in [this doc](http://www.cs.toronto.edu/~tijmen/csc321/documents/maddison_rbmtutorial.pdf). 
+
+RBM falls into unsupervised learning category with possible usage in transforming input data instead classify it. It is also a generative model as it can model the joint distribution which could potentially generate similar things as input dataset.
+
 * Deep belief network (DBN)
+
+Stack several RBM together as a very deep NN. Pretrain RBM layer by layer (since RBM is unsupervised learning model). Then we put a final classify layer on the top for output and train the data in supervised fashion by fine-tuning parameters through back propagation. Actually an old approach for deep architecture before this wave of deep learning.
 
 ### More Generative Networks
 
@@ -597,11 +706,11 @@ See [this post](https://blog.evjang.com/2018/01/nf1.html) on normalizing flow, a
 
 Assume $$p(\mathbf{x})=\prod_i p(x_i\vert x_{1;i-1})$$,  and all condition probability is governed by some Gaussian distribution whose mean and variance can be calculated by NN with inputs $$x_{1;i-1}$$. Though it seems the assumption denpends on the ordering of data exists, the model works pretty well in generating images. Actually if you consider the different order of data, you can come up with ensemble learning for this case. The general structure of the model and the sampling process are shown as below (**masked autoregressive flow**).
 
-![](https://1.bp.blogspot.com/-sVVtT3hM65U/Wl-h3S4XqmI/AAAAAAAAHks/WKKYZvx4iw0TTwBLEcYdy3ceN7DKnzvnQCLcBGAs/s0/autoregressive.png)
+<img src="https://1.bp.blogspot.com/-sVVtT3hM65U/Wl-h3S4XqmI/AAAAAAAAHks/WKKYZvx4iw0TTwBLEcYdy3ceN7DKnzvnQCLcBGAs/s0/autoregressive.png" style="zoom:50%" />
 
 
 
-There is also **inverse autoregressive flow** (IAF), the only change is the NN for mean and variance of $$x_i$$ now dependent on $$u_{1;i-1}$$ instead of $$x_{1;i-1}$$. MAF is quick for train while IAF is quick for sampling. See [this doc](http://homepages.inf.ed.ac.uk/imurray2/pub/17maf/maf.pdf) for more on MAF. **Parallel wavenet** is proposed by Deepmind combining MAF and IAF, so that the model is quick in both training and generating processes. Such **probability density distillation** approach (MAF as the teacher and IAF as the student) parallels GAN in some sense. See the [original paper](https://arxiv.org/pdf/1711.10433.pdf) for technical details (Part 4 especially). 
+There is also **inverse autoregressive flow** (IAF), the only change is the NN for mean and variance of $$x_i​$$ now dependent on $$u_{1;i-1}​$$ instead of $$x_{1;i-1}​$$. MAF is quick for train while IAF is quick for sampling. See [this doc](http://homepages.inf.ed.ac.uk/imurray2/pub/17maf/maf.pdf) for more on MAF. **Parallel wavenet** is proposed by Deepmind combining MAF and IAF, so that the model is quick in both training and generating processes. Such **probability density distillation** approach (MAF as the teacher and IAF as the student) parallels GAN in some sense. See the [original paper](https://arxiv.org/pdf/1711.10433.pdf) for technical details (Part 4 especially). 
 
 A concluding remark of this NN section: there are still various types of NN we don't mention in this note, if you are interested in wandering in the NN zoo, refer [this](http://www.asimovinstitute.org/neural-network-zoo/) (definitely it is also not a complete list).
 
@@ -613,7 +722,7 @@ A concluding remark of this NN section: there are still various types of NN we d
 
 Components of active learning $$(C,L,S,Q,U)$$: C is the classifier trained for labeled data L, U is unlabeled data and Q is the query algorithm to pick most uninformative unlabeled data. Such data should be labeled by "expert" S then. Firstly, one have some data in L. Then one can train a C based on L. Then we use Q strategy to pick some data from U and label them via S. Next, retraining the model C based on new enlarged L. Repeat these steps until the C classifier is satisfying. 
 
-The core of such algorithm is the strategy of Q. One can query by uncertainty, by expected change, by error reduction, by trade-off between exploration and exploitation and so on. Therefore, active learning is a framework with algorithm and implementation dependent on specific problems. 
+The core of such algorithm is the strategy of $$Q$$. One can query by uncertainty, by expected change, by error reduction, by trade-off between exploration and exploitation and so on. Therefore, active learning is a framework with algorithm and implementation dependent on specific problems. 
 
 ### Semisupervised Learning
 
@@ -621,11 +730,15 @@ Pure semisupervised learning: unlabeled data for training is not the data for pr
 
 Transductive learning: unlabeled data is both for training and predicting.
 
-There are various algorithm developed for semisupervised learning.
+There are various algorithm developed for semisupervised learning. See [this chapter](https://mitpress.mit.edu/sites/default/files/titles/content/9780262033589_sch_0001.pdf) for an overview of SSL. 
+
+* Generative models
+* Graph-based methods
+* Low density seperation
 
 ### Reinforce Learning
 
-* Components
+* Settings
 
 Agents and its actions A guided by policy, environment and states S, rewards $$r_t$$ and transition rate under action a $$P_a(s,s')$$. The whole settings is discrete in time steps. The goal for agent is to collect as much rewards as possible.
 
@@ -672,6 +785,10 @@ Given $$\langle s,a,r,s' \rangle$$,  the update rule of Q table is as follows:
 
 Additional, all experiences $$\langle s,a,r,s' \rangle$$ are stored in memory for training, this is called the **experience replay** trick. For a systematic introduction to Q-learning approach proposed by Deepmind, see [this page](https://ai.intel.com/demystifying-deep-reinforcement-learning/) and reference therein, for further development, see [this post](http://www.algorithmdog.com/drl). It is worth noting  there are lots of basic ideas and algorithms in the field of reinforce learning I don't mention there, see [this question](https://stats.stackexchange.com/questions/324819/overview-over-reinforcement-learning-algorithms) for an overview of more methods in reinforce learning.
 
+### Transfer Learning
+
+
+
 
 
 ##Applications in Physics
@@ -691,23 +808,27 @@ First of all, as we can see from all previous examples in CS field, people inven
 
 ### As other tools
 
-### Physics help ML
+### Physics helps ML
 
 * TNS
+
+
 
 
 
 ## Main Reference
 ### Series or books
 
-* Some blog sites in Chinese: [blog](http://www.cnblogs.com/LeftNotEasy/), [blog](http://blog.csdn.net/v_july_v), [blog](http://www.cnblogs.com/robert-dlut/), [blog](http://bealin.github.io/), [blog](https://jlunevermore.github.io/), [blog](http://www.algorithmdog.com/)
-* Some blog sites in English: [blog](https://chunml.github.io/), [blog](http://www.wildml.com/), [blog](http://karpathy.github.io/), [blog](https://machinelearningmastery.com), [blog](http://colah.github.io/), [blog](http://philipperemy.github.io/), [blog](https://distill.pub/)
+* Some blog sites in Chinese: [blog](http://www.cnblogs.com/LeftNotEasy/), [blog](http://blog.csdn.net/v_july_v), [blog](http://www.cnblogs.com/robert-dlut/), [blog](http://bealin.github.io/), [blog](https://jlunevermore.github.io/), [blog](http://www.algorithmdog.com/), [blog](http://www.datakit.cn/)
+* Some blog sites in English: [blog](https://chunml.github.io/), [blog](http://www.wildml.com/), [blog](http://karpathy.github.io/), [blog](https://machinelearningmastery.com), [blog](http://colah.github.io/), [blog](http://philipperemy.github.io/), [blog](https://distill.pub/), [blog](https://wiseodd.github.io/)
 * Lei Wang's lecture notes: [link](http://wangleiphy.github.io/lectures/DL.pdf)
 * Andrew Moore's slides: [link](https://www.autonlab.org/tutorials)
-* Lectures of Universities: [Berkeley](https://people.eecs.berkeley.edu/~jrs/189/), [Stanford](http://cs229.stanford.edu/), [NLP@Stanford](http://web.stanford.edu/class/cs224n/), [reinforcement learning@Berkeley](http://rll.berkeley.edu/deeprlcourse/)
-* Other reference series: [gitbook on some NNN algorithms](https://wizardforcel.gitbooks.io/dm-algo-top10), [notes on NN](https://www.zybuluo.com/hanbingtao/note/476663), [Nvidia blogs with tag deep learning](https://devblogs.nvidia.com/tag/deep-learning/), [zhihuzhuanlan](https://zhuanlan.zhihu.com/lqfarmer)
+* Lectures of Universities: [Berkeley](https://people.eecs.berkeley.edu/~jrs/189/), [Stanford](http://cs229.stanford.edu/),[Toronto](http://www.cs.toronto.edu/~tijmen/csc321/), [Unsupervised learning@Stanford](https://web.stanford.edu/class/cs294a/), [NLP@Stanford](http://web.stanford.edu/class/cs224n/), [reinforcement learning@Berkeley](http://rll.berkeley.edu/deeprlcourse/), [advanced machine perception@Berkeley](https://people.eecs.berkeley.edu/~efros/courses/AP06/), [crash course by google](https://developers.google.cn/machine-learning/crash-course)
+* Other reference series: [gitbook on some NNN algorithms](https://wizardforcel.gitbooks.io/dm-algo-top10), [notes on NN](https://www.zybuluo.com/hanbingtao/note/476663), [Nvidia blogs with tag deep learning](https://devblogs.nvidia.com/tag/deep-learning/), [zhihuzhuanlan: some general resource](https://zhuanlan.zhihu.com/lqfarmer)
 
 ### Papers or blogs
 
-See corresponding references in the main text. 
+* The nature review on deep learning: Yann LeCun,Yoshua Bengio, Geoffrey Hinton. [paper](https://www.nature.com/articles/nature14539.pdf)
+
+See corresponding references links in the main text for other papers. 
 
