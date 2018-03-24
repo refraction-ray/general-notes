@@ -50,6 +50,10 @@ Everytime we are faced with a dataset, how can we deal with it. So called data i
   $$
   Such a value reaches the minimum value of the smallest eigenvalue of the matrix $$M$$, when the vector $$x$$ is the corresponding eigenvector. And the similar scenario applies to the max value of the quotient. One can easily project the vector x into the eigenvector basis to prove this. This quotient is nothing but energy functional in quantum physics.
 
+* Curse of dimensionality
+
+  Data in very high dimension has many weird behavior comapred to 3D we are familiar with. Data points in higher dimension are sparse: the number of data points is exponential increasing with the dimension if you keep the density of data. Novel features in high dimension also include: the Euclidean distance betwenn all pairs of points are nearly the same; the volume of hypersphere with radius r is approaching zero compared to the cube with edge 2r. Therefore, many familiar approaches to manipulate and organize data don't work well.
+
 
 ### Statistical Inference
 
@@ -455,12 +459,17 @@ The basic idea: only keep distances unchanged between nearby points intead of al
 
 See the algorithm [here](http://www.datakit.cn/blog/2015/08/06/t_SNE.html). The distance between data points is measured by some probability with Gaussian weight of Euclidean distance. Then we use KL divergence of such distance probability distribution for data in high and low dimension to train the projection. From original SNE to the improved t-SNE algorithm, see [here](http://qiancy.com/2016/11/12/sne-tsne/).
 
+In summary, so called manifold learning is to grasp the distance between points in higher dimension. The Euclidean distance doesn't work well due to the curse of dimension, hence one have to find other local coordinates or something similar with the help of manifold conception. 
+
 ### Probability Graphical Models
 
-See [this answer](https://www.zhihu.com/question/35866596/answer/236886066) for a general picture.
+See [this answer](https://www.zhihu.com/question/35866596/answer/236886066) for a general picture. This family of models are suitable for sequence manipulation in NLP.
 
 * directed and undirected models
 
+In undirected model, the node represents the random variable while the link between nodes represent some positive-definite potential function (in general some exponential function) depedent on these nodes (random variables). Therefore, undirected models give the joint probability distribution of all nodes by product of each link function. 
+
+As for directed graphs, they are more like hierarchical probability model where each node represents a conditional probability, and the final probability is the product of all the nodes.
 
 * HMM (Hidden Markov Model)
 
@@ -468,13 +477,27 @@ Markov chain with a latent variable. HMM is determined by the initial distributi
 $$
 a_{ij}=P(i_{t+1}=q_j\vert i_t=q_i)~~~~b_{j}(k)=P(o_t=v_k\vert i_t =q_j)
 $$
-Three basic problems in HMM: 
+Three basic problems in HMM: 1. train to learn A B (MLE with hidden states or Baum-Welch without hidden states); 2. find the hidden states series with the most possibility(**Viterbi algorithm**, I recommend [this post](http://cpmarkchang.logdown.com/posts/192522-natural-language-processing-viterbi-algorithm)); 3. Compute the probability of given sequence.
+
+![](https://user-images.githubusercontent.com/35157286/37862100-75120eb0-2f82-11e8-9996-cf2b674df775.jpg)
+
+* MEMM (Maximum-entropy Markov Model)
+
+Its is discriminative model instead of generative model as HMM. It directly model the likelihood as 
+$$
+P(i_t\vert i_{t-1})=\frac{1}{Z(o_t,i_{t-1})}e^{\sum_a \lambda_a f_a(o_t,i_t)}.
+$$
+$$f$$ is functions we specify and the weight $$\lambda$$ are parameters we have to train using optimizer as any classfier.
+
+There are three types of problems as in HMM, too.
 
 * CRF (Conditinal random field)
 
-See an introduction by tagging example [here](http://blog.echen.me/2012/01/03/introduction-to-conditional-random-fields/).
-
-
+CRF is also discriminative model, we refer to linear chain CRF specifically. The probability formula for such classfier is 
+$$
+P(I\vert O)=\frac{1}{Z(O)}e^{\sum_i^T\sum_k^M\lambda_k f_k(O,I_{i-1},I_i,i)}.
+$$
+ See an introduction by tagging example [here](http://blog.echen.me/2012/01/03/introduction-to-conditional-random-fields/).
 
 To conclude the NNN approaches part, there are also various approaches closed to the ML field, like **genetic algorithm** (for its role in ML field, see [this discussion](https://www.reddit.com/r/MachineLearning/comments/3zv4fk/genetic_algorithms_in_machine_learning/)), **topic models** in NLP, etc. We won't cover those methods in this note for now.
 
@@ -547,7 +570,7 @@ CNN is designed for image recongnition with special connection structures and su
 The general layer structure of CNN: 
 
 ```mermaid
-graph LR
+graph TD
 A(Input layer)--> B(Convolution layer*N)
 B --> C(Pooling layer*?)
 C--> D(Full connected layer*K)
@@ -803,7 +826,9 @@ A concluding remark of this NN section: there are still various types of NN we d
 
 Components of active learning $$(C,L,S,Q,U)$$: C is the classifier trained for labeled data L, U is unlabeled data and Q is the query algorithm to pick most uninformative unlabeled data. Such data should be labeled by "expert" S then. Firstly, one have some data in L. Then one can train a C based on L. Then we use Q strategy to pick some data from U and label them via S. Next, retraining the model C based on new enlarged L. Repeat these steps until the C classifier is satisfying. 
 
-The core of such algorithm is the strategy of $$Q$$. One can query by uncertainty, by expected change, by error reduction, by trade-off between exploration and exploitation and so on. Therefore, active learning is a framework with algorithm and implementation dependent on specific problems. 
+The core of such algorithm is the strategy of $$Q$$. One can query by uncertainty, by expected change, by error reduction, by information entropy, by trade-off between exploration and exploitation and so on. Therefore, active learning is a framework with algorithm and implementation dependent on specific problems. The classifier C can be any learner we know before in ML. 
+
+For an detailed introduction to active learning, see [this](https://www.datacamp.com/community/tutorials/active-learning).
 
 ### Semisupervised Learning
 
@@ -811,11 +836,41 @@ Pure semisupervised learning: unlabeled data for training is not the data for pr
 
 Transductive learning: unlabeled data is both for training and predicting.
 
-There are various algorithm developed for semisupervised learning. See [this chapter](https://mitpress.mit.edu/sites/default/files/titles/content/9780262033589_sch_0001.pdf) for an overview of SSL. 
+There are various algorithm developed for semisupervised learning. See [this chapter](https://mitpress.mit.edu/sites/default/files/titles/content/9780262033589_sch_0001.pdf) for an overview of SSL.
 
 * Generative models
-* Graph-based methods
-* Low density seperation
+
+Deal with data and missing label using EM algorithm. The optimal aim (by tuning parameters $$\theta,\pi$$) is (the first part is data with label) 
+$$
+\ln P(x\vert \theta ,\pi )=\sum_{i=1}^n \ln \pi_{y_i}P(x_i\vert y_i,\theta)+\sum_{i=n+1}^{n+m}\ln \sum_{y=1}^M \pi_y P(x_i\vert y ,\theta).
+$$
+
+* Label propagation
+
+Yet another algorithm based on graph structure. The basic assumption is the label can propagate through link in some weight of probability ($$\omega_{ij}=e^{-\vert {x_i-x_i}\vert^2}$$). The iterative let the label propagation until convergence.
+
+See [this post](https://blog.csdn.net/zouxy09/article/details/49105265) for algorithm and python implementation.
+
+* Modified k-means
+
+Constrained version of k-means clustering: Treat the labeled data as must link or cannot link in the graph. Then carry out the k-means clustering under these restrictions.
+
+Seed version of k-means clustering: Just use the mean value of labeled data points for each class as initial center of class.
+
+* S3VM
+
+Semisupervised version of SVM. The basic idea is assign all data with a class by a pretrained SVM on labeled data and then add relevant regularization terms to iteratively find optimal hyperplanes. The frequently used regularization terms are hat loss and class balance restrict ($$\lambda_2,\lambda_3$$ terms below):
+$$
+\begin{align}
+\min_{w,b}  &  \sum_{i=1}^{l} \max(1 - y_i(w^Tx_i+b), 0) + \lambda_1 ||w||^2  + \lambda_2\sum_{j=l+1}^{l+u} \max(1 - |w^Tx_i+b|, 0)    \\
++\lambda_3 ( & \frac{1}{u}\sum_{j=l+1}^{l+u} f(x_j) - \frac{1}{l}\sum_{i=1}^{l} y_i)  .
+\end{align}
+$$
+See [this](https://blog.csdn.net/extremebingo/article/details/79020907) for the introduction to the algorithm.
+
+* Co-training
+
+Suppose the data $$\mathbf{x}=({\mathbf{x_1},\mathbf{x_2}})$$, we use the two independent feature sets to train two classifiers $$h_1,h_2$$. Then we use the two classfiers to pick the most confident points from unlabeled set and repeat this process until the unlabeled set is empty. If one use only one classfier, we are arriving at so called **self-training**. If one use multiple learner, we have **co-forest**.
 
 ### Reinforce Learning
 
@@ -866,9 +921,13 @@ Given $$\langle s,a,r,s' \rangle$$,  the update rule of Q table is as follows:
 
 Additional, all experiences $$\langle s,a,r,s' \rangle$$ are stored in memory for training, this is called the **experience replay** trick. For a systematic introduction to Q-learning approach proposed by Deepmind, see [this page](https://ai.intel.com/demystifying-deep-reinforcement-learning/) and reference therein, for further development, see [this post](http://www.algorithmdog.com/drl). It is worth noting  there are lots of basic ideas and algorithms in the field of reinforce learning I don't mention there, see [this question](https://stats.stackexchange.com/questions/324819/overview-over-reinforcement-learning-algorithms) for an overview of more methods in reinforce learning.
 
-### Transfer Learning
+### Transfer Learning 
 
+Transfer learning study the possibility of how can one well trained model (works in source domain) apply in another scenario (target domain), this field in still in its very early stage.
 
+See [this answer](https://www.zhihu.com/question/41979241/answer/123545914) for concepts and methods overview in transfer learning. (**self-taught** learning, **multi-task learning**, **domain adaption** included). See [this post](https://blog.csdn.net/linolzhang/article/details/73358219) for some representative algorithms.
+
+There is a close related concepts: **meta learning**.  Meta learning concerns more general theory on how to learn to learn (how to determine hyperparameters in some efficient ways in a sense). See [here](https://zhuanlan.zhihu.com/p/32270990) for a brief introduction on related works.
 
 
 
@@ -876,7 +935,7 @@ Additional, all experiences $$\langle s,a,r,s' \rangle$$ are stored in memory fo
 
 *Mainly from talks of March Meeting 2018 in LA*
 
-First of all, as we can see from all previous examples in CS field, people invent new structures of model to fit the problem they are interested. So it is just the beginning of the game where physicits only use existing ML method and NN structure to study physics problem.  The ultimate goal of ML in physics is to invent new models which fit the nature of quantum or intrinsic property of related physic problems. You can never expect too much using tools for CV and NLP to solve problems in theoretical physics.  People all know using NLP tools to classify image might not be a good idea, the same fact applies to current status of ML study in physics.  
+First of all, as we can see from all previous examples in CS field, people invent new structures of model to fit the problem they are interested. So it is just the beginning of the game where physicits only use existing ML methods and NN structures to study physics problem.  The ultimate goal of ML in physics is to invent new models which fit the nature of quantum or intrinsic property of related physic problems. You can never expect too much using tools for CV and NLP to solve problems in theoretical physics.  People all know using NLP tools to classify image might not be a good idea, the same fact applies to current status of ML study in physics.  
 
 ### As wavefunctions
 

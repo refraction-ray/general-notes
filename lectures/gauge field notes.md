@@ -26,6 +26,21 @@
   $$
   Note the minus sign.
 
+* Quantization of mass vector field (spin -1)
+
+  * Requirement to reduce rudundancy freedom: $$\pi^0=\frac{\partial L}{\partial \dot{A^0}}=0$$.
+
+  * The momentum $$\pi^i=E^i=\partial^iA^0-\partial^0 A^i$$.
+
+  * The relation for polorization
+    $$
+    \sum_{\lambda=-1,0,1}\epsilon^\mu(k,\lambda)\epsilon^\nu(k,\lambda)=-g^{\mu\nu}+\frac{k^\mu k^\nu}{m^2}.
+    $$
+
+  * Express $$A^0$$ as $$A^0=\frac{1}{m^2}(J^0-\nabla \mathbf{E})$$.
+
+  * EOM: $$\partial_\nu F^{\nu\mu}+m^2 A^\mu =J^\mu$$. 
+
 ## Interacting field and Feynman rules
 
 * Logic flow of interacting field theory derivation
@@ -45,4 +60,12 @@ A(Lagrangian) -->|impose commutation relation|B(canonical quantization)
 
   $$-i (T-T^\dagger)=2Im\; T=T^\dagger T.$$
 
-* ​
+* Field in interaction picture is free field in Heisenberg picture in some sense (you can understand all fields in this framework as Heisenberg field).
+
+# Problems
+
+* Lecture Notes A31: where does the non-covariant term come from in the two point correlation function of massive vector fields? (seems there is no such term if plane wave expansion is directly applied?)
+
+# Reference
+
+* A solution to Peskin's QFT by Z-Z Xianyu: [pdf](https://zzxianyu.files.wordpress.com/2017/01/peskin_problems.pdf)
