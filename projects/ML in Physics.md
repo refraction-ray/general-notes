@@ -54,7 +54,8 @@
 **Methods**:
 
 * Construct the NN from statistical inference perspective, which is orthodox in modern machine learning interpretations. Also, link partition function in physics with the statistical inference is very typical ML based approach recently.  
-* Test on MNIST dataset. Of course, everyone like MNIST, even a dog can come up with a new idea to do something called machine dog learning to classify and generate the digital images. The features of the images are too obvious to make the dataset as a reasonable benchmark. 
+* Test on MNIST dataset. Of course, everyone like MNIST. The features of the images are too obvious to make the dataset as a reasonable benchmark. 
+* Treat the partition function in the statistics inference framwork, which is promising. 
 
 **Comments**: 
 
@@ -104,6 +105,12 @@
 
   1. Automatic Differentiation Variational Inference [arixv](https://arxiv.org/pdf/1603.00788.pdf)
   2. Black Box Variational Inference [arxiv](https://arxiv.org/pdf/1401.0118.pdf)
+
+* Note the 1 to 1 correspondence between quantum wave function and the NN. There might be something interesting when the quantum wave function plays the role as input data.
+
+  1. Just use the NN ansatz of wavefunction as input, then the NN we train is **higher-order** NN.
+  2. Instead of learning wave function amplitude directly, why not learn from the paramters of NN ansatz.
+  3. Construct specific NN as novel states in quantum physics.
 
 ### Potentially Useful Resource
 

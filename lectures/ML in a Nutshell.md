@@ -52,7 +52,7 @@ Everytime we are faced with a dataset, how can we deal with it. So called data i
 
 * Curse of dimensionality
 
-  Data in very high dimension has many weird behavior comapred to 3D we are familiar with. Data points in higher dimension are sparse: the number of data points is exponential increasing with the dimension if you keep the density of data. Novel features in high dimension also include: the Euclidean distance betwenn all pairs of points are nearly the same; the volume of hypersphere with radius r is approaching zero compared to the cube with edge 2r. Therefore, many familiar approaches to manipulate and organize data don't work well.
+  Data in very high dimension has many weird behavior comapred to 3D we are familiar with. Data points in higher dimension are sparse: the number of data points is exponential increasing with the dimension if you keep the density of data. Novel features in high dimension also include: the Euclidean distance betwenn all pairs of points are nearly the same; the volume of hypersphere with radius r is approaching zero compared to the cube with edge 2r. Therefore, many familiar approaches to manipulate and organize data don't work well in very high dimension.
 
 
 ### Statistical Inference
@@ -802,7 +802,7 @@ The basic formula for probability density under transformation of random variabl
 
 $$p(y)=p(f^{-1}(y))\vert \det J(f^{-1}(y))\vert.$$
 
-We usually call the implementation of $$f(x),f^{-1}(y)$$ a **bijector**. If we stack multiple bijectors, we are arriving at so called normalizing flows. If the bijector $$f$$ has tunable parameters, such normalizing flow structure is similar with NN. Idealy, we can also optimize the model to maximize the probability of data.
+We usually call the implementation of $$f(x),f^{-1}(y)$$ a **bijector**. If we stack multiple bijectors, we are arriving at so called **normalizing flows**. If the bijector $$f$$ has tunable parameters, such normalizing flow structure is similar with NN. Idealy, we can also optimize the model to maximize the probability of data.
 
 See [this post](https://blog.evjang.com/2018/01/nf1.html) on normalizing flow, and [this post](https://blog.evjang.com/2018/01/nf2.html) for its modern development with the help of autoregressive model.
 
@@ -832,9 +832,9 @@ For an detailed introduction to active learning, see [this](https://www.datacamp
 
 ### Semisupervised Learning
 
-Pure semisupervised learning: unlabeled data for training is not the data for predicting. 
+**Pure semisupervised learning**: unlabeled data for training is not the data for predicting. 
 
-Transductive learning: unlabeled data is both for training and predicting.
+**Transductive learning**: unlabeled data is both for training and predicting.
 
 There are various algorithm developed for semisupervised learning. See [this chapter](https://mitpress.mit.edu/sites/default/files/titles/content/9780262033589_sch_0001.pdf) for an overview of SSL.
 
@@ -849,7 +849,7 @@ $$
 
 Yet another algorithm based on graph structure. The basic assumption is the label can propagate through link in some weight of probability ($$\omega_{ij}=e^{-\vert {x_i-x_i}\vert^2}$$). The iterative let the label propagation until convergence.
 
-See [this post](https://blog.csdn.net/zouxy09/article/details/49105265) for algorithm and python implementation.
+See [this post](https://blog.csdn.net/zouxy09/article/details/49105265) for the algorithm and python implementation.
 
 * Modified k-means
 
@@ -925,7 +925,7 @@ Additional, all experiences $$\langle s,a,r,s' \rangle$$ are stored in memory fo
 
 Transfer learning study the possibility of how can one well trained model (works in source domain) apply in another scenario (target domain), this field in still in its very early stage.
 
-See [this answer](https://www.zhihu.com/question/41979241/answer/123545914) for concepts and methods overview in transfer learning. (**self-taught** learning, **multi-task learning**, **domain adaption** included). See [this post](https://blog.csdn.net/linolzhang/article/details/73358219) for some representative algorithms.
+See [this answer](https://www.zhihu.com/question/41979241/answer/123545914) for concepts and methods overview in transfer learning. (**self-taught learning**, **multi-task learning**, **domain adaption** included). See [this post](https://blog.csdn.net/linolzhang/article/details/73358219) for some representative algorithms.
 
 There is a close related concepts: **meta learning**.  Meta learning concerns more general theory on how to learn to learn (how to determine hyperparameters in some efficient ways in a sense). See [here](https://zhuanlan.zhihu.com/p/32270990) for a brief introduction on related works.
 
@@ -933,11 +933,25 @@ There is a close related concepts: **meta learning**.  Meta learning concerns mo
 
 ##Applications in Physics
 
-*Mainly from talks of March Meeting 2018 in LA*
-
 First of all, as we can see from all previous examples in CS field, people invent new structures of model to fit the problem they are interested. So it is just the beginning of the game where physicits only use existing ML methods and NN structures to study physics problem.  The ultimate goal of ML in physics is to invent new models which fit the nature of quantum or intrinsic property of related physic problems. You can never expect too much using tools for CV and NLP to solve problems in theoretical physics.  People all know using NLP tools to classify image might not be a good idea, the same fact applies to current status of ML study in physics.  
 
+Below are some attempts by combining ML with condensed matter physics at the very beginning stage. I shall give some details in some work while just a brief summary for others. Most of the works below come from talks of March Meeting 2018 in LA.
+
 ### As wavefunctions
+
+* Use so-called RBM variational ansatz as **Neural-Network Quantum States**.
+
+  **Reference**: Science **355** 6325 p602-606.
+
+  Similar NN structure as RBM with a visible layer $$\sigma_N^z$$ and one hidden layer $$h_M$$. And the wavefunction is defined as 
+  $$
+  \Psi_M(S;W)=\sum_{\{h_i\}}e^{\sum_j a_j \sigma_j^z +\sum_i b_ih_i +\sum_{ij}+W_{ij}h_i \sigma_j^z}.
+  $$
+  Strictly  speaking, it is not RBM by noting that a model is not only defined by structure but also the training aim. They use the loss function of energy to train the model in supervised fashion, it is by no means so called RBM. It is just a trivial two layer NN. They call the training reinforce learning, again, it is still term abuse, the training is somewhat like EM algorithm: 1) based on the probability $$\vert \Psi(S, W_k)\vert^2$$ pick one wavefunction to compute the energy and 2) use the energy as loss function to update the parameters $$W_{k+1}$$.
+
+  The density $$\alpha = M/N$$ here plays the role of bond dimension in DMRG. As $$\alpha$$ is increasing, the wavefunction ansatz gives more accurate description of the wave function. They also utilize **shift-invariant RBM** to keep the translation symmetry in the model.
+
+  The test Hamiltonian: TFI and AFH model in 1 and 2 D. It was reported that this approach is much more efficient than TNS calculation.
 
 ### As classifiers or calculators
 
@@ -947,6 +961,24 @@ First of all, as we can see from all previous examples in CS field, people inven
 * Active learning on phase diagram searching
 
 ### As other tools
+
+* RG flow from normalizing flow: **NeuralRG**
+
+  **Reference**: arXiv: 1802.02840.
+
+  Use stacked bijectors to construct the bi-direction function $$\mathbf{x}=g(\mathbf{z})$$, where $$\mathbf{x}$$ represents the physical freedom while $$\mathbf{z}$$ is a latent vector in low dimension space following normal distributions (possible drawback: always corresponds a Gaussian fixed point in noninteracting limit). Therefore, we can evaluate the probability of a physical configuration based on formular in normalizing flows as
+  $$
+  \ln q(\mathbf{x}) =\ln p(z) -\ln \det \frac{\partial x}{\partial z}.
+  $$
+  To train this model, we use Adam optimizer on the loss function below: (where $$\pi(x)=e^{-\beta E_x} $$ is the unnormalized probability which is easy to obtain from physics settings)
+  $$
+  L=\int q(x)[\ln q(x)-\ln \pi(x)]=KL(q(x)\vert\vert \frac{\pi(x)}{Z})-\ln Z.
+  $$
+  The usage of the model: 1) It can be used to generate new configurations of physics fields as  Monte Carlo update proposals (which can also follow the **Metropolis-Hastings acceptance rule**), 2) and it can also used to estimate the partition function $$Z$$ as its upper bound is the loss function. 3) Moreover, such model can reveal the states in each layer of bijectors to show the coarse-graining process visually when you sample a $$z$$ to generate real physical freedoms. 4) To make one step further, you can compute the partition fucntion in each layer (different energy scale) and extract effective interactions and terms under such RG flow. 
+
+  The free energy is evaluated and benchmarked in 2D Ising model in this paper (in a sense, because practically the author utilize the so called dual model of Ising model).
+
+
 
 ### Physics helps ML
 
@@ -968,6 +1000,7 @@ First of all, as we can see from all previous examples in CS field, people inven
 
 ### Papers or blogs
 
-* The nature review on deep learning: Yann LeCun,Yoshua Bengio, Geoffrey Hinton. [paper](https://www.nature.com/articles/nature14539.pdf)
+* The nature review on deep learning: Yann LeCun,Yoshua Bengio, Geoffrey Hinton: [paper](https://www.nature.com/articles/nature14539.pdf)
+* A list of papers related with ML and physics: [list](https://physicsml.github.io/papers.html)
 * See corresponding references links in the main text for other papers (note some of the links require you have access to certain academic journals). 
 
