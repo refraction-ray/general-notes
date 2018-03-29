@@ -716,13 +716,13 @@ The structure of VAE is similar as AE (the difference lies in loss function wher
 
 $$ELBO(X)=\ln P(X)-D(Q(z\vert X)\vert \vert P(z\vert X))=E_{z\sim Q}(\ln P(X\vert z))-D(Q(z\vert X)\vert \vert P(z)).$$
 
-$$P(X\vert z)$$ and $$Q(z\vert X)$$ corresponds decoder and encoder in NN structure. For everything about VAE, just see [my blog](https://refraction-ray.github.io/VAE%E7%9A%84%E9%80%BB%E8%BE%91%E4%B8%8E%E5%AE%9E%E8%B7%B5/) and reference therein.
+$$P(X\vert z)$$ and $$Q(z\vert X)$$ corresponds decoder and encoder in NN structure. For everything about VAE, just see [my blog](https://refraction-ray.github.io/VAE%E7%9A%84%E9%80%BB%E8%BE%91%E4%B8%8E%E5%AE%9E%E8%B7%B5/) and references therein.
 
 * CVAE (Conditional VAE)
 
 It is in supervised learning fashion different from all other types of AEs. By make the label as the input of both encoder and decoder part, we can generate image more distinct. This change is equivalent to make all distribution in VAE under a new condition.  See [this post](http://www.cnblogs.com/wangxiaocvpr/p/6231019.html) for explanations.
 
-<img src="https://github.com/refraction-ray/general-notes/raw/master/_src/cvae_illustration.png" style="zoom:50%" />
+<img src="https://user-images.githubusercontent.com/35157286/38074163-6a121172-3360-11e8-9924-7e1b744c57c7.png" style="zoom:50%" />
 
 
 
@@ -1099,7 +1099,9 @@ Machine learning methods can do more in the field of physics: from the philosoph
 
   **Reference**: arXiv: 1709.02727.
 
-  Both regression and classfication models are constructed. Database: SuperCon, ICSD (test data). First classification problem seperating by $$T_{sep}$$. Then a regression model for materials above $$T_{sep}$$. (one can find an optimal threhold separation using confusion scheme) Model: random forest.
+  Both regression and classfication models are constructed. Database: SuperCon, ICSD (test data). First classification problem seperating by $$T_{sep}$$. Then a regression model (predicting $$\ln T_c$$) for materials above $$T_{sep}$$. (one can find an optimal threhold separation using confusion scheme) Model: random forest. They find the size of training data determins the accuracy of the model. And the model is also capable to differentiate the two families of High Tc: cuprates and Fe-based SC. (evaluated by training separately) 
+
+  Further predictions: $$CsBe(AsO)_4,AgCrO_2$$ and 30+ more candidates. (shared feature: nearly flat abnds just below the energy of the highest occupied state)
 
 
 ### Physics helps ML
@@ -1126,7 +1128,13 @@ Not only can we solve physics problem using ML tools, but physics toolkits can a
 
   After introducing the one to one correspondence in Hilbert space, the author ustilize the concepts of entanglement entropy to measure the expressibility of CNN (the entanglement entropy of image function is proved to obey sub-volume law). The work use image loop recognizing as an example which is closely related to topological states.
 
-* TNS
+* TNS for image classification
+
+  **Reference**: arXiv: 1605.05775.
+
+  They utilize 1D MPS as network to classify the 2D MNIST data (arraged in 1D zigzag style). The advantage is that the bond dimension between tensors can be automatically adjusted to capture the image.
+
+  ​
 
 
 
