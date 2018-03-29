@@ -2,7 +2,7 @@
 
 *Start writing from Jan 29, 2018*
 
-*Related paper reading tracking*
+*Related paper reading tracking, for more papers, you may refer to the ML in a Nutshell note*
 
 * toc
 {:toc}
@@ -55,7 +55,7 @@
 
 * Construct the NN from statistical inference perspective, which is orthodox in modern machine learning interpretations. Also, link partition function in physics with the statistical inference is very typical ML based approach recently.  
 * Test on MNIST dataset. Of course, everyone like MNIST. The features of the images are too obvious to make the dataset as a reasonable benchmark. 
-* Treat the partition function in the statistics inference framwork, which is promising. 
+* Treat the partition function in the statistics inference framework, which is promising. 
 
 **Comments**: 
 
@@ -111,6 +111,16 @@
   1. Just use the NN ansatz of wavefunction as input, then the NN we train is **higher-order** NN.
   2. Instead of learning wave function amplitude directly, why not learn from the paramters of NN ansatz.
   3. Construct specific NN as novel states in quantum physics.
+  4. Quantum wave function itself is a NN. How to combine it with the higher-order NN as some interactive scheme like parallel net or GAN?
+
+* The method to solve the variant size problem in one network.
+
+  1. Is RNN capable for quantum wavefunctions?
+  2. What about some dimension reduction preprocessing?
+  3. Use the first fixed number of eigenvalue from Hamiltonian or entanglment?
+  4. What about the mask or padding mechanism of NN?
+  5. What about other potential useful layers? like embedding layer in NLP.
+  6. Or what about a brute forec feature hashing? [ref](https://arxiv.org/pdf/0902.2206.pdf)
 
 ### Potentially Useful Resource
 
