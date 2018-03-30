@@ -483,7 +483,7 @@ Three basic problems in HMM: 1. train to learn A B (MLE with hidden states or Ba
 
 * MEMM (Maximum-entropy Markov Model)
 
-Its is discriminative model instead of generative model as HMM. It directly model the likelihood as 
+It is discriminative model instead of generative model as HMM. It directly model the likelihood as 
 $$
 P(i_t\vert i_{t-1})=\frac{1}{Z(o_t,i_{t-1})}e^{\sum_a \lambda_a f_a(o_t,i_t)}.
 $$
@@ -979,6 +979,12 @@ Since NN is a mapping (input to output) and quantum wavefunction is also a mappi
 
   Exact analytical construction of further restricted RBM (local connections) states for 2D and 3D toric code groud and excited states (in a sense solve the groud state conditions by brute force).
 
+* NN representaion of tensor network
+
+  **Reference**: 1701.06246. 
+
+  Any tensor network states can be arbitrarily well approximated by Boltzman machine. Any n qubit MPS of bond dimension D has NN rep (local Boltzmann machine) with $$2nD^2$$ hidden units and $$4nD^2 \log_2 D$$ parameters.
+
 
 * Deep Boltzmann machine representing wavefunctions
 
@@ -1132,11 +1138,13 @@ Not only can we solve physics problem using ML tools, but physics toolkits can a
 
   **Reference**: arXiv: 1605.05775.
 
-  They utilize 1D MPS as network to classify the 2D MNIST data (arraged in 1D zigzag style). The advantage is that the bond dimension between tensors can be automatically adjusted to capture the image.
+  They utilize 1D MPS as network to classify the 2D MNIST data (arraged in 1D zigzag style). The advantage is that the bond dimension between tensors can be automatically adjusted to capture the image by sweeping algorithm. Such TNS can reach $$99.3\%$$ accuracy in MNIST.
 
-  ​
+* TNS and RBM
 
+  **Reference**: arXiv: 1701.04831.
 
+  Practical implementation on the mapping between MPS and RBM and general equivalence between Boltzmann machine and TNS. $$RBM \subset MPS$$. 
 
 
 
@@ -1147,7 +1155,7 @@ Not only can we solve physics problem using ML tools, but physics toolkits can a
 * Some blog sites in English: [blog](https://chunml.github.io/), [blog](http://www.wildml.com/), [blog](http://karpathy.github.io/), [blog](https://machinelearningmastery.com), [blog](http://colah.github.io/), [blog](http://philipperemy.github.io/), [blog](https://distill.pub/), [blog](https://wiseodd.github.io/)
 * Lei Wang's lecture notes: [link](http://wangleiphy.github.io/lectures/DL.pdf)
 * Andrew Moore's slides: [link](https://www.autonlab.org/tutorials)
-* Lectures of Universities: [Berkeley](https://people.eecs.berkeley.edu/~jrs/189/), [Stanford](http://cs229.stanford.edu/),[Toronto](http://www.cs.toronto.edu/~tijmen/csc321/), [Unsupervised learning@Stanford](https://web.stanford.edu/class/cs294a/), [NLP@Stanford](http://web.stanford.edu/class/cs224n/), [reinforcement learning@Berkeley](http://rll.berkeley.edu/deeprlcourse/), [advanced machine perception@Berkeley](https://people.eecs.berkeley.edu/~efros/courses/AP06/), [crash course by google](https://developers.google.cn/machine-learning/crash-course)
+* Lectures of Universities: [Berkeley](https://people.eecs.berkeley.edu/~jrs/189/), [Stanford](http://cs229.stanford.edu/), [Toronto](http://www.cs.toronto.edu/~tijmen/csc321/), [Unsupervised learning@Stanford](https://web.stanford.edu/class/cs294a/), [NLP@Stanford](http://web.stanford.edu/class/cs224n/), [reinforcement learning@Berkeley](http://rll.berkeley.edu/deeprlcourse/), [advanced machine perception@Berkeley](https://people.eecs.berkeley.edu/~efros/courses/AP06/), [crash course by google](https://developers.google.cn/machine-learning/crash-course)
 * Other reference series: [gitbook on some NNN algorithms](https://wizardforcel.gitbooks.io/dm-algo-top10), [notes on NN](https://www.zybuluo.com/hanbingtao/note/476663), [Nvidia blogs with tag deep learning](https://devblogs.nvidia.com/tag/deep-learning/), [zhihuzhuanlan: some general resource](https://zhuanlan.zhihu.com/lqfarmer)
 
 ### Papers or blogs

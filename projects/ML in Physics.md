@@ -91,7 +91,7 @@
   2. Hornik, K. Approximation capabilities of multilayer feedforwardnetworks. Neural Networks 4, 251–257 (1991).
   3. Le Roux, N. & Bengio, Y. Representational Power of Restricted Boltzmann Machines and Deep Belief Networks. Neural Computation 20, 1631–1649 (2008).
 
-### Possible Applications and Ideas
+### Possible Applications and My Ideas
 
 * Gereneral route to the interplay between physics and ML
   1. Use ML methods to solve problems in physics
@@ -121,6 +121,25 @@
   4. What about the mask or padding mechanism of NN?
   5. What about other potential useful layers? like embedding layer in NLP.
   6. Or what about a brute forec feature hashing? [ref](https://arxiv.org/pdf/0902.2206.pdf)
+
+* Extensions of RBM.
+
+  1. Quantum version of RBM especially. Classical RBM is classical Ising model what about transver Ising model as RBM?
+  2. What about spin-1 freedom on each node of RBM, does this contain more information than original binary RBM?
+
+* How does error bar (accuracy) of training scale with the quantity and quality of the data.
+
+  1. Say the scaling dependence on the size and the number of images.
+
+* RG vs. DNN
+
+  1. RG as NN: there are already many proposals, like deep belief network, convolutional neural network or normalizing flows as real space RG process.
+  2. RG of NN: a new direction, can we apply RG on the deep NN in the depth direction, so that we could effectively reduce the unnecessary layers of NN to keep the model minial and avoid overfitting.
+
+* Wavefunction or distribution variational ansatz
+
+  1. RBM: there are various work on RBM as variation ansatz
+  2. RNN: definitely RNN is a much interesting option, since it potentially can deal with different size wavefunction in the same model. Specifically, we can try utilize the many to one structure of LSTM for sequence regression: the input is basis (classical configuration) and the output is the amplitude (though may be unnormalized).
 
 ### Potentially Useful Resource
 
