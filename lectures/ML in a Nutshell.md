@@ -199,7 +199,7 @@ Q_n(z)=P(z\vert X,\theta_n).
 
     Devide data into k group. Use k-1 group to fit the model and use the left one to evaluate. Repeat the process k times.
 
-  Be careful of the three different phases of training, evaluation and test. They must come from different data. Training is used to adjust parameters in the learning model automatically, evaluation is used to adjust the hyperparamters in the learning model by hand and test is used for final benchmark. Never use your test data before you are confident with your model. Test process is not used for you to tune model. Otherwise, the model makes no sense.
+  Be careful of the three different phases of training, evaluation and test. They must come from different data. Training is used to adjust parameters in the learning model automatically, evaluation is used to adjust the hyperparameters in the learning model by hand and test is used for final benchmark. Never use your test data before you are confident with your model. Test process is not used for you to tune model. Otherwise, the model makes no sense.
 
 * Bias vs. variance
 
@@ -252,7 +252,7 @@ Q_n(z)=P(z\vert X,\theta_n).
   $$
   x_{new}=x_{old}-\eta \nabla f(x).
   $$
-  In machine learning, the function f is the loss function of the model. We try to search the minimum of the loss function utilizing such gradient descent method. Generally speaking, the loss function is the sum or expectation value across all data samples. It is time consuming if we update the paramters based on the original version of gradient descent. Therefore, everytime we only calculate a small fraction of the data, and derive the loss function. This is so called **SGD** (Stochastic Gradient Descent) approach. SGD is not only fast in implementation but also helpful avoiding local minimum.
+  In machine learning, the function f is the loss function of the model. We try to search the minimum of the loss function utilizing such gradient descent method. Generally speaking, the loss function is the sum or expectation value across all data samples. It is time consuming if we update the parameters based on the original version of gradient descent. Therefore, everytime we only calculate a small fraction of the data, and derive the loss function. This is so called **SGD** (Stochastic Gradient Descent) approach. SGD is not only fast in implementation but also helpful avoiding local minimum.
 
   <img src="http://www.bogotobogo.com/python/scikit-learn/images/Batch-vs-Stochastic-Gradient-Descent/stochastic-vs-batch-gradient-descent.png" style="zoom:60%" />
 
@@ -404,7 +404,7 @@ Lots of trees (bagging method) make the forest. To generate each tree, we need d
 
   $$L_0=\sum_i(\hat{y_i}^2-y_i^2).$$
 
-  To avoid overfitting and to get a more stable solution for fitting paramters $$\theta$$,  we introduce the below methods.
+  To avoid overfitting and to get a more stable solution for fitting parameters $$\theta$$,  we introduce the below methods.
 
   * Ridge regression
 
@@ -423,7 +423,7 @@ Lots of trees (bagging method) make the forest. To generate each tree, we need d
 
 * Logistic regression
 
-  The fit scheme for output as two seperate values (0,1). So called logistic function: $$\sigma (t)={\frac {e^{t}}{e^{t}+1}}={\frac {1}{1+e^{-t}}}$$. Fit the data with $$\sigma(ax+b)$$. Unlike linear regression, there is no formular for $$a,b$$ dependent on the data provided. We should find the optimal paramters by iterations to optimal the aim which can be viewed as the error or the likelyhood from different aspects. And actually, such regression can be viewed as a two layer NN with sigmoid activation function and one output. 
+  The fit scheme for output as two seperate values (0,1). So called logistic function: $$\sigma (t)={\frac {e^{t}}{e^{t}+1}}={\frac {1}{1+e^{-t}}}$$. Fit the data with $$\sigma(ax+b)$$. Unlike linear regression, there is no formular for $$a,b$$ dependent on the data provided. We should find the optimal parameters by iterations to optimal the aim which can be viewed as the error or the likelyhood from different aspects. And actually, such regression can be viewed as a two layer NN with sigmoid activation function and one output. 
 
   Why the function $$\sigma$$ is used to estimated the probability binary distribution? Try locate the boundary of the two classes via 
 
@@ -509,7 +509,7 @@ To conclude the NNN approaches part, there are also various approaches closed to
 
 * Why we need neural network?
 
-Suppose we need to fit more complicated mapping with lots of parameters than cases in NNN approach, what is the efficient way to do this? This problem can be divided into two parts: structures of paramters to represent some map and efficient way to optimize these paramters. You may be able to name various approaches for how parameters can be organized to represent arbitrary mappings, however the second requirement restricts our imagination to very limit case. The one frequently used in CS field is so called neural networks. (Maybe tensor network in physics field is another possibility.)
+Suppose we need to fit more complicated mapping with lots of parameters than cases in NNN approach, what is the efficient way to do this? This problem can be divided into two parts: structures of parameters to represent some map and efficient way to optimize these parameters. You may be able to name various approaches for how parameters can be organized to represent arbitrary mappings, however the second requirement restricts our imagination to very limit case. The one frequently used in CS field is so called neural networks. (Maybe tensor network in physics field is another possibility.)
 
 * Structure of parameters
 
@@ -545,17 +545,17 @@ But there are still some thing cannot be trained. For example, the number of lay
 
 A general workflow to train a NN model is divided in three stages. The data must be divided into three part accordingly, i.e. training data, evaluation data and test data. 
 
-Traning data is for usual back propagation training process and parameters updates. Evaluation data is used in evaluation process, where the accuracy is calculated though the evaluation data is not used to update parameters. What is the use of evaluation? It aims to guide the hyperparamters update. We can change our settings of the NN (hyperparameters) to make the accuracy in evaluation process higher. And for test data, it is the final examination of the model. If the accuracy is acceptable, then the model is ready to go. You are NEVER allowed to adjust your model (no matter parameters or hyper parameters) based on the test data. Testing is merely a final examination, it is CHEATING if you train the model with any hints from the test process.  And it is also WRONG to evaluate your final model based on the evaluation data, since you have adjusted the model to satisfy them before (Frankly speaking, physicists usually get things wrong related to this paragraph, what they have done are mostly circular argument and make nonsense).
+Traning data is for usual back propagation training process and parameters updates. Evaluation data is used in evaluation process, where the accuracy is calculated though the evaluation data is not used to update parameters. What is the use of evaluation? It aims to guide the hyperparameters update. We can change our settings of the NN (hyperparameters) to make the accuracy in evaluation process higher. And for test data, it is the final examination of the model. If the accuracy is acceptable, then the model is ready to go. You are NEVER allowed to adjust your model (no matter parameters or hyper parameters) based on the test data. Testing is merely a final examination, it is CHEATING if you train the model with any hints from the test process.  And it is also WRONG to evaluate your final model based on the evaluation data, since you have adjusted the model to satisfy them before (Frankly speaking, physicists usually get things wrong related to this paragraph, what they have done are mostly circular argument and make nonsense).
 
 The training process is very difficult in complex cases and many method should be employed to avoid overfitting or gradient exposion, etc. The main solutions include **dropout layer** (extra layer similar in spirit to the Bagging procedure), regularization terms, early stopping, data enlarging, **gradient clipping**, **batch normalization** (attached extra layer to standalize input data in a mini-batch), etc. You may find [this post](http://blog.csdn.net/u012162613/article/details/44261657) interesting on some of the training tricks.
 
-Once we have the training algorithm and the prediction algorithm, we can fit every function in the world as long as we have enough paramters. But if the number of parameters increases with the system size, the model is impossible to make sense in computers. Therefore, it is still impressive why NN learning so effective with so cheap settings and so smalll number of parameters. We will talk the effectiveness from physics perspective in the application sections.
+Once we have the training algorithm and the prediction algorithm, we can fit every function in the world as long as we have enough parameters. But if the number of parameters increases with the system size, the model is impossible to make sense in computers. Therefore, it is still impressive why NN learning so effective with so cheap settings and so smalll number of parameters. We will talk the effectiveness from physics perspective in the application sections.
 
 * Summary on the ingredients of NN
 
 Layers, connections, activation functions in each layer, loss functions, initialize of parameters, batches and epochs, optimizer, evaluation metrices, regularizer.
 
-You often have to combine all possibility of the above ingredients together, and try again and again until some combinations of hyperparamters are satisfying. Machine learning, in some sense, is alchemy in modern times.
+You often have to combine all possibility of the above ingredients together, and try again and again until some combinations of hyperparameters are satisfying. Machine learning, in some sense, is alchemy in modern times.
 
 * Some simple NN-like models 
 
@@ -565,7 +565,7 @@ Among them, SOM (sel organizing maps) is of great interest and it is an example 
 
 ### Convolutional Neural Network
 
-CNN is designed for image recongnition with special connection structures and suitable for systems with input data in higher dimension. Since the size of input data of images is very large, we are about to have too much paramters in the NN if insisting on full connected NN. Therefore, CNN utilize local connectivity and weight sharing to sole the above issue on full connected NN. Part of the images of this and the following section come from [this note](https://www.zybuluo.com/hanbingtao/note/485480).
+CNN is designed for image recongnition with special connection structures and suitable for systems with input data in higher dimension. Since the size of input data of images is very large, we are about to have too much parameters in the NN if insisting on full connected NN. Therefore, CNN utilize local connectivity and weight sharing to sole the above issue on full connected NN. Part of the images of this and the following section come from [this note](https://www.zybuluo.com/hanbingtao/note/485480).
 
 The general layer structure of CNN: 
 
@@ -623,7 +623,7 @@ RNN is designed for **NLP** (natural language processing) related tasks. A sente
 
 ![](http://upload-images.jianshu.io/upload_images/2256672-cf18bb1f06e750a4.jpg)
 
-Each circle is a NN itself (all circles are the same NN in the sense that they share the same parameters), $$x_i$$ is  part of the input (the word or character) or all the $$x$$ can be viewed as the input (the sentence) and $$o_i$$ is the output (say prediction of next word) or the last $$o_{t=last}$$ can be viewed as single output (for sentence classfication). What makes the circle different for each input is the hidden states $$s_i$$ instead of the paramters. The forward prediction formula is 
+Each circle is a NN itself (all circles are the same NN in the sense that they share the same parameters), $$x_i$$ is  part of the input (the word or character) or all the $$x$$ can be viewed as the input (the sentence) and $$o_i$$ is the output (say prediction of next word) or the last $$o_{t=last}$$ can be viewed as single output (for sentence classfication). What makes the circle different for each input is the hidden states $$s_i$$ instead of the parameters. The forward prediction formula is 
 
 $$o_t=g(Vs_t);~~~~s_t=f(U x_t+W s_{t-1}).$$
 
@@ -633,7 +633,7 @@ If the circle is a deep NN, one can set hidden variables in neurons in each laye
 
 * Bi-directional RNN
 
-Just two separate RNN, with different time direction, the two networks don't share the weight paramters. And the outpust is just the sum of the two output from the two RNN. Bi-directional RNN is designed for word completion in the middle of the sentence instead of predicting the next word.
+Just two separate RNN, with different time direction, the two networks don't share the weight parameters. And the outpust is just the sum of the two output from the two RNN. Bi-directional RNN is designed for word completion in the middle of the sentence instead of predicting the next word.
 
 The training algorithm for RNN is so called **BPTT** (backpropagation through time) which shares the same philosophy as back propagation. See detailed derivation [here](https://zybuluo.com/hanbingtao/note/541458). As for practice on traning RNN, there are various subtle issues (stateful RNN, batch size vs sequence length, padding vs mask, embeding, etc.), which I won't mention in this note.
 
@@ -1002,7 +1002,7 @@ Since NN is a mapping (input to output) and quantum wavefunction is also a mappi
 
 ### As classifiers or generators
 
-Clustering, dimension reduction, classification, regression, etc., the tasks of ML share similarities with certain physics problems: determine phases, predict $$T_c$$ or properties of materials, locate phase boundaries, reveal order paramters, propose new sample as MCMC update methods and so on.
+Clustering, dimension reduction, classification, regression, etc., the tasks of ML share similarities with certain physics problems: determine phases, predict $$T_c$$ or properties of materials, locate phase boundaries, reveal order parameters, propose new sample as MCMC update methods and so on.
 
 * Unsupervised approaches to learn features
 
@@ -1024,7 +1024,7 @@ Clustering, dimension reduction, classification, regression, etc., the tasks of 
 
   One more words, there is a similar trick as confusion scheme proposed in arXiv: 1707.00663, where the author scan the tuning parameter windows and evaluate the accuracy of NN to locate the phase boundary (supervised two end training for each sliding window).
 
-  In the second work, the authors extends their confusion scheme by including a guesser and make the phase transition detection an automatic **self-learning** method. The learner: NN with input some physics data and output the probability of phase; the guesser: Logistic regression with input the tuning parameter and output the probability of phase. The loss function of the model is the cross entropy between the two outputs. And finally one can get the critical value and confidence degree from the paramters of logistic regression for the guesser. For tuning parameters in higer dimension, the authors also introduce **active contour model** - the snake in CV field, to locate the high dimension phase boundary efficiently, which share the same spirit on find the object boundary in an image.
+  In the second work, the authors extends their confusion scheme by including a guesser and make the phase transition detection an automatic **self-learning** method. The learner: NN with input some physics data and output the probability of phase; the guesser: Logistic regression with input the tuning parameter and output the probability of phase. The loss function of the model is the cross entropy between the two outputs. And finally one can get the critical value and confidence degree from the parameters of logistic regression for the guesser. For tuning parameters in higer dimension, the authors also introduce **active contour model** - the snake in CV field, to locate the high dimension phase boundary efficiently, which share the same spirit on find the object boundary in an image.
 
   Benchmrak models: one-parameter classical 2D Ising model (Monte Carlo sample by reducing $$Z_2$$ symmetry), two-parameters Bose-Hubbard model (mean field data of occupation number on each site), two-parameters 1D antiferromagnetic spin-1 Heisenberg chain with $$S_z^2, S_x$$ terms (eigenvalues of the reduce density matrix from iTEBD calculations).
 
@@ -1085,11 +1085,20 @@ Machine learning methods can do more in the field of physics: from the philosoph
 
   The free energy is evaluated and benchmarked in 2D Ising model in this paper (in a sense, because practically the authors utilize the so called dual model of Ising model).
 
+* Mutual information, NN and RG
+
+  **Reference**: arXiv:1704.06279. (I recommend the published version in [Nature Physics](https://www.nature.com/articles/s41567-018-0081-4) since the authors have made huge changes on the draft)
+
+  The initial aim of the paper is to extract the form of relevant freedom in real space RG process based on the construction of NN (RBM form).  The weight of the RBM, namely weights in the link between visible fields and hidden freedom is viewed as the relation to extract the relevant freedom. Such RBM is trained by minimizing the mutual information between enviroment (separate region in visible layer surrouding visible freedom) and hidden freedom.
+
+  By stacking such RBM, you can even analyse the critical behavior quantitatively, though the result is not so promising and convincing in a sense. And you can comare this work of RBM based RG to the following paper arXiv: 1410.3831 in the next section.
+
+
 * Principle dimension of quantum states manifold
 
   **Reference**: arXiv: 1711.10471.
 
-  The authors study quantum states with some paramters $$\vert \Psi(\Lambda)\rangle$$: how many dimensions such quantum states expand compared to the full Hilbert space. By utilizing SVD (PCA) of amplitude matrix or eigenvalue decomposition of density operator or correlation matrix, we can obtain the first several eigenvalues and their corresponding eigenvectors. For Haldane chian, they only use the first three basis to make the decomposition of ground states. Namely, the dimension of space for groud states of Haldane chain is only around 3 (corresponding 3 phases in the model: dimer, Haldane phase and gapless phase). 
+  The authors study quantum states with some parameters $$\vert \Psi(\Lambda)\rangle$$: how many dimensions such quantum states expand compared to the full Hilbert space. By utilizing SVD (PCA) of amplitude matrix or eigenvalue decomposition of density operator or correlation matrix, we can obtain the first several eigenvalues and their corresponding eigenvectors. For Haldane chian, they only use the first three basis to make the decomposition of ground states. Namely, the dimension of space for groud states of Haldane chain is only around 3 (corresponding 3 phases in the model: dimer, Haldane phase and gapless phase). 
 
   They further show that this pricinpal dimension is closely related to the second Renyi entropy as $$D_P=e^{S_2[\hat{\rho}]}$$. And they use SSH model as a benchmark to evaluate the theory. (We omit the last part of the work on the relation between this dimension and quantum geometry)
 
@@ -1128,7 +1137,7 @@ Not only can we solve physics problem using ML tools, but physics toolkits can a
 
   Why deep: Hierarchical structure everywhere in physics (the philosophy of RG). Prove some form of **non flatterning theorems**.
 
-* Undetanding image classification by one to one correspondence between image functions and quantum wavfunctions
+* Understanding image classification by one to one correspondence between image functions and quantum wavfunctions
 
   **Reference**: arXiv: 1710.05520.
 
