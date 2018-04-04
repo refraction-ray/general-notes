@@ -1137,7 +1137,7 @@ Not only can we solve physics problem using ML tools, but physics toolkits can a
 
   Why deep: Hierarchical structure everywhere in physics (the philosophy of RG). Prove some form of **non flatterning theorems**.
 
-* Understanding image classification by one to one correspondence between image functions and quantum wavfunctions
+* Understanding image classification by one to one correspondence between image functions and quantum wavefunctions
 
   **Reference**: arXiv: 1710.05520.
 
@@ -1156,8 +1156,12 @@ Not only can we solve physics problem using ML tools, but physics toolkits can a
   Practical implementation on the mapping between MPS and RBM and general equivalence between Boltzmann machine and TNS. $$RBM \subset MPS$$. 
 
 
+As we can see, there are a variety of works on the relation between RG and deep learning. For the summary of works bridge the gap between RG and deep learning, you can see [my blog](https://refraction-ray.github.io/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%92%8C%E9%87%8D%E6%95%B4%E5%8C%96%E7%BE%A4/) for a brief review.
+
+
 
 ## Main Reference
+
 ### Series or books
 
 * Some blog sites in Chinese: [blog](http://www.cnblogs.com/LeftNotEasy/), [blog](http://blog.csdn.net/v_july_v), [blog](http://www.cnblogs.com/robert-dlut/), [blog](http://bealin.github.io/), [blog](https://jlunevermore.github.io/), [blog](http://www.algorithmdog.com/), [blog](http://www.datakit.cn/)
