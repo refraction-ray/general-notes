@@ -613,7 +613,7 @@ Graph is one type of organization of big data, information is stored in the edge
 
 * deconvolution networks (DN)
 
-The inverse of CNN which is designed to generate images. The better name for DN may be transpose convolution network.  See [this paper](https://arxiv.org/pdf/1603.07285.pdf) on convolution arithmetic and see [this](https://github.com/vdumoulin/conv_arithmetic) for animations of CN and DN calculation. Besides, here is [an example](https://zo7.github.io/blog/2016/09/25/generating-faces.html) of generating images from DN.
+The inverse of CNN which is designed to generate images. The better name for DN may be transpose convolution network. The start point to understand DN is to understand **im2col**, which view the convolution as a matrix multiplication (see [this post](https://buptldy.github.io/2016/10/01/2016-10-01-im2col/)). See [this paper](https://arxiv.org/pdf/1603.07285.pdf) on convolution arithmetic and see [this](https://github.com/vdumoulin/conv_arithmetic) for animations of CN and DN calculation. Besides, here is [an example](https://zo7.github.io/blog/2016/09/25/generating-faces.html) of generating images from DN.
 
 ### Recurrent Neural Network
 
@@ -784,7 +784,7 @@ All the models in this section above is on the binary discrete data. If one can 
 
 * Convolutional RBM
 
-Adding the convolution feature but keeping the probability interpretation of RBM at the same time. See [this thesis](https://norouzi.github.io/research/papers/masters_thesis.pdf).
+Adding the convolution feature but keeping the probability interpretation of RBM at the same time. See [this thesis](https://norouzi.github.io/research/papers/masters_thesis.pdf) and [the original paper](https://www.cs.sfu.ca/~mori/research/papers/norouzi_cvpr09.pdf).
 
 * Deep Boltzmann machine
 
@@ -814,15 +814,15 @@ By training RBM layerwise, everytime one proceed to a new layer, the new weight 
 
 See [this review](http://www.cs.cmu.edu/~rsalakhu/papers/annrev.pdf) for a detailed description and somewhat rigorous proof of common deep structures for RBM family (DBN and DBM).
 
-* deep RBM
+* deep restricted Boltzmann networks
 
 Stack several RBMs with conditional probabilities between neighbor layers the same as RBM (unidirection, instead of bidirection in DBM). The Gibbs sampling in this model is down to up to down loop updates. See [the paper](https://arxiv.org/pdf/1611.07917.pdf) for details. 
 
-The key to distinguish all the deep generalization of RBM is see the condition probabilities: forward sigmoid (DBN); sigmoid from layers on both two sides (DBM); sigmoid from layers on either two sides (DRBM).  In other words, the intrinsic differences between these models are the definition of joint probabilities: after all, these models are all probability graphical models. The joint probability of DBM is defined by statistical weight from energy, which is typical of a undirected graph.  On the other hand, the joint probability of DBN is defined as a top layer RBM distribution producting sequential condition probabilities in sigmoid form. The logic to understand DBN is: the starting point of DBN is the definition of this joint probability distribution while the layerwise training is a natural result of the probability definition (one can show the training is consistent with the definition by constructing infinite sigmoid belief netwrok and consider so called **complementary priors**, see [original paper](http://www.cs.toronto.edu/~fritz/absps/ncfast.pdf) by Hinton). The joint distribution of DRBM is involved though it can be taken as an undirected graph (as far as I know, there is no work giving such joint probability).
+The key to distinguish all the deep generalization of RBM is see the condition probabilities: forward sigmoid (DBN); sigmoid from layers on both two sides (DBM); sigmoid from layers on either two sides (DRBN).  In other words, the intrinsic differences between these models are the definition of joint probabilities: after all, these models are all probability graphical models. The joint probability of DBM is defined by statistical weight from energy, which is typical of a undirected graph.  On the other hand, the joint probability of DBN is defined as a top layer RBM distribution producting sequential condition probabilities in sigmoid form. The logic to understand DBN is: the starting point of DBN is the definition of this joint probability distribution while the layerwise training is a natural result of the probability definition (one can show the training is consistent with the definition by constructing infinite sigmoid belief netwrok and consider so called **complementary priors**, see [original paper](http://www.cs.toronto.edu/~fritz/absps/ncfast.pdf) by Hinton). The joint distribution of DRBN is involved though it can be taken as an undirected graph (as far as I know, there is no work giving such joint probability).
 
-Or one can distinguish them by generator behavior: Gibbs sampling within top layers and forward sigmoid to the end (DBN); alternating update visible and hidden layers (RBM); alternating update between even and odd layers (DBM); layerwise up-down loop update (DRBM). 
+Or one can distinguish them by generator behavior: Gibbs sampling within top layers and forward sigmoid to the end (DBN); alternating update visible and hidden layers (RBM); alternating update between even and odd layers (DBM); layerwise up-down loop update (DRBN). 
 
-As for unsupervised training algorithm: DBN is trained layer wise as RBM. DBM and DRBM is trained as RBM as a whole. Model average is achieved by CD-k (DBM is updated alternating odd and even layer, while DRBM is updated with down-up-down sequence layerwise.) Data average is also achieved by MCMC (more involved than ordinary RBM):  fixed visible layer to run the Gibbs sampling alternatively for odd and even layers until equilibrium (DBM); from visible layer update layerwise to the top layer (DRBM).
+As for unsupervised training algorithm: DBN is trained layer wise as RBM. DBM and DRBN is trained as RBM as a whole. Model average is achieved by CD-k (DBM is updated alternating odd and even layer, while DRBN is updated with down-up-down sequence layerwise.) Data average is also achieved by MCMC (more involved than ordinary RBM):  fixed visible layer to run the Gibbs sampling alternatively for odd and even layers until equilibrium (DBM); from visible layer update layerwise to the top layer (DRBN).
 
 To summarize in a higher level, the implementation of directed and undirected graph models in the language of NN are sigmoid belief net and restricted Boltzmann machines respectively. For sigmoid belief net, people invent so called **wake-sleep algorithm** (train two set of weights respectively in the two phases) by the ansatz the (wrong) posterior distribution of latent variables are independent. This algorithm has lots of drawbacks including mode-averaging. Suprisingly, when people study stacked RBM, they find the so called deep belief net model is just the same with sigmoid belief net except the top RBM structure (hybrid model).  One could further improve the accuracy of DBN by a fine-tuning with a variation of wake-sleep algorithm globally.
 
@@ -1036,7 +1036,7 @@ Since NN is a mapping (input to output) and quantum wavefunction is also a mappi
 
   Use three layer generalization of RBM as variational ansatz. Show the expression power of DBM is better than RBM (DBM is capable to express groud state of any Hamiltonian in polynomial time, but it doesn't imply the fact that one can calculate physical observables in efficient time). And also show the limitation of RBM from the discrepancy between the polyminal time to compute the wavefunction from RBM and wavefunction constructions which is NP hard to calculated from basis. 
 
-  The latter paper give exact constructions on DBM of transver Ising model and Heisenberg model using imaginary time evolution and Trotter decomposition.
+  The latter paper give exact constructions on DBM of transverse Ising model and Heisenberg model using imaginary time evolution and Trotter decomposition.
 
 * Use RBM to represent density operator of mix states
 
@@ -1085,7 +1085,7 @@ Clustering, dimension reduction, classification, regression, etc., the tasks of 
 
   **Reference**: arXiv: 1708.04622.
 
-  This is a generalization of arXiv: 1606.02718, where RBM is used to fit the distribution of Ising model. This work use 2D Ising model samples from standard MCMC as trainning dataset and train generative models (RBM, DBM, DBN, DRBN(**deep restricted Boltzmann network**)) as MLE (or equivalently use KL divergence between distributions as loss function). The results of expectation value for physics observable is evaluated from each generator. Namely one generate new samples based on the generative model at hand and evaluate the expectation value of physical observables (energy or specific heat), then compare the value to values from Monte Carlo. The authors show the accuracy essentially depends only on the number of neurons in the first hidden layer of the network, and not on other model details such as network depth or model type. Namely, shallow networks are more efficient than deep ones at representing physical probability distributions associated with Ising systems.
+  This is a generalization of arXiv: 1606.02718, where RBM is used to fit the distribution of Ising model. This work use 2D Ising model samples from standard MCMC as trainning dataset and train generative models (RBM, DBM, DBN, DRBN) as MLE (or equivalently use KL divergence between distributions as loss function). The results of expectation value for physics observable is evaluated from each generator. Namely one generate new samples based on the generative model at hand and evaluate the expectation value of physical observables (energy or specific heat), then compare them to values from Monte Carlo. The authors show the accuracy essentially depends only on the number of neurons in the first hidden layer of the network, and not on other model details such as network depth or model type. Namely, shallow networks are more efficient than deep ones at representing physical probability distributions associated with Ising systems.
 
 * Data preprocessing may matter
 
@@ -1099,7 +1099,7 @@ Clustering, dimension reduction, classification, regression, etc., the tasks of 
 
   **Reference**: arXiv: 1712.00450.
 
-  This work construct LSTM to study dynamic of MBL and time crystal (3 phases) systems with magnetization over time as input sequences (ED results).  
+  This work construct LSTM to study dynamic of MBL and time crystal (3 phases) systems with magnetization over time as input sequences (ED results).  The model is trained in supervised fashion with confident dataset in phase diagram. And we can get the full phase diagram accoding to the output of RNN (many to one structure).
 
 ### As recommendation systems
 
@@ -1217,7 +1217,7 @@ As we can see, there are a variety of works on the relation between RG and deep 
 
 ### Series or books
 
-* Some blog sites in Chinese: [blog](http://www.cnblogs.com/LeftNotEasy/), [blog](http://blog.csdn.net/v_july_v), [blog](http://www.cnblogs.com/robert-dlut/), [blog](http://bealin.github.io/), [blog](https://jlunevermore.github.io/), [blog](http://www.algorithmdog.com/), [blog](http://www.datakit.cn/)
+* Some blog sites in Chinese: [blog](http://www.cnblogs.com/LeftNotEasy/), [blog](http://blog.csdn.net/v_july_v), [blog](http://www.cnblogs.com/robert-dlut/), [blog](http://bealin.github.io/), [blog](https://jlunevermore.github.io/), [blog](http://www.algorithmdog.com/), [blog](http://www.datakit.cn/), [blog](https://buptldy.github.io/)
 * Some blog sites in English: [blog](https://chunml.github.io/), [blog](http://www.wildml.com/), [blog](http://karpathy.github.io/), [blog](https://machinelearningmastery.com), [blog](http://colah.github.io/), [blog](http://philipperemy.github.io/), [blog](https://distill.pub/), [blog](https://wiseodd.github.io/)
 * Lei Wang's lecture notes: [link](http://wangleiphy.github.io/lectures/DL.pdf)
 * Andrew Moore's slides: [link](https://www.autonlab.org/tutorials)
