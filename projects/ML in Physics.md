@@ -109,7 +109,7 @@
 * Note the 1 to 1 correspondence between quantum wave function and the NN. There might be something interesting when the quantum wave function plays the role as input data.
 
   1. Just use the NN ansatz of wavefunction as input, then the NN we train is **higher-order** NN.
-  2. Instead of learning wave function amplitude directly, why not learn from the paramters of NN ansatz.
+  2. Instead of learning wave function amplitude directly, why not learn from the parameters of NN ansatz.
   3. Construct specific NN as novel states in quantum physics.
   4. Quantum wave function itself is a NN. How to combine it with the higher-order NN as some interactive scheme like parallel net or GAN?
 
@@ -120,12 +120,13 @@
   3. Use the first fixed number of eigenvalue from Hamiltonian or entanglment?
   4. What about the mask or padding mechanism of NN?
   5. What about other potential useful layers? like embedding layer in NLP.
-  6. Or what about a brute forec feature hashing? [ref](https://arxiv.org/pdf/0902.2206.pdf)
+  6. Or what about a brute force feature hashing? [ref](https://arxiv.org/pdf/0902.2206.pdf)
 
 * Extensions of RBM.
 
-  1. Quantum version of RBM especially. Classical RBM is classical Ising model what about transver Ising model as RBM?
-  2. What about spin-1 freedom on each node of RBM, does this contain more information than original binary RBM?
+  1. Quantum version of RBM especially. Classical RBM is classical Ising model what about transver Ising model as RBM?  See [this paper](https://arxiv.org/abs/1601.02036).
+  2. What about spin-1 freedom on each node of RBM, does this contain more information than original binary RBM? (Use softmax or motinominal units, see 13.1 in [this guide](http://www.cs.toronto.edu/~hinton/absps/guideTR.pdf))
+  3. What about the real valued RBM, say for XY model? See [this answer](https://www.quora.com/What-are-best-approaches-to-modeling-real-value-continuous-input-variables-in-RBM-pretraining) and reference therein.
 
 * How does error bar (accuracy) of training scale with the quantity and quality of the data.
 
@@ -134,7 +135,7 @@
 * RG vs. DNN
 
   1. RG as NN: there are already many proposals, like deep belief network, convolutional neural network or normalizing flows as real space RG process.
-  2. RG of NN: a new direction, can we apply RG on the deep NN in the depth direction, so that we could effectively reduce the unnecessary layers of NN to keep the model minial and avoid overfitting.
+  2. RG of NN: a new direction, can we apply RG on the deep NN in the depth direction, so that we could effectively reduce the unnecessary layers of NN to keep the model minimal and avoid overfitting.
 
 * Wavefunction or distribution variational ansatz
 
@@ -152,7 +153,7 @@
 
 * Papers Reading: To do list
 
-  -[ ] Why does deep and cheap learningg work so well? [arxiv](https://arxiv.org/pdf/1608.08225.pdf)
+  -[x] Why does deep and cheap learningg work so well? [arxiv](https://arxiv.org/pdf/1608.08225.pdf)
   -[ ] On the Equivalence of Restricted Boltzmann Machines and Tensor Network States [arxiv](https://arxiv.org/pdf/1701.04831)
   -[x] Quantum Machine Learning [arxiv](https://arxiv.org/pdf/1611.09347)
   -[x] Neural Network Renormalization Group [arxiv](https://arxiv.org/pdf/1802.02840.pdf)

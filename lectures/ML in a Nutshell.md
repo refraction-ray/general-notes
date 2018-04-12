@@ -467,7 +467,7 @@ See [this answer](https://www.zhihu.com/question/35866596/answer/236886066) for 
 
 * directed and undirected models
 
-In undirected model, the node represents the random variable while the link between nodes represent some positive-definite potential function (in general some exponential function) depedent on these nodes (random variables). Therefore, undirected models give the joint probability distribution of all nodes by product of each link function. 
+In undirected model, the node represents the random variable while the link between nodes represent some positive-definite potential function (in general some exponential function) depedent on these nodes (random variables). Therefore, undirected models give the joint probability distribution of all nodes by product of each link function. (see [this post](http://www.cnblogs.com/ooon/p/5817732.html) for details on maximal clique decomposition for undirected graph).
 
 As for directed graphs, they are more like hierarchical probability model where each node represents a conditional probability, and the final probability is the product of all the nodes.
 
@@ -477,7 +477,7 @@ Markov chain with a latent variable. HMM is determined by the initial distributi
 $$
 a_{ij}=P(i_{t+1}=q_j\vert i_t=q_i)~~~~b_{j}(k)=P(o_t=v_k\vert i_t =q_j)
 $$
-Three basic problems in HMM: 1. train to learn A B (MLE with hidden states or Baum-Welch without hidden states); 2. find the hidden states series with the most possibility(**Viterbi algorithm**, I recommend [this post](http://cpmarkchang.logdown.com/posts/192522-natural-language-processing-viterbi-algorithm)); 3. Compute the probability of given sequence.
+Three basic problems in HMM: 1. train to learn A B (MLE with hidden states or Baum-Welch without hidden states); 2. find the hidden states series with the most possibility (**Viterbi algorithm**, I recommend [this post](http://cpmarkchang.logdown.com/posts/192522-natural-language-processing-viterbi-algorithm)); 3. Compute the probability of given sequence.
 
 ![](https://user-images.githubusercontent.com/35157286/37862100-75120eb0-2f82-11e8-9996-cf2b674df775.jpg)
 
@@ -497,7 +497,7 @@ CRF is also discriminative model, we refer to linear chain CRF specifically. The
 $$
 P(I\vert O)=\frac{1}{Z(O)}e^{\sum_i^T\sum_k^M\lambda_k f_k(O,I_{i-1},I_i,i)}.
 $$
- See an introduction by tagging example [here](http://blog.echen.me/2012/01/03/introduction-to-conditional-random-fields/).
+See an introduction by tagging example [here](http://blog.echen.me/2012/01/03/introduction-to-conditional-random-fields/).
 
 To conclude the NNN approaches part, there are also various approaches closed to the ML field, like **genetic algorithm** (for its role in ML field, see [this discussion](https://www.reddit.com/r/MachineLearning/comments/3zv4fk/genetic_algorithms_in_machine_learning/)), **topic models** in NLP, etc. We won't cover those methods in this note for now.
 
@@ -774,13 +774,57 @@ $$\nabla_\omega \ln P(v_n)= E[hv^T\vert v=v_n]-E[hv^T].$$
 
 The first term is the expectation value across the training data: $$ E[h|v=v_n]v_n=v_n\sigma(Wv_n+b)$$ and the second term is the expectation value across samples from the model which is hard to calculate.  Using a Markov chain to update the neuron by layers iteratively until thermal equilibrium, and then we can calculate the expectation value. This is so-called **MCMC** (Markov chain Monte Carlo) method. To make the calculation more fast, we further introduce **CD-k** (contrastive divergence) algorithm. It is simply use the result from the first k updates.
 
-See details on the training algorithm in [this doc](http://www.cs.toronto.edu/~tijmen/csc321/documents/maddison_rbmtutorial.pdf). 
+See details on the training algorithm in [this doc](http://www.cs.toronto.edu/~tijmen/csc321/documents/maddison_rbmtutorial.pdf). See practical guide on [training details](http://www.cs.toronto.edu/~hinton/absps/guideTR.pdf) of RBM by Hinton.
 
 RBM falls into unsupervised learning category with possible usage in transforming input data instead classify it. It is also a generative model as it can model the joint distribution which could potentially generate similar things as input dataset.
 
+* Continuous RBM
+
+All the models in this section above is on the binary discrete data. If one can adjust all real value data into the unit range, the original version of RBM may still works in a sense. Other solutions including Gaussian RBM and continous RBM, see [this answer](https://www.quora.com/What-are-best-approaches-to-modeling-real-value-continuous-input-variables-in-RBM-pretraining) for solutions of RBM when input data is real valued. See part 3 of [this paper](http://papers.nips.cc/paper/3048-greedy-layer-wise-training-of-deep-networks.pdf) for the two simple extensions for continous inputs. And specifically, see section 2.2 of [this review] for a detail description of Gaussian RBM (continuos input with binary output, one can also generalize it to Gaussian-Gaussian RBM, though it is harder to train). For more involved setup, and the relation between RBM extension and diffusion networks, see [this paper](http://www.ee.nthu.edu.tw/~hchen/pubs/iee2003.pdf).
+
+* Convolutional RBM
+
+Adding the convolution feature but keeping the probability interpretation of RBM at the same time. See [this thesis](https://norouzi.github.io/research/papers/masters_thesis.pdf).
+
+* Deep Boltzmann machine
+
+DBM is energery-based model as RBM, but with Ising coupling between each neighbor layers. So the probability distribution the model give for visible freedom is
+$$
+P(\mathbf{v})=\sum_{\{\mathbf{h_1},\mathbf{h_2}\}}\frac{1}{Z}e^{-v_iW^1_{ij}h^1_j-h^1_{i}W^2_{ij}h^2_j},
+$$
+we take a three layer DBM for demo, of course one can add bias term in the energy, too.
+
+The condition probability between layers then are still given by sigmoid function but with coupling from two sides (except for the two layers in the boundary). Then one find the odd layers and even layers are in a sense decoupled (similar role as the visible and hidden layers in vanilla RBM), so the Gibbs sampling process in DBM is to update the configuration for odd and even layers iteratively.
+
+As for the training, pretraing the model as stack RBM is helpful for fast convergence (share the same philosophy of pretraining with the model below: DBN).
+
 * Deep belief network (DBN)
 
-Stack several RBM together as a very deep NN. Pretrain RBM layer by layer (since RBM is unsupervised learning model). Then we put a final classify layer on the top for output and train the data in supervised fashion by fine-tuning parameters through back propagation. Actually an old approach for deep architecture before this wave of deep learning.
+Stack several RBM together as a very deep NN. Pretrain RBM layer by layer (since RBM is unsupervised learning model). It is a good generative model itself and we could also put a final classify layer on the top for output and train the data in supervised fashion by fine-tuning parameters through back propagation. Such supervised learning practice also works well in semi-supervised settings. Actually DBN is the birth of deep architecture for this wave of deep learning.
+
+<img src="https://user-images.githubusercontent.com/35157286/38613220-c02beb36-3dbb-11e8-9fc4-976589df206f.png" style="zoom:40%" />
+
+Especially be careful about the differences between DBN and DBM. The probability for a three layer deep belief network is described by
+$$
+P(\mathbf{v},\mathbf{h}^{(1)},\mathbf{h}^{(2)})=P(\mathbf{v}\vert \mathbf{h}^{(1)};W^{(1)})P(\mathbf{h}^{(1)},\mathbf{h}^{(2)};W^{(2)}).
+$$
+In the language of probability graphic model, the deep belief network is organized as following: the deepest two layers make a undirected graph while the following layers including visible layers are directed graph (the probability is given by the product of conditional probability).  In other words, except the top layers are RBM, all the following layers are sigmoid belief network (belief net is just the sparse directed graphic model). The whole model of DBN is NOT an energy based model. The key observation here is the fact that if we set $$W^{(2)}=W^{(1)^{T}}$$, the joint probabiliy of $$\mathbf{v},\mathbf{h^{(1)}}$$ is the same as the bare RBM for the two layers.
+
+By training RBM layerwise, everytime one proceed to a new layer, the new weight matrix can initialized as the transpose of the weight matrix in the last layer. As for the sampling process from DBN, one first run Gibbs sampling for the top two layers as usual RBM. Then one can go forward as a sigmoid belief network to generate stochastic visible samples.
+
+See [this review](http://www.cs.cmu.edu/~rsalakhu/papers/annrev.pdf) for a detailed description and somewhat rigorous proof of common deep structures for RBM family (DBN and DBM).
+
+* deep RBM
+
+Stack several RBMs with conditional probabilities between neighbor layers the same as RBM (unidirection, instead of bidirection in DBM). The Gibbs sampling in this model is down to up to down loop updates. See [the paper](https://arxiv.org/pdf/1611.07917.pdf) for details. 
+
+The key to distinguish all the deep generalization of RBM is see the condition probabilities: forward sigmoid (DBN); sigmoid from layers on both two sides (DBM); sigmoid from layers on either two sides (DRBM).  In other words, the intrinsic differences between these models are the definition of joint probabilities: after all, these models are all probability graphical models. The joint probability of DBM is defined by statistical weight from energy, which is typical of a undirected graph.  On the other hand, the joint probability of DBN is defined as a top layer RBM distribution producting sequential condition probabilities in sigmoid form. The logic to understand DBN is: the starting point of DBN is the definition of this joint probability distribution while the layerwise training is a natural result of the probability definition (one can show the training is consistent with the definition by constructing infinite sigmoid belief netwrok and consider so called **complementary priors**, see [original paper](http://www.cs.toronto.edu/~fritz/absps/ncfast.pdf) by Hinton). The joint distribution of DRBM is involved though it can be taken as an undirected graph (as far as I know, there is no work giving such joint probability).
+
+Or one can distinguish them by generator behavior: Gibbs sampling within top layers and forward sigmoid to the end (DBN); alternating update visible and hidden layers (RBM); alternating update between even and odd layers (DBM); layerwise up-down loop update (DRBM). 
+
+As for unsupervised training algorithm: DBN is trained layer wise as RBM. DBM and DRBM is trained as RBM as a whole. Model average is achieved by CD-k (DBM is updated alternating odd and even layer, while DRBM is updated with down-up-down sequence layerwise.) Data average is also achieved by MCMC (more involved than ordinary RBM):  fixed visible layer to run the Gibbs sampling alternatively for odd and even layers until equilibrium (DBM); from visible layer update layerwise to the top layer (DRBM).
+
+To summarize in a higher level, the implementation of directed and undirected graph models in the language of NN are sigmoid belief net and restricted Boltzmann machines respectively. For sigmoid belief net, people invent so called **wake-sleep algorithm** (train two set of weights respectively in the two phases) by the ansatz the (wrong) posterior distribution of latent variables are independent. This algorithm has lots of drawbacks including mode-averaging. Suprisingly, when people study stacked RBM, they find the so called deep belief net model is just the same with sigmoid belief net except the top RBM structure (hybrid model).  One could further improve the accuracy of DBN by a fine-tuning with a variation of wake-sleep algorithm globally.
 
 ### More Generative Networks
 
@@ -967,7 +1011,7 @@ Since NN is a mapping (input to output) and quantum wavefunction is also a mappi
   $$
   \Psi_M(S;W)=\sum_{\{h_i\}}e^{\sum_j a_j \sigma_j^z +\sum_i b_ih_i +\sum_{ij}+W_{ij}h_i \sigma_j^z}.
   $$
-  Strictly  speaking, it is not RBM by noting that a model is not only defined by structure but also the training aim. They use the loss function of energy to train the model in supervised fashion, it is by no means so called RBM. It is just a trivial two layer NN. They call the training reinforce learning, again, it is still term abuse, the training is somewhat like EM algorithm: 1) based on the probability $$\vert \Psi(S, W_k)\vert^2​$$ pick one wavefunction to compute the energy and 2) use the energy as loss function to update the parameters $$W_{k+1}​$$.
+  In this case, all the weights parameters are complex number which is designed for the amplitude output. Strictly  speaking, it is not RBM by noting that a model is not only defined by structure but also the training aim. They use the loss function of energy to train the model in supervised fashion, it is by no means the so called RBM. They call the training reinforce learning, again, it is still term abuse. The training is somewhat like EM algorithm: 1) based on the probability $$\vert \Psi(S, W_k)\vert^2$$ pick one wavefunction to compute the energy (the sampling and evaluating process is totally the same with [variational Monte Carlo](https://en.wikipedia.org/wiki/Variational_Monte_Carlo) method in computational physics) and 2) use the energy as loss function to update the parameters $$W_{k+1}$$.
 
   The density $$\alpha = M/N$$ here plays the role of bond dimension in DMRG. As $$\alpha$$ is increasing, the wavefunction ansatz gives more accurate description of the wave function. They also utilize **shift-invariant RBM** to keep the translation symmetry in the model.
 
@@ -990,7 +1034,7 @@ Since NN is a mapping (input to output) and quantum wavefunction is also a mappi
 
   **Reference**: Nature Communications **8**, 662 (2017); arXiv: 1802.09558
 
-  Use three layer generalization of RBM as variational ansatz. Show the expression power of DBM is better than RBM (DBM is capable to express groud state of any Hamiltonian in polynomial time). And also show the limitation of RBM from the discrepancy between the polyminal time to compute the wavefunction from RBM and wavefunction constructions which is NP hard to calculated from basis. 
+  Use three layer generalization of RBM as variational ansatz. Show the expression power of DBM is better than RBM (DBM is capable to express groud state of any Hamiltonian in polynomial time, but it doesn't imply the fact that one can calculate physical observables in efficient time). And also show the limitation of RBM from the discrepancy between the polyminal time to compute the wavefunction from RBM and wavefunction constructions which is NP hard to calculated from basis. 
 
   The latter paper give exact constructions on DBM of transver Ising model and Heisenberg model using imaginary time evolution and Trotter decomposition.
 
@@ -1004,6 +1048,15 @@ Since NN is a mapping (input to output) and quantum wavefunction is also a mappi
 
 Clustering, dimension reduction, classification, regression, etc., the tasks of ML share similarities with certain physics problems: determine phases, predict $$T_c$$ or properties of materials, locate phase boundaries, reveal order parameters, propose new sample as MCMC update methods and so on.
 
+* Classify phases of matter by neural networks
+
+  **Reference**: arXiv: 1605.01735
+
+  Simple FFNN is supervised training from Monte Carlo samples of 2D Ising spin configurations (both ferro and anti-ferro types). The trained NN has some transfer power to predict critical temperature correctly for other lattice intead of square lattice.
+
+  The author further considered Ising lattice gauge model whose Hamiltonian is the sum of the plaquette spins (product of spins on four bonds within a plaquette), where simple full connected NN fail to distinguish the high temperature phases from ground states. But they showed that CNN is capable to do this calssification task, by recoginizing local constraints instead of global topological order/ closed loop (they prove the mechanism between such CNN by distinguishing some special desinged states). 
+
+
 * Unsupervised approaches to learn features
 
   **Reference**: PRE **96**, 022140 (2017).
@@ -1012,9 +1065,9 @@ Clustering, dimension reduction, classification, regression, etc., the tasks of 
 
   Input: Monte Carlo samples in finite temperature.
 
-  Methods: PCA (or with kernel trick), AE, VAE (both with fully connected layer), manifold learning methods (tSHE, MDS).
+  Methods: PCA (or with kernel trick), AE, VAE (both with fully connected layer), manifold learning methods (tSNE, MDS).
 
-  Usage: locate phase transition (by latent variable or reconstruction loss), guess possible form of order paramter, reconstruction of smaples.
+  Usage: locate phase transition (by latent variable or reconstruction loss), guess possible form of order parameters, reconstruction of smaples.
 
 * Learning phase transitions by confusion
 
@@ -1032,7 +1085,7 @@ Clustering, dimension reduction, classification, regression, etc., the tasks of 
 
   **Reference**: arXiv: 1708.04622.
 
-  This is a generalization of arXiv: 1606.02718, where RBM is used to fit the distribution of Ising model. This work use 2D Ising model samples from MCMC as trainning dataset and train generative models (RBM, DBM, DBN, DRBN(**deep restricted Boltzmann network**)) as MLE (or equivalently use KL divergence between distributions as loss function). The results of expectation value for physics observable is evaluated from each generator. The authors show the accuracy essentially depends only on the number of neurons in the first hidden layer of the network, and not on other model details such as network depth or model type. Namely, shallow networks are more efficient than deep ones at representing physical probability distributions associated with Ising systems.
+  This is a generalization of arXiv: 1606.02718, where RBM is used to fit the distribution of Ising model. This work use 2D Ising model samples from standard MCMC as trainning dataset and train generative models (RBM, DBM, DBN, DRBN(**deep restricted Boltzmann network**)) as MLE (or equivalently use KL divergence between distributions as loss function). The results of expectation value for physics observable is evaluated from each generator. Namely one generate new samples based on the generative model at hand and evaluate the expectation value of physical observables (energy or specific heat), then compare the value to values from Monte Carlo. The authors show the accuracy essentially depends only on the number of neurons in the first hidden layer of the network, and not on other model details such as network depth or model type. Namely, shallow networks are more efficient than deep ones at representing physical probability distributions associated with Ising systems.
 
 * Data preprocessing may matter
 
@@ -1169,7 +1222,7 @@ As we can see, there are a variety of works on the relation between RG and deep 
 * Lei Wang's lecture notes: [link](http://wangleiphy.github.io/lectures/DL.pdf)
 * Andrew Moore's slides: [link](https://www.autonlab.org/tutorials)
 * Lectures of Universities: [Berkeley](https://people.eecs.berkeley.edu/~jrs/189/), [Stanford](http://cs229.stanford.edu/), [Toronto](http://www.cs.toronto.edu/~tijmen/csc321/), [Unsupervised learning@Stanford](https://web.stanford.edu/class/cs294a/), [NLP@Stanford](http://web.stanford.edu/class/cs224n/), [reinforcement learning@Berkeley](http://rll.berkeley.edu/deeprlcourse/), [advanced machine perception@Berkeley](https://people.eecs.berkeley.edu/~efros/courses/AP06/), [crash course by google](https://developers.google.cn/machine-learning/crash-course)
-* Other reference series: [gitbook on some NNN algorithms](https://wizardforcel.gitbooks.io/dm-algo-top10), [notes on NN](https://www.zybuluo.com/hanbingtao/note/476663), [Nvidia blogs with tag deep learning](https://devblogs.nvidia.com/tag/deep-learning/), [zhihuzhuanlan: some general resource](https://zhuanlan.zhihu.com/lqfarmer)
+* Other reference series: [gitbook on some NNN algorithms](https://wizardforcel.gitbooks.io/dm-algo-top10), [notes on NN](https://www.zybuluo.com/hanbingtao/note/476663), [Nvidia blogs with tag deep learning](https://devblogs.nvidia.com/tag/deep-learning/), [zhihuzhuanlan: some general resource](https://zhuanlan.zhihu.com/lqfarmer), [a book on deep learning](https://nndl.github.io/)
 
 ### Papers or blogs
 
