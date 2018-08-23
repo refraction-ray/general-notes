@@ -245,3 +245,151 @@ sort say integers with many digitals from the last (namely less importat at firs
 correctness proof (induction): induct on digit position that already sorting t, by assuming t-1 digits are already sorted.
 
 comlexity analysis: using counting sort for each digit (one or several a time). assume each binary as b bits long, split it into single bit a time may not be optimal, so we set the split as b/r. digits are each r bits long. $T=b/r\Theta(2^{r}+n)$, where n is 2 this case a fix number for counting system. Now one only need to minimize T in terms of r (optimal when $r\sim \log n$). Finally we have $T=O(\frac{b n}{\log n})\sim O(\log k)$ where k is the range of the number.
+
+## 6 Order statistics
+
+given unsorted array, return the k-th smallest elements (elements of rank k).
+
+Naive: sort first and return the k-th element. $\Theta(n\log n)$.
+
+If $k=1$ or $k=n$, you can keep the minimum while scan the array. $\Theta(n)$
+
+Medium case: a bit trickier
+
+### randomized D&C (random select)
+
+> recursively use the random partition from quicksort, which returns the final position index of pivot element (randomly chosen) k. assuming the rank we want is i, if i=k, done; if $i<k$ or $i>k$ , recusively use the partition subroutine for left of right subarray (remember the rank i we are looking for may get offsets if we now moves to the right subarray!).
+
+Analysis: first assuming elements all distinct.
+
+Best case: constant split every time, $T(n)=T(9/10n)+\Theta(n)$, namely $T(n)=\Theta(n)$.
+
+Worst case: pivot always on the edge, $T(n)=T(n-1)+\Theta(n)$, namely $T(n)=n^2$.
+
+Average case:  $ET(n)\leq\sum_k E[(T(\max(n-k-1,k))+\Theta(n))X_k]=1/n\sum_k E[T(\max(n-k-1,k))]+\Theta(n)$.
+
+$ET(n)\leq 2/n\sum_{k=[n/2]}ET(k)$. Then use substitution induction method to show $ET=\Theta(n)$.
+
+### worst-case linear-time order statistics
+
+generate good pivot recursively.
+
+> Divide the n elements array into 5 elements subarrays ([n/5]), omit the residue part.
+>
+> Recursively find median in each 5-elements group. $\Theta(n)$
+>
+> Recursively compute the median x of these medians. T(n/5)
+>
+> Use x as the pivot and do the partition $\Theta(n)$ and recursive call as above alg. T(3/4 n)
+
+By the median choice, we have 3*[[n/5]/2] elements less and equal to x(the same for larger and equal). If n is large enough, this value is larger than $n/4$. 
+
+The complexity recurrence $T(n)\leq T(n/5)+T(3/4n)+\Theta(n)$. Substitution induction to prove $T(n)=\Theta(n)$. If one want to get a linear upper bound, the intuition is make all the recurrence work unit together smaller than 1. Practically, this algorithm have large prefactor constants so maybe not so fast.
+
+Why group of 5? Number larger than 5 also works. You need require $1/k+(k/2+1)/2k<1$, where I omit some [] function.
+
+## 7 hashing
+
+symbol table problem: table S holding n records, key-data pair
+
+Operations: Insert (by pair), Delete (by key), Search (by key)
+
+Direct access table: works when keys are distinct and are drawn a set U of m elements, namely two list one for keys and one for values. All operations take $\Theta(1)$ time in the worst case. Very impractical.
+
+hash function H to map keys randomly into slot(index) table T. 
+
+collision: resolve collisions by **chaining**. link records in the same slot into a list.
+
+worst case analysis: all keys are hased to the same slot. (reduce to linked list). access takes $\Theta(n)$ time.
+
+average case: simple uniform hashing. one hashtable, n keys and m slots. The load factor is $\alpha=n/m$, which is average no. of keys per slot.
+
+Expected unsuccessful search time (return None): $\Theta(1+\alpha)$, first hash the value for the key and search the linked list.
+
+### choose hash functions
+
+regularity of key distributions should not affect unifomity of hash.
+
+* Division method
+
+$h(k)=k \mod m$. m with small factor is bad. Even mod even are always even, so m with factor 2, will map all even to even instead of uniformity. Pick m as a prime (not too close to power of 2 or 10) is good practice.
+
+* Multiplication method
+
+Assume the slot $m=2^r$, w-bit words, $h(k)=(Ak \mod 2^w).rightshift(w-r)$. A is an odd integer with bits the same as w. The formula is in the language of binary. A do not: not pick near power of 2.
+
+### resolve collisions by open addressing
+
+if collision use different hash function, probe table systematic till empty slots is found. $h(keys,probnum)\rightarrow slots$. deletion is difficult in this scheme, one can add a state to label the delete status instead of really delete items. 
+
+* linear probing
+
+$h(k,i)=(h'(k)+i) \mod m$. if filled, just scan down the nex slot. disadvantage: primary clustering (long runs of filled slots)
+
+* double hashing
+
+good scheme. $h(k,i)=(h_1(k)+i h_2(k))\mod m$. usually m is taken as power of 2 and force $h_2$ to be odd.
+
+Analysis of open addressing:
+
+assumption of uniform of hashing: each key is equally likely to have any of the $m$ permutations as its probe sequence independent of other keys.
+
+Thm: E[#probes_of_fail]$\leq 1/(1-\alpha)$, of course $\alpha<1$ is required in open addressing scheme
+
+Proof: for unsuccessful search, first hit and with $n/m$ probability to get collision, and then a second probe, again collision probability $(n-1)/(m-1)$ and so on. Note $(n-i)/(m-i)<\alpha$, sum them together, we have the thm results. The same result applies to successful search case. So make th hash table sparse to keep it fast.
+
+##  8 hashing II
+
+### universal hashing
+
+idea: choose a hash function at random to avoid delibrately collision. *Within one hashtable, we dont randomly pick hash functions everytime, instead it is only selected when initilizing the hash table once. See [this post](https://stackoverflow.com/questions/10416404/finding-items-in-an-universal-hash-table) in stackoverflow*
+
+U be a universe of keys, and H be a finite collection of hash functions: maping U to to sorts 1 to m.
+
+Definition: We say H is universal if for all paris of distinct keys,  the number of h in H, which map the two keys into the same slot, is $|H|/m$. i.e. if h is chosen randomly from H, the probability of collision between two keys is $1/m$.
+
+Thm: choose h randomly from H, suppose we hash n keys in T into m slots, for a given key x, the expecation number of collision with x is less than $\alpha=n/m$.
+
+Proof: $C_x$ be the random variables denoting the total number of collsions of keys in T with x. $c_{xy}$ is nonzero only when keys x and y collision. namely $E(c_{xy})=1/m$. As $C_x=\sum_{y\in T-\{x\}}c_{xy}$, $E(C_x)=(n-1)/m$. 
+
+### construction of universal hash functions
+
+m is prime, decomose key k into r+1 digits based m (take mod of m step by step to get the r+1 digits decomp). pick $a$ at random, which is also based-m number, each a for a hash function. Define hash $h_a(k)=\sum a_ik_i\mod m$.
+
+How big is the set of hash function $|H|$? Answer: $m^{r+1}$. 
+
+Proof on H is universal: pick two distinct keys x, y with their decomposition representation in based-m. Say they are different in the zero digit. Count the number of $h_a$ which collide x,y, ie $h_a(x)=h_a(y)$. Namely $a_ix_i \equiv a_iy_i\mod m$, where summation convention is assumed,
+
+$a_0(x_0-y_0)\equiv  \sum_{i=1}^r -a_i(x_i-y_i)  (\mod m)$ 
+
+* Number theory fact detour
+
+(from theory of finite fields) let m be **prime**, for any $z\in Z_m$ such that $z\not\equiv 0$, there exists a unique $z^{-1}\in Z_m$ such that $zz^{-1}\equiv 1 \mod m$.
+
+So we now definitely have well defined $(x_0-y_0)^{-1}$ , therefore
+
+$a_0 \equiv -\sum a_i(x_i-y_i) (x_0-y_0)^{-1}$, so freedom minus 1, and the number of possible $a$ to collide is $|H|/m$.
+
+### perfect hashing
+
+keys are all give at the beginning , determine the best hash function for constructing the static hash table. with space $m=O(n)$, make search $O(1)$ in time in the worst case (actually only two times of hashes).
+
+idea: two-level scheme with universal hashing at two levels. If collide at level 1 slot, then the slot only save lists of random label $a$ for the second hash. no collision in level 2. if n collision in level 1, use $n_i^2$ slots for level 2 hash i. 
+
+Thm: hash n keys to $n^2$ slots using h from universal set H, the expected number of collisions is less than $1/2$. The probability to collide is $1/n^2$, and no. of pairs key is $C_n^2$, hence the expected no. of collisions are products of the two factors, which is $1/2-1/(2n)$. (similar analysis as birthday paradox)
+No collision at all probability is at least 1/2. 
+
+Since the probability is very large, just try some random hash function, and one should hopefully work as $h_i$ from collision slots in level 1 to level 2.
+
+
+* Markov inequality
+
+For random variable $X\geq 0$ , $Pr[x\geq t]\leq \frac{E[x]}{t}$. (*too trivial to be a statement...*)
+
+Space analysis: level 1, choose number of slots m to be equal to the number of keys n. let $n_i$ be random variable living in i slot in level 1. In level 2: the total space is $E=n+\sum_{i=1}^{n-1}E(n_i^2)=\Theta(n)$. Noting the counting of collsion is $\sum E(n_i^2)=\sum\sum E(I_{ij})$ , where I is the indicator variable give 1 when $h(i)=h(j)$. 
+
+There are some middleware steps. First, if $\sum n_i^2> cn$ for some constant c, redo step 1, namely pick a new hash function h to rehash all things. The most nontrivial part of perfect hashing idea is actually those square level 2 slots are of the same order of n in total.
+
+To summarize, pefect hashing is the type of an algorithm of designing hash function of fixed $n$ given keys which requires $O(1)$ times for accessing data by keys, and with space memory (slots in total) at most of order of keys $O(n)$. Furthermore, to find such function it should take no more than polyminal time with high probability (or in expectation context). (Actually we cannot assert this is always the case even for worst case, and this is a general property of algorithms with randomness. Say one flip the coins, he may not get heads for 1000 times of trials in theory, so we can only assert in expectation language or in high probability language). 
+
+To recap the solution, we design a two level universal hashing. For colliding keys in the first round we find a second round hashing for each slot in first round and separate these keys in the second round. This is guaranteed by the square of the size of conflict keys in the first round in each slots. And similar to the birthday paradox, it is easy to show than the probability of avoding collision in the second round is lager than 0.5. In other words, it is fast to find effective hash function from the universal set for every second-round hash functions. The non-trivial part of that is in fact such a large space of slots in two levels are also of order $n$. In other words,  we can tune $c$ to make the probability of picking first round hashing probility also lager than 0.5.
