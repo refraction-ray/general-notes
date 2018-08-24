@@ -202,9 +202,9 @@ make use of complete binary tree (not necessary full binary tree) which can tran
 
 two steps of heapsort: 1) make maxheap from array 2) pickup the max item(the first one) then maxheapify the new array
 
-complexity: $\Theta(n \log n)$ due to $\Theta(\log n)$ time for heapify a node, in step 1, one need heapify around n/2 nodes and in step 2, one heapify only root node each time sort one element.
+complexity: $\Theta(n \log n)$ due to $\Theta(\log n)$ time for heapify a node (insert node at the last position and make it move up to appropriate positions), in step 1, one need heapify around n nodes and in step 2, one heapify only root node each time sort one element. Note to build the heapify, it can only cost $O(n)$ time, there is a huge difference between using siftup or siftdown! 
 
-See [this](http://javabypatel.blogspot.com/2017/05/analysis-of-heap-sort-time-complexity.html) for algorithm  on heapsort and see [wiki](https://en.wikipedia.org/wiki/Sorting_algorithm) on more aspects of sorting algorithms.
+See [this](https://stackoverflow.com/questions/9755721/how-can-building-a-heap-be-on-time-complexity) and [this](http://128kj.iteye.com/blog/1728555) for algorithm  on heapsort and see [wiki](https://en.wikipedia.org/wiki/Sorting_algorithm) on more aspects of sorting algorithms.
 
 ## 5 sort in linear time
 
@@ -392,4 +392,146 @@ There are some middleware steps. First, if $\sum n_i^2> cn$ for some constant c,
 
 To summarize, pefect hashing is the type of an algorithm of designing hash function of fixed $n$ given keys which requires $O(1)$ times for accessing data by keys, and with space memory (slots in total) at most of order of keys $O(n)$. Furthermore, to find such function it should take no more than polyminal time with high probability (or in expectation context). (Actually we cannot assert this is always the case even for worst case, and this is a general property of algorithms with randomness. Say one flip the coins, he may not get heads for 1000 times of trials in theory, so we can only assert in expectation language or in high probability language). 
 
-To recap the solution, we design a two level universal hashing. For colliding keys in the first round we find a second round hashing for each slot in first round and separate these keys in the second round. This is guaranteed by the square of the size of conflict keys in the first round in each slots. And similar to the birthday paradox, it is easy to show than the probability of avoding collision in the second round is lager than 0.5. In other words, it is fast to find effective hash function from the universal set for every second-round hash functions. The non-trivial part of that is in fact such a large space of slots in two levels are also of order $n$. In other words,  we can tune $c$ to make the probability of picking first round hashing probility also lager than 0.5.
+To recap the solution, we design a two level universal hashing. For colliding keys in the first round we find a second round hashing for each slot in first round and separate these keys in the second round. This is guaranteed by the square of the size of conflict keys in the first round in each slots. And similar to the birthday paradox, it is easy to show than the probability of avoding collision in the second round is lager than 0.5. In other words, it is fast to find effective hash function from the universal set for every second-round hash functions. The non-trivial part of that is in fact such a large space of slots in two levels are also of order $n$. In other words,  we can tune $c$ to make the probability of picking first round hashing probility also lager than 0.5. Therefore we can conclude that such a scheme can be designed in polyminal times, which finish the proof.
+
+## 9 binary search trees (BST)
+
+Some word on BST: insert - compare again and again, insert as a leaf. delete - find the exchange partner leaf, exchange and done.
+
+balanced vs unbalanced: $\Theta(\log n)$ vs $\Theta(n)$
+
+BST sort: 1) insert each item of array into BST, 2) do in-order tree-walk (recursively print left child then right, which lead to in-order traverse, i.e. left middle right sequence).
+
+complexity: 1) $\Omega(n\log n)$ and $O(n^2)$ 2) $O(n)$ 
+
+for 1) worst case: already sorted, best case: balanced tree in every step
+
+Note the similarity between BST sort and quicksort, they make the same comparisons in different order.
+
+Following the pivots of quicksort in each step (the first elements in remaining arrays), we have the exactly same tree as BST of the array.
+
+### randomized BST sort
+
+> randomly permute the input array and then call the usual BST sort.
+
+Such an algorithm is equvilent to randomized version of quick sort. So the time complexity is the same.
+
+$\Theta(n\log n)=E(\sum_{x}depth(x))$. Therefore, the average depth of elements in the tree is $\Theta(\log n)$. (not the height of the tree: which is the max depth of node).
+
+Thm: E(height of rand BST) is $O(\log n)$. (the depth expecation is trivial but this thm is nontrivial)
+
+### the proof 
+
+Jensen's ineuqailty: convex function f and random variable x: $f(E[x])\leq E(f(x))$.
+
+Basic idea, let $Y_n = 2^{X_n}$, where X is the height random variable, and we prove $E(Y_n)=O(n^3)$ first. 
+
+If the root has rank k, then we have $X_n=1+\max(X_{k-1},X_{n-k})$. 
+
+$Y_n=2\max(Y_{k-1},Y_{n-k})$. 
+
+def indicator random variables: $Z_{nk}$ is 1 when the root has rank k and zero otherwise. $E(Z_{nk}=1/n)$.
+
+$Y_n=\sum_{k=1}^n Z_{nk}2\max(Y_{k-1},Y_{n-k})$,
+
+for expecation $E[Y_n]=2/n(\sum E[\max(Y_{k-1},Y_{n-k})])\leq 4/n \sum E(Y_k)$ ,  now we have the recurrence. We can use substitution method to prove this by induction $E[Y_n]\leq c n^3$. Done. (you have to use integral of cubic sum in the induction proof).
+
+Precisely $E\approx 2.9882 \log n$.
+
+## 10 balanced search trees
+
+a tree guaranteed to be $\log n$ in height
+
+including: AVL trees; 2-3 trees; 2-3-4 trees; B-trees; red-black trees; skip lists; treaps
+
+### Red-black trees
+
+binary search trees with extra color filed in each node.2
+
+red-black property: 
+
+1. Every node is either red or black
+
+2. The root and leaves (imaginary null pointers, not real leaf nodes as usual) are all black
+
+3. The parents of every red node is black
+
+4. All simple path from node X to a descendant leaf of x: have same number of black nodes on the path. (black-height of x: exclude x itself) In other words: every node has consistent black-height definitions.
+
+Thm: The height of red-black trees of n keys at most $2\log(n+1)$.
+
+Proof sketch: Merge each red node to its parent black node (not a binary tree anymore, but 2-3-4 tree, all the leaves now has the same height which is the black-height in the original tree).
+
+Now we have:
+
+1. every internal nodes has 2-4 children
+2. every leaves have the same depth, the height of this tree is denoted as $h'$
+
+note there are $n+1$ leaves for n node trees. also in 2-3-4 tree, the number of leaves has to be beteen $2^{h'}$ to $4^{h'}$. Therefore $h'\leq \log(n+1)$. Furthermore $h\leq 2h'$ due to property 3 of red-black tree. Done the proof.
+
+How to do relevant operations (insert or delete) to keep the tree of red-black trees.
+
+* insert
+
+> do BST insert, and pick red for it (property 3 is violated)
+>
+> color changes: move violation up by recoloring until we can fix it by rotation and recoloring. specifically, the subroutine is when the input node x is red and x.p is also red, we need to resolve the violation, do the loop: suppose x.p == x.p.p.l (x.p == x.p.p.r is similar), set y=x.p.p.r (uncle of x), if y is red, do case 1. elif  x == p.r, do case 2. if x == p.l do case3. 
+>
+> finally fix root as black
+>
+> case 1) x.p and x.uncle change to black, x.p.p change to red, recusively input x.p.p into the subroutine 
+>
+> case 2) left rotation on x.p, then x==x.p.l just go to case 3)
+>
+> case 3)  recolor x.p and x.p.p and right rotate of x.p.p done.
+
+right-rotate of some node (left child turn to parent and the right child of original left child are not the left child of the original root). preserve binary search property. the reveser operation is left-rotate. rotation takes constant time.
+
+It is nice the rotation takes $O(1)$ and less than recoloring, because recoloring doesn't affect the queries.
+
+* *deletion*
+
+first of all, if the node to be deleted has two non-leaves children, then use the similar delete method for binary tree(namely find the node with max value in left descendants), exchange them and delete that one which is at most with one non leave child. And if the node to be deleted has only leaves children, already done.
+
+so we only care about cases where node with one non-leaves node child. again case by case, delete red, with black child instead of it done! delete black with red child, move up the child can recolor it to black, done! 
+
+The only subtle case is black node with one black child. For detailed process, see [wiki](https://en.wikipedia.org/wiki/Red%E2%80%93black_tree#Removal).
+
+*see visualization of rb trees in this [post](http://saturnman.blog.163.com/blog/static/5576112010969420383/).*
+
+### *other types of balanced trees*
+
+* treap
+
+treap = tree (with value)+ heap (with priority), priority is random given at the beginnig of insertion.
+
+For insert operation, first insert the node as binary tree, and use siftup in heapify to move it up. Since all operations in siftup are rotation which preserve the binary tree requirements, we can finnaly have a treap. Note this takes $O(\log n) $ rotations compared to RB tree, where only O(1) rotations.
+
+In a word, treap is the dynamic version of randomized binary trees. We introduce priority set of values to realize the permutation of input array dynamically. So it can not gurantee the average cost when worst case happens.
+
+* AVL trees
+
+from any node, the difference height between left and right subtree are not greater than 1. single and double rotations are needed for insertion and deletion.
+
+* B trees
+
+2-3 or 2-3-4 trees are all special cases of general B trees. See detail about B-trees [here](https://blog.csdn.net/v_july_v/article/details/6530142).
+
+database prefer trees than hashtables: see [this](https://stackoverflow.com/questions/7306316/b-tree-vs-hash-table)
+
+* skiplist
+
+idea: two double linked list with cross pointer linker with the same value, one list has less members.
+
+search in such 2 linked list, walk on top list until go too far (transit to the lower list with all members then)
+
+actually see lectures later, no more notes here for skiplist.
+
+
+
+## TODO
+
+- [x] binary trees basic operations implementation
+- [x] dynamics of randomized binary search trees
+- [ ] all kinds of balanced trees implementation 
+- [ ] induction proof of height of red-black tree
