@@ -414,7 +414,7 @@ Following the pivots of quicksort in each step (the first elements in remaining 
 
 > randomly permute the input array and then call the usual BST sort.
 
-Such an algorithm is equvilent to randomized version of quick sort. So the time complexity is the same.
+Such an algorithm is equivalent to randomized version of quick sort. So the time complexity is the same.
 
 $\Theta(n\log n)=E(\sum_{x}depth(x))$. Therefore, the average depth of elements in the tree is $\Theta(\log n)$. (not the height of the tree: which is the max depth of node).
 
@@ -515,23 +515,198 @@ from any node, the difference height between left and right subtree are not grea
 
 * B trees
 
-2-3 or 2-3-4 trees are all special cases of general B trees. See detail about B-trees [here](https://blog.csdn.net/v_july_v/article/details/6530142).
+2-3 or 2-3-4 trees are all special cases of general B trees. See detail about B-trees (including its variants) [here](https://blog.csdn.net/v_july_v/article/details/6530142).
 
 database prefer trees than hashtables: see [this](https://stackoverflow.com/questions/7306316/b-tree-vs-hash-table)
 
 * skiplist
 
-idea: two double linked list with cross pointer linker with the same value, one list has less members.
+see lecture later, no more notes here for skiplist.
 
-search in such 2 linked list, walk on top list until go too far (transit to the lower list with all members then)
+* splay tree
 
-actually see lectures later, no more notes here for skiplist.
+idea: no strict restriction on whether the tree is balanced, but everytime a node is searched, the node would move up to the root via series of well-defined rotations which all preserve the probability of binary trees. See visualization [here](http://btechsmartclass.com/DS/U5_T5.html) for these so-called zig zag something rotations.
 
+## 11 augmenting data structure
 
+### order statistics trees (OS tree)
+
+dynamic order statistics, tasks including select i-th smallest number or give the sorted rank of given elements
+
+idea: keep the size of subtrees in each nodes of red-black trees (1 for lowest node, not null leaves).
+
+size[x] = size[left[x]]+size[right[x]]+1
+
+> input: root node x and the i-th 
+>
+> k = size of left[x] +1
+>
+> return x if i==k
+>
+> else return recusively the function with new input
+
+$O(\log n)$ 
+
+the size field is easy to maintain compared to directly rank info on nodes when dynamics is considered.
+
+update subtree size filed when inserting or deleteing, and deal with rebalancing, when doing rotations, loos children and fix up.still $O(\log n)$. 
+
+### interval trees
+
+maintain of time interverals.
+
+qurey: find interval with overlaps of given interval
+
+underlying data structure: red black trees keyed on low endpoint
+
+additional stored m value which is the largest high endpoint value in the subtree, namely $m(x)=\max\{ h(x), m(x.l), m(x.r)\}$ . 
+
+for insert modifying: 1) tree insert, change node to m is m is the max when the ned node sink down to the tree. 2) rotations, new parents arrange m value based on their children to fix up.
+
+interval-search (list one overlap), input interval is i
+
+> set x to root, if i is overlap with x interval, return x
+>
+> else if x.l != None and low[i]<x.l.m recusively set x to x.l, else set x to x.r
+>
+
+ list all overlap intervals: find one and delete it $O(k\log n)$ output sensitive. Best algorithm now can do it in $O(k+\log n)$.
+
+Thm: L is intevals sets in left subtree and the same to R. 1) if search goes right, then nothing overlap i in L. 2) If search goes left and nothing overlap in L, there is nothing overlap in right. (guarantee the algorithm correctness)
+
+Proof: 1) search goes right, if L is empty, done. Since low[i] > x.l.m, the lhs is some high-end point in left subtree, so there is no possibility to be overlaped with i in left.
+
+2) low[i]<x.l.m, and nothing overlap in left, for j in L, high[i]<low[j] (the other direction is restricted by condition). As the right half is further larger, no way to find overlap, done.
+
+## 12 Skiplist
+
+idea of first step: two sorted double linked list with cross pointer linking the same value, one list has less members.
+
+search in such 2 linked list, walk on top list $L_1$ until go too far (transit to the lower list $L_0$ with all members then). 
+
+complexity - search cost: $|L_1|+|L_0|/|L_1|$
+
+to minimize it, we choose $|L_1|=\sqrt{L_0}$, the search cost is $O(\sqrt{n})$ compared to linked list $O(n)$.
+
+now we add more sparse sort linked list on top of that, for k sort list, the complexity is $kn^{1/k}$.
+
+if we have $k=\lg n$ sorted list, the complexity is $\lg n n^{1/\lg n}=2\lg n$.
+
+now we make this idea of static set dynamic (insert & delete).
+
+To insert x, first search where x fits in $L_0$, now you may want promote this node randomly. Half-Half: promote this node and repeat until the other half. If one always get heads, this promotion continues beyond the height of skiplist, you need to creat new level of linked list for more heads of coins. randomization make the worst case $O(n)$.
+
+Delete is easy, just delete at all levels, done.
+
+Lemma: number of levels in skip list is $O(\lg n)$ **with high probability** ($1-1/n^\alpha$). ($\alpha$ dependent on c in big O notation).
+
+Proof of the lemma: (focus on failure probability) P(>$c\lg n$ levels)=P(some elements get promote more than $ c\lg n$ times) $\leq$ (union bound used here) n$\times$P(an element get promote more than such times)=$\frac{n}{2^{c\lg n}}=\frac{1}{n^{c-1}}$. Namely $\alpha = c-1$.
+
+Thm: Any search in n-element skiplist, cost $O(\lg n)$ w.h.p. 
+
+Proof: Trace the search path backwards. We pop up if the node is promoted. Such a path with up and left move with probability 0.5. Up move number is less than the height which is $O(\lg n)$ w.h.p. as the lemma.  The total number of moves = the number of moves till you get $c\lg n$ up moves w.h.p. Reduce the problem to a series of coin flip, which end when $c\lg n$ heads occur, the total number of such coin flips is $O(\lg n)$ w.h.p. Note there are two events. A for height of skiplist while B for the total number of coin flips under the condition A happens. You need to show the w.h.p can apply to A and B to conclude the proof.
+
+Chernoff bound: let Y be a random variable, representing the total number of tails in a series of m independent coin flips, where each flip has a probability $p$ of coming up heads, for all $r>0$, we have:
+
+$P[Y\geq (1+\delta)\mu]\leq \exp^{-\delta^2\mu/(2+\delta)}$. (see proof on this bound [here](https://www.cs.cmu.edu/afs/cs/academic/class/15859-f04/www/scribes/lec9.pdf))
+
+Lemma: for any c, there is a const $d$, such that w.h.p the number of heads in flipping $d\lg n$ is at least $c\lg n$. ($d=8c$). 
+
+*space complexsity expecation* 2n.
+
+## 13 amortized analysis
+
+### simple example on dynamic table
+
+question: how large should a hash table be? as large as possible to make searching fast. space vs. time. the sweet point is $\Theta(n)$. What if we don't know n at beginning?
+
+solution: dynamic tables. whenever the table is overflows we grow (double the size) it (malloc). create a larger table and move items form the old one to the new and free the old one.
+
+analysis of the above dynamic solution: worst case of 1 insert $\Theta(n)$ therefore worst case if n inserts is $\Theta(n^2)$. (wrong analysis) if fact n inserts still take $\Theta(n)$ time in the worst case.
+
+correct analysis: let $c_i$ be the cost of i-th insert which is i if i is the power of two or otherwise 1. 
+
+$\sum_{i=1}^n c_i=n+\sum_{j=0}^{[\lg (n-1)]}2^j\leq 3n=\Theta(n)$.
+
+Thus the average cost per insert is still $\Theta(1)$.
+
+Though talking about average, there is no probability, it is about average performance in worst case.
+
+### types of amortized analysis
+
+* aggregate analysis
+
+as above.
+
+* accounting argument
+
+charge ith operation a fictitious amortized cost $\hat{c}_i$,  fee is cosumed to perform the operation and the unused part is stored in the bank for later use. Bank balance must not go negative. Therefore $\sum c_i\leq \sum \hat{c}_i$.
+
+case study: dynamic table. change 3 for each insert, one is going to pay for immediate insert and 2 is stored for doubling the table. when the table doubles, we use the stored money to move items. Thus the cost is bound by 3n.
+
+* potential argument
+
+framework of the potential method: start with some data structure $D_0$. operation make $D_{i-1}$ to $D_{i}$, the cost of operation is $c_i$. Define the potential $\Phi$ map $D$ to real value $R$, such that $\Phi(D_0)=0$ and $\Phi(D_i)\geq 0$. 
+
+Define the amortized cost $\hat{c}_i=c_i+\Phi(D_i)-\Phi(D_{i-1})$. somehow the same thing of accounting method.
+
+If $\Delta \Phi>0$, then $\hat{c}_i>c_i$ and vice versa. The total amortized cost is $\sum\hat{c}_i=\sum c_i +\Phi(D_n)\geq \sum c_i$.
+
+case study: $\Phi(D_i)=2i-2^{[\lg i]}$. One can find the amortized cost by definition.
+
+Different potential functions many yield different bounds.
+
+## 14 Competive analysis
+
+### self-organizing list
+
+List L of n elements, operation: access of item cost is rank(x) which is the distance of x from the head of the list. L can be reordered by transposing neighbor elements $O(1)$. 
+
+**Online**: a sequence S of operations is provided one at a time, for each operation, an online algorithm must execute the operation immediately. On the contrary, offline algorithm can see all of the S in advance.
+
+The goal is to minimize the total cost of series of queries. $C_A(S)$
+
+* Worst case analysis: adversary always accesses tail element, $C_A(S)=\Omega(|S|n)$.
+* average case analysis: element x is accessed with probability $P(x)$, the expected cost on a sequence is $E[C_A(S)]=\sum p(x) rank(x)$, such value is minimized when L is sorted in decreasing order with respect to probability.
+
+Heuristic: keep count of number of times an element is accessed and maintain the list in the order of this count.
+
+In practice: move to the front  (MTF) of the previous accessed element, the cost is $2 rank(x)$.
+
+### competive analysis
+
+definition: An online algorithm A is $\alpha$-competive, if there is a constant k such that for and seq S of operations, the cost $C_A(S)\leq \alpha C_{OPT}(S)+k$. OPT is for the optimal **offline** algorithm. [God's algorithm]
+
+Thm: MTF is 4-competive for self-organizing lists. 
+
+Proof: $L_i$ is MTF list while $L_i^*$ is OPT's list. $c_i$ be MTF cost for ith query $2 rank_{L_{i-1}}(x)$. $c_i^*$ be OPT cost $rank_{L^*_{i-1}}(x)+t_i$ if OPT perform $t_i$ transposes. 
+
+Define the potential function $\Phi(L_i)=2|\{x,y\}|$ for $x<y$ in $L_i$ and $y<x$ in $L_i^*$. Namely twice the number of inversions. Note $\Phi$ is always non-negative and $\Phi(L_0)=0$ if MTF and OPT have the same starting list.
+
+How much does potential change from a transpose. A transpose create or destropy one inversion and $\Delta \Phi=\pm 2$. 
+
+See what happen in the i-th access x. define $A,B,C,D={y\in L_{i-1}}$ for certain y. A is y before x in MTF while y after x in OPT, B is y before x and y before x, C is y after x and x before y, D is y after x and y after x. All the first is in terms of MTF list $L_{i-1}$ while the statement later is for OPT case. Now rank $r=|A|+|B|+1$ while $r^*=|A|+|C|+1$. 
+
+When x is move to the front, it creates $|A|-|B|$ inversions. In OPT case, each transpose by OPT create no more than 1 inversions per transpose. $\Delta\Phi_i \leq 2(|A|-|B|+t_i)$.
+
+Amortized cost $\hat{c}_i = c_i+\Delta \Phi_i\leq 2r+2(|A|-|B|+t_i)=4|A|+2t_i+2\leq 4(r^*+t_i)=c_i^*$.
+
+$C_{MTF}(S)=\sum c_i=\sum \hat{c}_i -\Delta\Phi\leq 4C_{OPT}(S)-\Phi(L_{n})$. Done.
+
+If we count transposes that move x toward the front of L as 'free' (O(1)), then MTF is 2-competitive. *(set the potential function as one times the inversions)*
+
+What if they dont start with the same list. Then the potential function at the beginning might be as big as $2C_{n-1}^2=O(n^2)$. In this case $C_{MTF}\leq 4 C_{OPT}-\Theta(n^2)$, which is still 4 compatitive since $n^2$ is a constant as $|S|\rightarrow \infty$.
+
+*The most hard part is how to find a successful potential function form*
 
 ## TODO
 
 - [x] binary trees basic operations implementation
 - [x] dynamics of randomized binary search trees
-- [ ] all kinds of balanced trees implementation 
+- [x] all kinds of balanced trees implementation 
 - [ ] induction proof of height of red-black tree
+- [x] OS rank algorithm in 11
+- [x] is delete of skiplist robust against continous deletion?
+- [ ] fast fouries transform
+- [ ] NP completeness
+- [ ] Primality Testing
