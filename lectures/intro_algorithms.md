@@ -1,4 +1,4 @@
-#  Introduction to Algorithm
+#  Introduction to Algorithms
 
 *Notes on MIT lectures, start writing from Aug 21, 2018*
 
@@ -244,7 +244,11 @@ sort say integers with many digitals from the last (namely less importat at firs
 
 correctness proof (induction): induct on digit position that already sorting t, by assuming t-1 digits are already sorted.
 
-comlexity analysis: using counting sort for each digit (one or several a time). assume each binary as b bits long, split it into single bit a time may not be optimal, so we set the split as b/r. digits are each r bits long. $T=b/r\Theta(2^{r}+n)$, where n is 2 this case a fix number for counting system. Now one only need to minimize T in terms of r (optimal when $r\sim \log n$). Finally we have $T=O(\frac{b n}{\log n})\sim O(\log k)$ where k is the range of the number.
+comlexity analysis: using counting sort for each digit (one or several a time). assume each binary as b bits long, split it into single bit a time may not be optimal, so we set the split as b/r. digits are each r bits long. $T=b/r\Theta(2^{r}+n)$. Now one only need to minimize T in terms of r (optimal when $r\sim \log n$). Finally we have $T=O(\frac{b n}{\log n})\sim O(nd)$ where the number is in raner $n^d$.
+
+* *bucket sort*
+
+cousin of radix sort, first divide elements in some preset bins, and sort elements in each bin individually, finally link them together. if each bucket one element, the model reduce to counting sort. Say all elements are uniformly distributed between [0,1). Say we prepare n buckets for the sort and use insertion sort for each bin (have no idea why since insertion sort is slow). so $T=O(n)+\sum n_i^2$ where $\sum n_i^2=\sum\sum I_{ij}\sim n$, $I_{ij}$ denote the indicator random variable where i and j are in the same bucket.
 
 ## 6 Order statistics
 
@@ -697,7 +701,194 @@ If we count transposes that move x toward the front of L as 'free' (O(1)), then 
 
 What if they dont start with the same list. Then the potential function at the beginning might be as big as $2C_{n-1}^2=O(n^2)$. In this case $C_{MTF}\leq 4 C_{OPT}-\Theta(n^2)$, which is still 4 compatitive since $n^2$ is a constant as $|S|\rightarrow \infty$.
 
-*The most hard part is how to find a successful potential function form*
+*The most hard part is how to find a successful potential function form, see more info about online algorithm and competitive analysis on this [document](http://www14.in.tum.de/personen/albers/papers/brics.pdf), specifically paging problem*
+
+## 15 Dynamic programming
+
+design techniques
+
+example problem: longest common subsequence (LCS). given two sequence x and y, find **a** longest seq common to both.(maybe not unique). possible application: diff tool, dna seq comparison, etc.
+
+LCS(x,y): the seq doesn't necessarily continous in x or y.
+
+Naive solution:  check every subseq of x to see if it is also a subseq of y
+
+Analysis: check on y $O(n)$, number of subsequence in x $O(2^m)$, worst case complexity $O(n 2^m)$.
+
+* simplification stage
+
+1) look at the length of LCS(x,y)  2) entend the alg to find LCS itself
+
+strategy: consider prefixes of x and y. Define $c[i,j]=|LCS(x[1:i],y[1:j])|$.
+
+Thm: c[i,j] is c[i-1,j-1]+1 if x[i]=y[j] and $\max\{c[i,j-1],c[i-1,j]\}$ otherwise. (trivial) 
+
+Dynamic programming hallmark #1: **optimal substructure**: an optimal solution to a problem instance contains optimal solutions to sub problems.
+
+Namely if z=LCS(x,y), then any prefix of z is LCS of some prefix of x and y.
+
+Recursive alg for LCS 
+
+> just recursively find c[i,j] based on the thm recurrence
+
+worst case (anytime x[i] is not equal to y[j]): recursive tree, height m+n, the work is still exponential.
+
+Dynamic programming hallmark #2: **overlaping subproblems**: a recursive solution contains small number of distinct subproblems repeated many times.
+
+The subproblem space of LCS contains mn distinct subproblems.
+
+memoization algorithm:
+
+> keeps a table of c[i,j]
+>
+> if c[i,j] is none, compute it recursively and assige the value to c[i,j]
+>
+> otherwise return it
+
+analysis: $\Theta(mn)$. amortized constant work for each entry. space complexity: $\Theta(mn)$.
+
+dynamic programming (bottom-up)
+
+fill the table row by row based on th recurrence.
+
+analysis: time complexity $\Theta(mn)$. Reconstruct LCS by tracing backwards. (when meet diagonal crossong in cij table, record the elements correspondingly). space complexity: $\Theta(mn)$. can do $\Theta(\min\{m,n\})$. Everytime only keep one row for the bottom up build (or column by column).
+
+* Hirschberg's alg
+
+approach to keep reconstruction of LCS in $\Theta(\min\{m,n\})$ space. see [here](https://imada.sdu.dk/~rolf/Edu/DM823/E16/Hirschberg.pdf), the time complexity constant is much larger. It is a trick that save memory space at the cost of more time. Basic idea, recusively find the position the optimal path cross in middle column of the area. The position can be find by max the sum of elements from LCS and LCS from end table.
+
+## 15 Greedy Algorithm
+
+Minimum Spanning Tree (MST)
+
+greedy alg: makes locally best choice, ignoring effect on future
+
+Tree: connected acylic graph
+spanning tree of a graph G: subsets of edges in G which form a tree and hit all vertices of G.
+
+MST problem: given graph G=(V,E) and edge weight function w: E $\rightarrow$ R, find a spanning tree T of minimum weight $\sum_{e\in T}w(e)$. (may not be unique)
+
+greedy properties:
+1. optimal substructure
+2. greedy choice property: locally optimal choices lead to globally optimal solution.
+
+Optimal substructure for MST:
+if edge e={u,v} is an edge of some MST, contract the edge (merge the two end points u and v), if there are other edges merging at the same time, take the minimum weights between them. Such a graph is G/e.
+
+Thm: if T' is MST of G/e, than $T'\cup \{e\}$ is MST of G.
+
+Proof: look at how a tree be contracted e. assume MST $e\in T^*$ of G.
+T*-e is spanning tree of G/e. We know the weight of T' is no larger than  T*-e.
+$w(T'\cup \{e\})=w(T')+W(e)\leq W(T^*-e)+w(e)=w(T^*)$.
+Therefore $T'\cup\{e\}$ is a MST.
+
+Dynamic porgram: ?
+> guess edge e in MST
+> contract the edge 
+> recurse to find the MST
+> decontract the edge
+> add e to the MST
+
+exponential time
+
+Greedy-choice property for MST:
+consider any cut (S,V-S) and crossing edges over this cut, suppose e is a least-weighted edge crossing the cut. then e is in some MST. 
+
+Proof (cut and paste method):
+let T* be a MST of G, if e is not in T*,  there must be an edge e' in T* that cross the cut. Remove e' and use e instead, T*-e'+e. Such new structure is a spanning tree and indeed MST. Done the proof by only modified edges cross the cut.
+
+### Prim's algorithm
+starting from a single node S and grow the tree one node by one node where minimum edge is pick across the new cut.
+> maintain **priority queue** (may implemented by heap) Q on V-S, the key value of v is the $\min\{w(u,v)|u\in S\}$.
+> init Q stores V, set the key of a node s to be zero, and other v set to infinity 
+> do loop until Q is empty :
+> extract max priority item u from the queue, update the key value of all items in the queue Q (partial update is enough, compare the original key with the distance of u), update the nodes' parent attr, which is return at the end as a MST structure.
+
+correctness proof: $T_s$ is the subset of some MST of G in each iterative steps. (proof by induction making use of cut and paste).
+
+complexity: same as Dijkstra, if use Fibonacci heap as priority queue, we have $O(V\lg V+E)$, the first term is extract-min of heap and the second term is decrease key of heap.
+
+### Kruskal's algorithm
+
+maintain connected components in MST-so-far T in a **union-find structure**.
+
+> T = empty
+> for v in V, make-set(v)
+> sort E by weight
+> for e={u,v} in E, if find-set(u) != find-set(v)
+> T = T+e; union(u,v)
+
+complexity: O(sort[E]+E\alpha(V)+V), the sort time is dominate. if weights is integers, it is linear time cost (radix sort).
+
+correctness: tree T so far is some MST, induction proof
+
+### *union-find*
+
+set of groups of data, find given by data return group keys and there is union set op to merge groups. The average time cost per op is only $O(\alpha(n))$ where alpha is the inverse function of Ackermann function $A(n,n)$ which grows suprisingly fast. Therefore alpha grows very slow and hardly over 5 for practical data.
+
+the structure is a forest, where all the roots are representative elements in each set. for union operation, attach one root to another (short to high to keep balance). For find, we use accelerate methods including path compression (attach the query to root directly everytime it is found), path splitting (every node on the path to their grandparent) or path halving.
+
+### *all types of fancy heaps*
+
+heaps are backbone of the priority queue. however, different types of heaps give very different time cost on operations, see [wiki](https://en.wikipedia.org/wiki/Priority_queue#Summary_of_running_times) for the complexity comparison table.
+
+* Fibonacci heap
+
+a fast implementation of priority queue. amortized complexity is constant for insert and findmin!! still $O(\lg n)$ for delete and extract-min. For union of two heaps, fibonacci heap can also achieve $O(1)$ compared to $O(n)$ of ordinary heap!
+
+## 16 shortest path I
+
+shortest path in graph $\delta(u,v)$: weighted graphs G=(V,E), real value for edge weights w(e). 
+
+Note: negative edge weights may lead to non-existing of shortest path (just go forth and back forever). and disconnecting leads to infinity weighted shortest path.
+
+checklist on optimal substructure: a subpath of shortest path is a shortest path. Proof (by cut and paste): trivial.
+
+Triangle inequality: shortest path of u to v is no greater than the sum of shortest path of u to x and x to v. (trivial)
+
+* single-source shortest paths problem
+
+give a source vertex, how to get everywhere else with shortest weights
+
+assume all weights is nonnegative in this section.
+
+greedy 1) maintain set S of vertices whose shortest path weight from source s is known.  (initially pnly s is in S)  2) S grows one vertex per step, we add one of V-S whose estimated distance is minimum 3) update distance estimates: ones adjacent to v which is the newly coming to S
+
+* Dijkstra's algorithm
+
+> initial the distance array d[x] to infinity except the source s as x[s]=0, Q=V (Q is min priority queue, x  keyed on d[x])
+> while Q !=0, u = extract-min(Q),  add u to set S, 
+> for each v in Adj(u), if d[v]>d[u]+w(u,v), (relaxation step ) then lhs=rhs (the sametime a decrese key op in Q)
+
+(how to get the actual path? shortest-path-tree) MST vs SPT: see [here](https://www.me.utexas.edu/~jensen/exercises/mst_spt/mst_spt.html).
+
+* correctness proof:
+
+Lemma1: invariant $d[v]\geq \delta(s,v)$ for all v anytime in the program. (trivial)
+
+Proof (by induction and contradiction): consider the first violation, $d[v]<\delta(s,v)$, that is $d[u]+w(u,v)< \delta(s,v)$, impossible.
+
+Lemma2: suppose we know shortest path s...u.v, and d[u]= $\delta(s,u)$, and suppose we relax (u,v) edge, then $d[v]=\delta(s,v)$. (trivial)
+
+d[v] doesn't change after v is add to S, just prove d[v] is correct when v is adding to S, it cannot be larger afterwards due to relaxation step. And it is also lower bounded by Lemma1.
+
+Proof by contradiction: if d[u] is the first incorrect term when adding u, then $d[u]>\delta(s,u)$. Let p be the shortest path from s to u. consider the first edge (x,y) where p exist S, bu induction d[x]=$\delta(s,x)$. by lemma2 (???) $d[y]\leq \delta(s,u)$ but $d[y]\geq d[u]$ due to the queue extract u instead of y.
+
+* *another proof*
+
+The above version is weird from lecture (confuse such an easy problem with lots of unnecesary stuff and so-called lemma..), just see [this one](https://web.engr.oregonstate.edu/~glencora/wiki/uploads/dijkstra-proof.pdf). (Note the rhs of the third formula is $l(Q)$ instead of $l(Q_x)$)
+
+* analysis
+
+O(V)+O(V extract-min)+O(E)+O(E decrease-keys) depends on the realization of the queue
+
+Array $O(V^2)$, binary heap $O((V+E)\lg V)$, fibonacci heap $O(E+V\lg V)$.
+
+* unweighted graphs
+
+w=1 for all edges. BFS- breadth first search. BFS is Dijkstra alg, use FIFO queue instead of priority queue, and the relaxation step, if d[v] is infinite, then d[v]=d[u]+1 and add v to the end of the queue.
+
+The complexity now is $O(V+E)$. Finding the shortest path weights is the natural byproduct of BFS.
 
 ## TODO
 
@@ -710,3 +901,13 @@ What if they dont start with the same list. Then the potential function at the b
 - [ ] fast fouries transform
 - [ ] NP completeness
 - [ ] Primality Testing
+- [x] small space complexity to reconstruct LCS (D&C)
+- [x] Fibonacci heap for priority queue
+- [x] union-find structure
+- [ ] bucket sort
+- [ ] all kinds of heaps: binominal, fibonacci, pairing
+- [ ] linear programming
+- [ ] graph theory in general
+- [ ] breadth and depth first search in graph
+- [x] shortest-path-tree in 16
+- [ ] max flow
