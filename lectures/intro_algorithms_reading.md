@@ -2,7 +2,7 @@
 
 *Reading notes on the book, serving a supplemental materials of the lecture notes, start writting from Aug 28, 2018*
 
-*Note all the emphasize part in the lecture notes are all actually contents from other materials*
+*Note all the emphasize part in the lecture notes are all actually contents from other materials, and in this note I will also include external materials and topics*
 
 * toc
 {:toc}
@@ -165,7 +165,19 @@ Therefore, the max degree of any node $D(n)$ , such node has size at least $n\ge
 
 Intuition understanding of Fibonacci heap: [so](https://stackoverflow.com/questions/19508526/what-is-the-intuition-behind-the-fibonacci-heap-data-structure)
 
+## Matrix
+
+* definition and properties (trivial to physicists....)
+
+
+
 ## TODO
 
 - [ ] matroid stuff
 - [ ] matrix stuff
+
+## REFERENCE
+
+THE BOOK
+
+a solution manual: [link](http://sites.math.rutgers.edu/~ajl213/CLRS/CLRS.html)

@@ -890,6 +890,116 @@ w=1 for all edges. BFS- breadth first search. BFS is Dijkstra alg, use FIFO queu
 
 The complexity now is $O(V+E)$. Finding the shortest path weights is the natural byproduct of BFS.
 
+## 17 shortest path II
+
+negative weights in this section
+
+### Bellman-Ford algorithm
+
+it computes shortest path weights $\delta(s,v)$ from source to all vertices allowing negative weights and reports negative weight cycle.
+
+> intialize d[v]=infinity d[s]=0
+> for 1 to |V|-1: for each edge (u,v), d[v]=d[u]+w(u,v) if rhs is less
+> for each e in E: if d[v]>d[u]+w(u,v), report negative loop error
+
+complexity: $O(VE)$, slower than Dij alg.
+
+correctness:
+assuming no negative loop, only need to show at some point d[v] is right as $\delta(s,v)$.
+let p=v_0-v_1...-v_k=v as a shortest path with the fewest possible edges. (p is a simple path no zero weight cycle)
+
+induction: assume by induction that $d[v_i]=\delta(s,v_i)$ after i round.  During the next round, we relax $(v_{i-1},v_i)$,   then $d[v_i]$ is correct.
+
+*another messy proof...*, just use this Lemma: after k loops, for any node u, d[u] is the smallest length of path from S to u contains at most k edges. (by induction)
+
+corollary: if BF failes to converge after V-1 rounds, then there must be a negative cycle.
+
+To find the cycle, just go backward form the first violation vertex when checking, until a vertex is met twice, there must be a negative cycle. And one can add assitant vertex connect to everyone else avoiding missing negative cycles when it is disconnected from s. For the two alg finding negative cycles, see [here](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.86.1981&rep=rep1&type=pdf)
+
+New goal: find all pairs of shortest-path
+
+### Linear programming
+
+LP Problem: given m times n matrix A, m-vector b, n-vector c, find n-vector x that maximize $c^T x$, subject to $Ax\leq b$ (space region), or determine there is no such x.
+
+solution list: simplex (exponential in the worst case but practical), ellipsoid (in polynomial time but not practical), interior point (polynominal time and practical), random sampling
+
+Linear feasible problem, whether there is x exist obeying the condition. (no easier than LP)
+
+difference constraints: linear feasibility problem, where each row of the matrix A has one 1 and one -1, and everything else in the row is 0.
+
+constrain graph: convert simple constrains $x_i-x_j<w_{ij}$ into node x,y and edge w. Hence |V|=n |E|=m.
+
+Thm: if  constraint graph has negative cycle, then the LP problem is infeasible.
+
+Proof: consider a negative cycle, add all constraint we get $0\leq negative$.
+
+Thm: no negative loop in G means the constrains is feasible.
+
+Proof: add a vertex S with 0 edge to all vertex. it has shortest path from S. run source shortest path algorithm, to get d[v], such a d[v]=$\delta(s,v)$ is just a solution for the constraints.
+
+Actually we can label d[v] for all vertex as zero at the beginning and avoid using the imaginary v0 node.
+
+### VLSI layout
+
+problems: arrange chips of some shape, and gurantee the minimum gap d (focus on 1D).
+
+Bellman-Ford solution also maximizes x1+...xn subject to x<=0 and different constraints, also minimize max-min of x , the latter gives the solution of VLSI problem here.
+
+1) show negative intitial in $d[s,u]$ cannot do better than all 0(easy), and then show positive initial in d[s] also cannot do better (the positive path never get passed otherwise the first segment belongs to delta due to optimal structure of shortest path which is positive violating constraints, so it do no help to increase delta) 2) (proof on the minimization of data span) suppose the minimum of constrains graph is x_i, and consider the path from v0 to vi, where x1 is the maximum. assume y1-yi, prove it is larger than xi, done.
+
+## 18 shortest path III
+
+Recall single source shortest path problem:
+
+1. unweighted: BFS $O(V+E)$
+2. positive weighted : Dijkstra's algorithm $O(E+V\lg V)$
+3. general weights: Bellman-Ford $O(VE)$
+4. DAG: topological sort $O(V+E)$
+
+All pairs of shortest pathes:
+
+1. unweighted graph: |V| times BFS $O(VE)$
+2. positive weighted: run Dijkstra |V| times $O(VE+V^2\lg V)$
+
+for general case, V times of Bellman-Ford is not fast enough. if the digram is dense, the $O(V^4)$. 3 algorithms for this general case. 
+
+target output: n by n matrix with element as shortest path weights
+
+### dynamic programming
+
+let A be weighted adjacency matrix with elements as weights. def $d_{ij}^m$ is the shortest path from i to j with no larger than m edges. i.e $d^{n-1}=\delta(i,j)$ if no negative cycles.
+
+the recurrence $d_{ij}^m=\min_k\{ d_{ik}^{m-1}+w_{kj}\}$.  Note zero edge to oneself is definied to make the recurrence nifty.
+
+> use dynamic programming to fill the matrix $d_{ij}^m$ n-1 times
+
+$O(V^4)$ no better than Bellman
+
+recurrence and matrix multiplication, replace + with min and replace times with +. Namely, we have a new system of algebra $D^{(m)}=D^{(m-1)}\otimes A=A^m$. $A^0=I$  with zero in diagonal and infinity anywhere else. The algebra structure here is semi ring.
+
+D&C to calculate the power of matrix. $O(n^3\lg n)$. Also detect negative loop: diagonal has negative value.
+
+* Floyd-Warshall algrithom
+
+def $c_ij^{(k)}$ is the weight if shortest path from i to j with intermediate vertices in set {1,2...k}. so $\delta(i,j)=c_{ij}^{(n)}$, $c_{ij}^{(0)}=a_{ij}$ which is weight matrix. The recurrence is $c^{(k)}_{ij}=\min \{ c_{ij}^{(k-1)}, c_{ik}^{(k-1)}+c_{kj}^{(k-1)}\}$. 
+
+Using dynamical programming to build $c^{(n)}_{ij}$, the complexity is $O(V^3)$.
+
+* Transitive closure program
+
+given a graph, comput $t_{ij}$ which is 1 is there is a path or 0 if disconnected. solution: V times BFS $O(VE)$
+
+the complexity for transitive closure is the same as matrix multiply
+
+* Johnson's algorithm
+
+graph reweighting, give function h: V to R, reweight each edge (u,v) in E by $w_h(u,v)=w(u,v)+h(u)-h(v)$. then for any two vertex u and v, all path (not only shortest path) are reweight by the same amout. (trivial)
+
+if we find a function h make all weight positive we can then run Dijkstra. To satisfy this condition, we need $h(v)-h(u)\leq w(u,v)$ , we are faced with difference constraints. so basically the function h is the shortest path from vertex to imaginary vertex v0. 
+
+Complexity: $O(VE+V^2\lg V)$.
+
 ## TODO
 
 - [x] binary trees basic operations implementation
@@ -904,10 +1014,12 @@ The complexity now is $O(V+E)$. Finding the shortest path weights is the natural
 - [x] small space complexity to reconstruct LCS (D&C)
 - [x] Fibonacci heap for priority queue
 - [x] union-find structure
-- [ ] bucket sort
-- [ ] all kinds of heaps: binominal, fibonacci, pairing
+- [x] bucket sort
+- [x] all kinds of heaps: binominal, fibonacci, pairing
 - [ ] linear programming
 - [ ] graph theory in general
-- [ ] breadth and depth first search in graph
+- [x] breadth and depth first search in graph
 - [x] shortest-path-tree in 16
 - [ ] max flow
+- [x] compute delta in all case in 17(even with negative loop) (cut all downstreams for their distance are negative infinity)
+- [x] DAG-topological sort
