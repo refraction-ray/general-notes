@@ -332,17 +332,200 @@ application:
 * person-task assign: bipart graph matching: find subset of edges such that no person for two tasks and no task is assigned two people. s link one side and t link the other side with weight 1. if the max flow is K, that means the max matching is also K.
 * cover: bipart graph, each edge is connected at least one dark nodes (nodes may be dark). problem: given some edges to be covered, how many nodes should be colored. min cover K is the same as max flow K for the same graph.
 
+## FFT
+
+polynomial $a_kx^k$. 
+
+evaluation: naive quadratic time, of course easily to linear time
+
+Horner's Rule $A(x)=a_0+x(a_1+x(a_2+...))$. 
+
+addition: A(x)+B(x), easy linear time
+
+multiplication: A(x)B(x), naive quadratic time, goal $O(n\lg n)$
+
+multiplication is the same as convolution
+
+representation of polynomial: coefficient vector (slow in multiplication), roots (impossible in addition), samples (n points) (slow in evaluation)
+
+Vandermonde matrix V $V_{jk}=x_j^k$, coeff to sample: S=VA quadratic time, A is the coeff vector. sample to coeff A=$V^{-1}S$, quadratic thought inverse is cubic, as you only need once to get inverse
+
+D&C idea
+
+> divide even and odd coeff as Aeven(x) and Aodd(x)
+>
+> recursively comput Aeven(y) and Aodd(y) for y in x^2
+>
+> A=Aeven(x^2)+xAodd(x^2)
+
+analysis T(n,|X|)=2T(n/2,|X|)+O(n+|X|), initially |X|=n,|X| never goes down
+
+nth roots of unity, then every recursive reduce |X| by half, this is FFT
+
+by FFT, we transform vector and sample rep. of polynomia via FFT $O(n\lg n)$, such that the evaluation, addition and multiplication all be done in linear time which the total cost is nlgn.
+
+in other words, it is just convoluton on one side is a simple times in other side in terms of Fourier like trans. so the intro of all contents in this section is redundency for physicts...
+
+## van emde doas trees
+
+storing interges 1 to u in trees, ops: insert, delete, successor, try in $O(\lg\lg u)$ time.
+
+application: network router.
+
+$T(u)=T(\sqrt{u})+O(1)$.
+
+naive: size u boolean array. const time for insert and delete, successor O(u) in the worst case.
+
+split the universe into clusters with size square of u, and save clusters summary 1/0. (sth like the skiplist) by this scheme, insert is O(1), successor is square root u time.
+
+decompose x as $x=i\sqrt{u}+j$. high(x)= floor(x/sqrt(u)), low(x) = x mod sqrt(u)
+
+recurse datastructure V as small vEB and summary structure as vEB
+
+> Insert(V, x):
+> ​	 Insert(V.cluster[high(x)],low(x))
+>	Insert(V.summary, high(x))
+>	
+>successor(V,x):
+>	i = high(x)
+>	j = successor(V.cluster[i], low(x))
+>	if j is infty:
+>		i = successor(V.summary, i)
+>		j= successor(V.cluster[i], -1)
+>	return i,j
+
+for insert $T(u)=2T(\sqrt{u})+O(1)$, substitute u as lg u and use master method, still cost lg u.
+
+further improvements, store minimum for each vEB, then successor reduce to two recurvise calls. Moreover, store the max. then successor reduce to only one recursive call.
+
+space O(u) to O(n\lg\lg u), by hashtable for array in cluster. it can be further reduced to O(n) by cutoff the recursive structure early. space recursive in the original case $S(M)=O(\sqrt{M})+(\sqrt{M}+1)S(\sqrt{M})$.
+
+![](https://i.stack.imgur.com/qF5k5.png)
+
+Let elaborate all things by graph, see this combined with algorithms.Trick, every time there are two recursive calls, one of them must be in const time.
+
+## complexity theory
+
+P: solvable in polynomial time; NP: decision problems solvable in nondeterministic polynomial time. eg 3SAT
+
+NP completeness: NP & NP hard. NP-hard: X is NP-hard if every problem y in NP reduces to X.
+
+Reudction from problem A to B: there is polytime algorithm converting A inputs to equivalent B inputs. (same yes and no answer)
+
+Namely NP completeness is the critical point between NP and NP hard.
+
+Just show 3SAT can reduce to the problem for the proof of NP hard. (Cook-Levin Thm states 3SAT is NP complete) (logic gate anyway in computation)
+
+### Approximation Algorithms
+
+size n problem has approximation ratio $\rho(n)$, for any input, algorithm produces a solution with cost C such that max(C/Copt,Copt/C) is less than rho(n).
+
+approximation scheme: takes input $\epsilon>0$, and for any fixed $\epsilon$, the scheme is a (1+\epsilon) approximation algorithm. 
+
+Polynomial time approximation sheme(PTAS): Poly in n but not necessarily in epsilon. Fully PTAS is $O(n/\epsilon^2)$.
+
+* Vertex Cover
+
+Problem: Undirected graph G, find minimum set of vectices cover all edges. 
+
+Max degree heuristic. The covered while unchoosed nodes loose degree by 1 each time. 
+Worst case of this: optimal  n=k!,  our solution can be k!(1/k+1/(k-1)+...1) which is approxmated as k!logk. i.e. $\rho(n)=\Omega(\lg\lg n)$.
+
+Approx Vertex Cover: 
+> set C as empty set
+> loop: Pick edge (u,v) arbitrarily, add u,v to C, and delete all edges from u or v
+> return C
+
+Proof: such an algorithm is a 2-approxiamtion algorithm. Let A be the set of picked edges. i.e. we have 2|A| vertex. We only need to show Copt is at least |A|. Since we need to cover every edge including all edges in A. One have to pick one vertex for each disjoint edge in A. Done.
+
+* set cover
+
+Problem: Given a set X and a family (possibly overlapping) subset Sm of X, pick some Si to make union of them as X, minimize the the number of Si.
+
+Approximation Set Cover: $\ln n+1$ approximation algorithm. Pick the largest subset and remove elements in it and repeat until all elements all deleted.
+
+Proof: Assume there is a Copt, with susets |Copt|=t. Let Xk be the set of elements in the iteration k. Xk of course can be covered by T. one of them covers at least |Xk|/t elements.
+So the alg is gonna pick a set with more elements than |Xk|/t. So $|X_{k+1}|\leq (1-1/t)|X_k|$. SO $|X_k|\leq e^{-k/t}n$.
+
+* partition problem and approximation scheme
+
+Problem: Set S of n items with weights s1,s2...sn,(descending order) partition S into A and B, to minimize max of weights of A and B. if we define the sum of S as 2L, then the obeject is just the sum weight of one set and substract L. worst case is 2-approximation.
+
+Approximation partition: 
+Define m = floor(episilon)-1
+First phase: Find an optimal partition A' B' of s1 to sm (brute force search $2^m=2^{1/\epsilon})$. (PTAS instead of full PTAS)
+Second phase: iteratively add elements to the small weights set A or B due to the sorting order
+
+Proof: assume w(A) is the larger on at the end, the ration is w(A)/L. suppose Sk is the last element added to A. This may be added in the 1st or 2nd phase. 1) if k is added to A in the first phase, namely all remaining elements are added to B, it is simply an optimal solution. 2) if k is added in the second phase, we know w(A)-Sk is less than w(B) at that time, i.e.$w(A)-S_k\leq 2L-w(A)$, $2L\geq (m+1)S_k$, so $w(A)/L\leq (L+S_{k}/2)/L\leq 1+\frac{S_k}{(m+1) S_k}=1+\epsilon$.
+
+### fixed-parameter algorithms
+
+idea: want exact results, but confine exponenttial dependence to a parameter. parameter K(x) is non negative interge where x is some input. we want polynomial in problem size but only exponential in parameter K. 
+
+Parameterized problem
+
+* vertex cover
+
+k-vertex cover: given graph G=(V,E), integer K, problem: is there a vertex cover S in V whose size is no larger than K? Natural parameter: K.
+
+Brute force: try all $C_V^k$ subsets of k verties. $O(EV^k)$. exponents of size depneds on k, bad case.
+
+Parameterized problem is Fixed-Parameter Tractable(FPT) if it can be solved in f(k)n^O(1), where the exponent of the size n doesn't depnedent on k.
+
+Bounded search tree algorithm: 
+
+>  consider any edge (u,v)
+>
+> guess u in S or v in S
+>
+> delete u and incident edges, K--, recurse on G'K'
+>
+> do the same thing for v
+>
+> return OR of the two branch for yes or no answer
+>
+> base case: k=0, return whether |E|=0
+
+Reveal complexity by recursive trees. $V2^k$, done.
+
+Thm: you can solve problem in $f(k)n^c$ if and only if $f'(k)+n^{c'}$ if and only if it has a kernelization.
+
+Proof: if n<=f(k): f(k)n^c<=f(k)^c+1; if n>f(k): f(k)n^c<=n^{c+1}, in both case f(k)n^c<=f(k)^{c+1}+n^{c+1}.
+
+if f(k)>=n: already kernelized case, if n>f(k): FPT alg runs in )(n^{c+1}) time, output a canonical yes or no input.
+
+* Kernelization
+
+Polytime alg. converting input (n,k) into equivalent small input (n',k'). (small means n'<f(k) )
+
+back to k-vertex cover problem. 1) if there is a self loop, delete the node and incident edges, decrease k and delete the node and incident edges of the node. 2) if there are many edges connecting two nodes, delete n-1 of such edges. 3) if vertex of degree larger than k, one must add it in the cover set. We now have a bounded graph. Now |E| should be less than k^2 to say yes. delete degree zero verteices. |V|<2k^2 to be judged. The remaining size is of order k^2, we are now having polynomial kernel!
+
+The total complexity:  O(VE) (actually O(V)) for kernelization, bounded search tree O(k^22^k). Best to now: O(kV+1.274^k)
+
+*  connection to approximation
+
+take optimization problem with integer aim. consider decision problem: OPT<=k, parameterize by k.
+
+Thm: optimization problem has EPTAS, then decision problem is FPT.
+
+EPTAS: $\rho=f(1/\epsilon)n^{O(1)}$.  usual way to use: no FPT proof lead to no EPTAS shceme.
+
+Proof: say the optimal problem is maximazation. run EPTAS with $\epsilon=1/(2k)$. it takes f(2k)n^O(1) time. This is just the correct answer, as the error bar is small than unity. (somewhat dejavu.)
+
 ## TODO
 
 - [ ] 16.4,16.5
+- [ ] cache related
+- [ ] distributed related
 - [x] matrix stuff
-- [ ] Van Emde Boas tree
+- [x] Van Emde Boas tree
 - [ ] 21
 - [ ] 22.5
 - [ ] 26.3-26.5
 - [ ] 27
 - [ ] 29
-- [ ] 30-35
+- [x] 30
+- [ ] 31-35
 
 ## REFERENCE
 

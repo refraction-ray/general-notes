@@ -1008,8 +1008,8 @@ Complexity: $O(VE+V^2\lg V)$.
 - [ ] induction proof of height of red-black tree
 - [x] OS rank algorithm in 11
 - [x] is delete of skiplist robust against continous deletion?
-- [ ] fast fouries transform
-- [ ] NP completeness
+- [x] fast fouries transform
+- [x] NP completeness
 - [ ] Primality Testing
 - [x] small space complexity to reconstruct LCS (D&C)
 - [x] Fibonacci heap for priority queue
@@ -1020,6 +1020,6 @@ Complexity: $O(VE+V^2\lg V)$.
 - [ ] graph theory in general
 - [x] breadth and depth first search in graph
 - [x] shortest-path-tree in 16
-- [ ] max flow
+- [x] max flow
 - [x] compute delta in all case in 17(even with negative loop) (cut all downstreams for their distance are negative infinity)
 - [x] DAG-topological sort
