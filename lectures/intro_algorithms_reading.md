@@ -320,7 +320,7 @@ Edmonds-Karp algorithm: BFS path is a shortest path in Gf from s to t where each
 
 analysis: 
 Lemma: $\delta_f(v)$ is the length of shortest path from source s to vertice v, such value does not decrease.
-Proof: Let v be the node with smallest $\delta_{f'}(v)$ such that, the lemma breaks, and let u be the predecessor of v in Gf', we have $\delta_{f'}(v)\=\delta_{f'}(u)+1>\delta_f(u)+1$
+Proof: Let v be the node with smallest $\delta_{f'}(v)$ such that, the lemma breaks, and let u be the predecessor of v in Gf', we have $\delta_{f'}(v) =\delta_{f'}(u)+1>\delta_f(u)+1$
 if (u,v) in Gf, $ lhs> \delta_f(v)+1$; if (u,v) not in Gf, we are augementing s-v-u in this case, namely (v,u) in Gf, $lhs=\delta_f(v)$.
 
 define C(p)=C(u,v), every time there must be a critical edge be augmented, and for every E, two times augmentation push u far away from s 2, therefore V*E times is limited.
@@ -415,6 +415,14 @@ Reudction from problem A to B: there is polytime algorithm converting A inputs t
 Namely NP completeness is the critical point between NP and NP hard.
 
 Just show 3SAT can reduce to the problem for the proof of NP hard. (Cook-Levin Thm states 3SAT is NP complete) (logic gate anyway in computation)
+
+EXP: problem solvable in at most exponential time $2^{n^c}$.
+
+R: problems solvable in finite time.
+
+Almost every problem is not in R. (Most decision problems are not in R.)
+
+Proof: program is just some binary string or just an integer. decision problem is a function map input (a number: data transform to binary) to 1,0 (equivalent to real number).  
 
 ### Approximation Algorithms
 
@@ -512,11 +520,237 @@ EPTAS: $\rho=f(1/\epsilon)n^{O(1)}$.  usual way to use: no FPT proof lead to no 
 
 Proof: say the optimal problem is maximazation. run EPTAS with $\epsilon=1/(2k)$. it takes f(2k)n^O(1) time. This is just the correct answer, as the error bar is small than unity. (somewhat dejavu.)
 
+* Metric TSP
+
+Metric: with triangular inequality. Traveling Sales Man. It has 3/2-approximation alg.
+
+2-approx alg: find the minimum spanning tree first, and do a DFS traversal, remov duplicates by just skip them. So it is small than two times weight of MST. And the cost of MST is bounded by the OPT by considering that one edge removing from OPT is a tree cost more than MST.
+
+Lemma: cost of OPT in subset is no more than cost of OPT in the parent set in metric TSP.
+
+perfect matchings of complete graph can be found in polymial time.
+
+3/2-approx alg: Pick all odd degree nodes of MST(even number of nodes), find minimum weight perfect matching of them add these edges back to the MST. Then one can draw Euler circuit. Note the cost of matching is less than half of the cost of OPT in odd degree graph, we are now having 3/2-approxiamation.
+
+## Distributed system
+
+Algorithms run on multiple processors. 
+
+Distributed Networks: $\Gamma(u)$ set of nerighbors of u, communication over edges.
+
+### Synchronous distributed algorithms
+
+[Slides](https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-046j-design-and-analysis-of-algorithms-spring-2015/lecture-notes/MIT6_046JS15_lec19.pdf). For each node, only know local names by degree, have no idea on the global graph structure. Complexity focus on the number of round and communication cost.
+
+* Leader Election
+
+Simple case: all vertices are directly connected to all others. Thm: there is no determinstic alg guranteed to elect a leader in such case. So symmetry breaking is necessary.
+
+UID: unique number assigned for each node, totally-ordered set.  for leader election, take 1 round and n^2 bit message.
+
+Randomness: just auto generate UID randomly. 
+Lemma: uid pool size is $r=n^2/(2\epsilon)$, then probability that all pick different uid is $1-\epsilon$. Such alg take expected time is $1/(1-\epsilon)$. 
+
+Leader election on the rings, $O(\lg n)$ round.
+
+* Maximal Independent Set
+
+Choose a subset of nodes to from MIS. No two neighbors are both in the set, and cannot add any more nodes without violating independence. MIS(not unique, even not with the same number of nodes for diff answer, locally MIS actually).
+
+Each pocess output in or out to indicate whether itself is in MIS. unsolvable for some graph with determinstic alg. Application: main route of communication.
+
+Luby's MIS Algorithm:
+In, out, active(initially), inactive reduce graph each phase. 
+Round 1: pick a random value r every phase within n^5 and send it to all active neighbors. receive values from all neighbors, if r is max, output in. Announce join mess to all neighbors, any body receive output out. In and out both trun to inactive.
+
+Correctness: obvious for independence and max. 
+Complexity: with probability 1-1/n, all nodes decide within $4\lg n$ phases.
+Proof: With probability 1-1/n^2, in each phase, all nodes choose different random value. For each phase, the active edges expectation reduce to half. Suppose in each phase w picked largest value of neighbor of w and neighbor of w's neighbor u. The probability is 1/(deg(u)+deg(w)). Probability u is killed is at least $\sum_{w\in \Gamma(u)}\frac{1}{deg(u)+deg(w)}$. The expect number of edge die is larger than $1/2\sum_u\sum_{w\in \gamma(u)}\frac{deg(u)}{deg(u)+deg(w)}$ (note two can be both killed in the same round). rewriten the sum over undirected edges, we can now prove the lemma edges decrease by half every phase. Now you can argue in expectation sense or w.h.p sense.
+
+* Breadth-First Spanning Trees
+
+root of the tree is predefined UID is assigned to every node. Distance equal depth in the tree of all vertex. output of every node is the parent in the tree. Naive: just send mess to its neighbors every round. The receiving should pick one of the sender as its parent.
+
+such alg is nondeterminism but non-randomness. (always choose min UID to make it determinstic). complexity: number of round: max distance from the root. message complexity: O(|E|). some augments: child pointer, distance value.
+
+How to end?  termination algorithm: send by no parent mess, then one can know itself is a leaf. The leaves sending done mess to its parents. And everyone do this if its subtree is done. finally the root know the construction is done.
+
+Appliacations: fast boradcast from the root. or data collection from childrens by convergecasting.
+
+* shortest path trees
+
+now edges are with non-unity weights other settings are the same as above. every node know the weights of incident edges. every node output weighted distance and parents.
+
+Bellman-Ford shortest paths algorithm:
+state variables: dist. initially infinity, representing the known shortest path from the root. parent initially undifined, and uid.
+> Each round: send dist to all neighbors, receive all dist and do relax, if dist decrease, then set parent as the receiver producing the new dist
+
+Time complexity: n-1 rounds, message complexity: O(n|E|)
+
+Invariant: r round past, every node got their shortest path for no more than r nodes.
+
+Termination: send done when all children done, but all things are changing , so such process may invovled many times. (*complexity and correctness proof?*)
+
+### Asynchronous distributed algorithms
+
+[Slides](https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-046j-design-and-analysis-of-algorithms-spring-2015/lecture-notes/MIT6_046JS15_lec20.pdf). No rounds now, processes get out of sync. Communication channel (I/O automaton), a FIFO queue for mess receive and send.
+
+Max value: O(n|E|). real-time upper bounds. d for a channel to deliver the next mess and l for a process to perform its next step. O(diam n d). *Terminate?*
+
+Async version of BFS trees. There is anomaly and not working in naive version. still O(diam d)! others only be faster. 
+Improvement: use Bellman-Ford, bookmarking the hopping distance. O(diam n d)
+
+Shortest spanning tree: same alg but exponential complexity!
+
+## Cryptography
+
+### Hash functions
+collision resitance. random, determinstic, public. $h: \{0,1\}^*\rightarrow \{0,1\}^d$. poly time for hashing.
+
+Random oracle. (not achievable in practice)
+Oracle: on input x of string, if x is not in book, flip coin d (number of bits) times to determine h(x).
+
+Desirable Properties:
+One-Way (pre-image resistance): Infeasible to find any x such that h(x)=y
+Collision Resistance: infeasible to find x and x', such that their image are the same
+Target collision resistance: infeasible given x, to find x' such that their image are the same.
+Pseudo randomeness: behavior indistighuishable from random.
+Non malleability: infeasible given h(x) to produce h(x') where x and x' are related in some fashion.
+
+CR imply TCR (TCR is weaker).
+Suppose h is OW and TCR. change input x'0+x'1 instead of x0, now it is still one way but not TCR. (OW doesn't imply TCR)
+construct h' x if |x| is less than n, otherwise normal h(x). (TCR doesn't imply OW)
+
+Application: password save in database, file integrity, abstract of message to be signed, commitment (CR, OW and NM is needed for commitment).
+
+### Encryption
+
+Symmetric key encryption. $c=e_k(m)$, c:cipher text, k: key, m: message. and decryption function $m=d_k(c)$. reversible operation is needed (say permutation or exclusive OR). eg. AES (Advanced Encryption Standard). [Implementation of AES](https://blog.csdn.net/lrwwll/article/details/78069013).
+
+Diffie Hellman Key exchange: $G=F_p^*$ finite field (mod prime p, inversible elements only).
+Alice slecet random a. Public g and p. Compute g^a. Bob select b and g^b. g^b^a mod p is the same as g^a^b mod p. (color mixing analogy) Discrete log problem is considered 'hard'.
+
+Diffie Hellman, give g^a, g^b, shoudn't work out g^ab. MIMA: certificate system.
+
+RSA: Alice pick two large secret p and q. N=pq. choose and expoenent e which satisfies gcd(e, (p-1)(q-1)) = 1. (RSA pick 3, 17,65537). Alice public key (N,e). Decryption exponent obtained  using extended Euclidean Alg by Alice, ed = 1 mod (p-1)(q-1). Alice's private key (d,p,q).
+Encryption: c = m^e mod N,  decryption: m= c^d mod N.
+
+Thm: (Fermat little Thm) m^{p-1} = 1 (mod p). when p is prime.
+Functionality: phi = (p-1)(q-1), since ed =1 mod phi , then ed = 1+ k phi. Two cases: 1) gcd(m, p) =1.$ (m^{p-1})^{kq-k} m = m (\mod p) $, ie m^{ed} = m (mod p)   2) gcd(m,p)=p, m mod p =0. m^{ed} = m
+
+The same argument for q. Together make mod N work.
+
+NP completer & crypto: Is N composite? This is in NP, but unkown is NPC. Is a graph 3-colorable?  This is NPC. Building crpto system based on 3-colorable graph.
+
+Knapsack: S = b_iw_i, bi is 0 or 1, find assignment of bi to make ths euqal. NPC. Crypo based on this fails. (broken quickly). Worst case is not the average case. But factoring is always that hard on the average.
+
+Super-increasing knapsack problem is easy (linear time). $w_i\geq \sum_{i=1}^{j-1}w_j$.
+
+The original broken idea: private key is a super increasing knapsack. via private transformation (wi' = wi*2*N mod M) into a hard general knapsack problem which is the publickey. See [wiki](https://en.wikipedia.org/wiki/Merkle%E2%80%93Hellman_knapsack_cryptosystem) for details on this system and [instance](http://www.math.stonybrook.edu/~scott/blair/Breaking_Knapsack_Cryptosys.html) where it is broken.
+
+* digital sign
+
+correctness, unforgeability
+
+the original attempt (broken): just inverse the encryption process. mutiplicative homo (just times the old tex t whose sign is the product of old sign)! or simply choose sign first and compute the message. 
+
+improvements: use hash of message to sign, fix the two attacks before. (ad hoc security: no broken method no proof on security)
+
+* Message authentification code (MAC)
+
+only one with the same key to check and mac it. just a hash with some salts. Only some case works subtlely. (*special hash scheme with special contance scheme?*)
+
+* Merkel tree
+
+Problem: make sure the integrity of files on the cloud. files hashes as leaves. hashes them binarily. only store the root hash in local storage O(1). check time O(lg n).
+
+## Linear programming
+
+general settings: Some linear ineuqality and an optimal linear expression. (n variables and m constraints and one object) real version (if variable is restricted to integer value, the problem is NP complete)
+
+Standard form: maximize  $\vec{c}\cdot\vec{x}$, subject to $Ax\leq b$ and all x is non-negative.
+
+Certificate of optimality, LP duality. Thm: for stand form LP, there is a dual LP as min $\vec{b}\cdot\vec{y}$ subject to the constraints $A^Ty\geq c$ with y all nonnegative.
+
+Convertion of LP into standard form. Switch sign for most case. Case: x does not follow non-negative property. Solution: replace it as x'-x'' and require them to be non negative. Case: equality constraint. Solution: <= and -<=.
+
+* Maxflow
+
+Constrains: skew symmetry, conservation, capacity. Multiple commodity max flow.
+
+* shortest path
+
+single source path d[v]. triangle inequality. $d[v]-d[u]<w(u,v)$ for all (u,v) in E. the objective max \sum d[v], it is max!!!
+
+### simplex algorithm
+
+Exponential cost. Represent LP in slack form. The orginal variables are call non-basic variable. Make inequalities as basic varibles, where zero is the bound. set all non-basic variables as zero. compute values of basic variables. Select a nonbasic varible whose coeeficient in obejctive is positive, increase the value of it as much as possible without violating any of the constraints. This variable becomes basic and some other variable become non-basic. (objective may change) Hopefulling, all the steps can converge finally.
+
+## Cache
+
+Memory hierachy: L1 to L4, RAM to disk. bandwidth and latency. latency becomes high, but bandwidth can match for diff levels (RAID for disk). blocking the infomation to mitigate latency. 
+amortized cost over the block:  latency/block size+1/banwidth. spatial and temporal locality algorithms are need.
+
+External memory model: two level-memory model. M/B blocks in cashe, with size B. Disk is infinite in size and also divided in block size B. Count the number of blocks IO (memory transfers).
+
+Cache-oblivious model: algorithm doesn't know cache parameters B and M. Kick out policy: LRU or FIFO, n - competive.  optimal for all levels at the same time.
+
+* Scanning
+sum of an array. alg: just sum. cost: ceil[N/B]+1. (unkown boundary)
+
+reverse the array
+> for i in range(N/2): swap A[i] A[N-i-1]
+
+cost O(N/B)
+
+* Divide and Conquer
+
+divide the problem into the problem size fits in O(1) blocks or fits in memory size M
+
+* Median finding
+
+5 column scheme with worst case O(N). remember store media array contiguously.
+sort each 5 elements: cost O(N/B+1), recusively MT(N/5), partition O(N/B+1), recusively MT(7/10N). The base case should be used: MT(O(B))=O(1). We can also show MT(N)=O(N/B+1). (root cost determines the total cost)
+
+* matrix multiplication
+
+if two matrix is stored row by row and column by cloumn correspondingly, the total cost for naive dot product is O(N^3/B+N^2).
+
+D&C solution: MT(N)=8MT(N/2)+O(N^2/B+1), though layout of output matrix is somewhat weird. The base case should be used: $MT(\sqrt{(M/3)})=O(M/B)$. finally $MT=N^3/\sqrt{M}B$.
+
+* LRU
+
+$LRU_M\leq 2 OPT_{M/2}$ . 
+
+Proof: divide timeline into max phases of M/B distinct block access. LRU_M(phase)<=M/B
+
+OPT_M/2(phase)>=1/2 M/B
+
+* search
+
+binary search : lg N/B
+
+B- trees: $\Theta(\log_B N)$, optimal for comparison model, but alg have to know the cache parameter, not a cache oblivious.
+
+van Emde Boas layouts: in what order should we store balance binary trees? save tree half, half. upper half with square root of N nodes, and lower half is a bunch of sub trees of square root of N nodes. and recursively follow the layout to store the tree.
+
+cost 2\lg N/ 0.5\lg B = 4\log_B N, fourth of the optimal of B trees. in general cash oblivious weak than cash aware, just like online lose the offline. Actually such structure can be dynamic with memory transfer such order.
+
+* sorting
+
+N inserts into B trees: $\Theta(N\log_BN)$.
+
+Mergesort: MT(N)=2MT(N/2)+O(N/B); base case MT(M)=O(M/B). MT=N/B lg (N/M).
+
+M/B(-1) way of merge sort: MT(N)=M/B MT(N/(M/B))+O(N/B), MT=$N/B\log _{M/B}N/B$ , optimal. cache aware sorting alg.
+
+cache oblivious sorting: can achieve the same bound. require tall-cache assumption. ($M\geq B^2$). $N^\epsilon$ way mergesort (funnel sort).
+
 ## TODO
 
 - [ ] 16.4,16.5
-- [ ] cache related
-- [ ] distributed related
+- [x] cache related
+- [x] distributed related
 - [x] matrix stuff
 - [x] Van Emde Boas tree
 - [ ] 21
@@ -525,9 +759,9 @@ Proof: say the optimal problem is maximazation. run EPTAS with $\epsilon=1/(2k)$
 - [ ] 27
 - [ ] 29
 - [x] 30
-- [ ] 31-35
+- [ ] 31-33
 
 ## REFERENCE
 
-* THE BOOK
+* THE CLRS BOOK
 * a solution manual: [link](http://sites.math.rutgers.edu/~ajl213/CLRS/CLRS.html)
