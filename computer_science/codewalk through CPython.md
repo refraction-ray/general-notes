@@ -93,6 +93,12 @@ closure, nested fun def, with inner variable kept. the nested define fun obj glo
 
 Objects/iterobject.c 
 
+## User defined classes
+
+Opcode `BUILD_CLASS`, class init opcode is just like an ordinary function call, name, base class, code object for methods. metaclass to create class and be called when class is created.
+
+`PyClassObject`, `PyInstanceObject`: in_class pointer, there is dict in class and dict in instance, `dir` automatically include all attrs from parents' dict. `im_func,im_class,im_self` for method in class `PyMethodObject`
+
 ## Reference
 
 1. http://pgbovine.net/cpython-internals.htm

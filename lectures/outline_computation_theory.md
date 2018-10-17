@@ -47,20 +47,36 @@
 ## Complexity theory
 
 * Big O notation
+
 * worst case vs. average case analysis
+
 * *hierarchy: computability (computable vs. uncomputable), complexity (tractable vs. intractable), algorithm theory (n^3 vs. n^2.87)*
+
 * class P
+
 * *all deterministic computation model are polynomially equivalent*
+
 * *space complexity*
+
 * P vs. Pseudo P algorithm (input length instead of value)
+
 * two definitions of NP
+
 * P vs. NP
+
 * **NP hard and NP completeness**
+
 * **polynomial time mapping reducible**
+
 * **Cook-Levin Thm**
+
 * 3SAT is NPC
+
 * **proof procedure to show NPC**
+
 * *cryptography related: 1. no safety proof and P=NP, 2. worst case hard vs. average case hard*
+
+* *game definition, Sigma and Pi complexity hierarchy*
 
 ## Guidelines for further reading
 
