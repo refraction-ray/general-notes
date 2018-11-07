@@ -122,7 +122,7 @@ Suppose x and x' are two different solutions to the system of equations. Then $x
 
 **Comment:** (existence of a small solution) Based on the proof, there must be a solution $x<M$. If the explicitly constructed solution $x'>M$, we use the solution $x=x'\mod M$.
 
-**Comment:** (deep structure of this thm) In fact, Chinese remainder theorem is deeply correlated with the rings decomposition and hence play a central role in the proof of primary number theory. That is to say, if we take a high level view from advanced algebra, most of the conclusions and progress from primary number theory are correlated with the decomposition of $Z/nZ$ rings.
+**Comment:** (deep structure of this thm) In fact, Chinese remainder theorem is deeply correlated with the rings decomposition and hence play a central role in the proof of primary number theory. That is to say, if we take a high level view from advanced algebra, most of the conclusions and progress from primary number theory are correlated with the decomposition of $Z/nZ$ rings. In fact, thm 4.1 gives the duality between $Z_n$ and $\otimes_j Z_{p_j^{\alpha_j}}$ which is trivial. Besides thm 4.1 also gives the duality between $Z/nZ$ and $\otimes_j Z/(p_j^{\alpha_j}Z)$ which is nontrivial and actually the proof of Lemma 4.3 below.
 
 ### Fermat's little theorem
 
@@ -165,6 +165,62 @@ For the more general case, note every integer has prime factorization. And these
 **Theorem 4.5: ** $Z/nZ$ is cyclic iff $n=1,2,4,p^k,2p^k$,  where p is an odd prime and k>0.
 
 **Proof:** It is straightforward to show the results if we are equiped knowledge with abstract algebra, see [this note](https://pi.math.cornell.edu/~mathclub/Media/mult-grp-cyclic-az.pdf) for the proof.
+
+## Reduction of factoring to order-finding
+
+### Order
+
+**Definition:** Suppose N is a positive integer and x is coprime to N, the order of x modulo N is defined to be the least positive integer r such that $x^r=1\mod N$.
+
+**Comment:** Note the periodic behavior of $f(y)=x^y\mod N$ and $r\vert \varphi(N)$.
+
+### The  First step
+
+**Theorem 5.1:** Suppose N is a composite number and a is coprime to N. Suppose r is the order of a modulo N. If r is even and $a^{r/2}\neq -1\mod N$, then N has a nontrivial factor as $s=\gcd (a^{r/2}-1,N)$.
+
+**Proof:** Since $N\vert (a^{r/2}-1)(a^{r/2}+1)$, and thus N must have a common factor with at least one of them. But $a^{r/2}\neq 1\mod N$ since r is order of a, namely $N\nmid a^{r/2}-1$. Besides, we have the condition $N\nmid a^{r/2}+1$, therefore both term contains nontrivial factor of N. Specifically, $s>1$ is a nontrivial factor of N.
+
+**Comment:** nontrivial solution means that $x\neq \pm 1\mod N$.
+
+### The Second Step
+
+**Lemma 5.1:** Let p be an odd prime and  $2^d$ be the largest power of 2 that $2^d\vert \varphi(p^\alpha)$. Then with probability $1/2$, $2^d$ divides the order modulo $p^\alpha$ of a randomly chosen element from $Z/p^\alpha Z$.
+
+**Proof:** Note that $\varphi(p^\alpha)=p^{\alpha-1}(p-1)$ is even so $d\geq 1$. By theorem 4.5, there exist a generator g, s.t. every element in $Z/p^\alpha Z$ can be written as $g^k\mod p^\alpha$ for k range from 1 to $\varphi(p^\alpha)$. Let r be the order of $g^k$ modulo $p^\alpha$, consider two cases. 1) When k is odd, from $g^{kr}=1\mod p^\alpha$, we have $\varphi(p^\alpha)\vert kr$. And thus $2^d\vert r$. 2) When k is even, $g^{k\varphi(p^\alpha)/2}=1^{k/2}\mod p^\alpha$. Thus $r\vert \varphi(p^\alpha)/2$. But since $2^{(d-1)}$ is the largest power of 2 which can divide $\varphi(p^\alpha)/2$, we conclude that $2^d\nmid \varphi(p^\alpha)$.
+
+**Comment:** (structure of $Z/p^\alpha Z$) There are two classes of elements $g^k$. For even k, $2^d\vert r$ where r is the order of $g^k$. For odd k, $2^d\nmid r$.
+
+**Theorem 5.2:** Suppose $N=\prod_{j=1}^m p_j^{\alpha_j}$ is the prime factorization of an odd composite positive integer. Let x be chosen randomly from $Z/NZ$, and let r be the order of x modular N. Then 
+$$
+Pr((r\vert 2) \and (x^{r/2}\neq-1\mod N))\geq 1-\frac{1}{2^{(m-1)}}
+$$
+**Proof:** We show that $Pr((r\nmid 2) \or (x^{r/2}=-1\mod N))\leq \frac{1}{2^{(m-1)}}$. And label them as condition 1 and condition 2.
+
+By theorem 4.1, choosing x from $Z/nZ$ is equivalent to choosing $x_j$ independetly from $Z/p_j^{\alpha_j}Z$ and requiring the system of equations $x=x_j\mod p_j^{\alpha_j}$ for each j. Let $r_j$ be the order of $x_j$ modulo $p_j^{\alpha_j}$ and $2^{d_j}$ be the largest power of 2 that divides $r_j$. We will show that to satisfy condition 1 or 2, all $d_j$ have to take the same value as $d$. 
+
+Note $r_j\vert r$ , since $n\vert x^r-1$ leads to $p_j^{\alpha_j}\vert x^r-1$, namely $x^r=1\mod p_j^{\alpha_j}$. 1) If r is odd, all $r_j$ is odd, then $d=d_j=0$. 2) If $x^{r/2}=-1\mod N$ , then $x^{r/2}=-1\mod p_j^{\alpha_j}$. Therefore, $r_j\nmid r/2$. Together with the fact $r_j\vert r$,  we have $r=s r_j=st 2^{d_j}$, where s and t are both odd integers. Thus we have $d_j=d$.
+
+Let's now figure out the probability of all $d_j$ are equal. Say we randomly pick $x_1$ and determine $d_1$, then all $m-1$ terms must be the same. Suppose $2^{d_1}\vert \varphi(p_2^{\alpha_2})$, which is the largest power of 2 that divides phi. The probability of such event is no more than 1. Then based on the lemma 5.1, $P(2^{d_1}\vert r_2)\leq 1\times1/2=1/2$. In total, we show the probability is no more than $\frac{1}{2^{m-1}}$.
+
+**Comments:** In other words, let N be odd and not a power of a prime (N at least be factorized into two different primes). $a$ is picked randomly from $Z/nZ$ (pick $1<a<N$ which is coprime to N),  say the order of a modulo N is r, then the probability that r is even and $a^{r/2}\neq \pm 1\mod N$ is no less than one half. This fact is directly from thm 5.2. $a^{r/2}\neq 1\mod N$ is due to the fact that r is the order of a (smallest integer make $a^r=1\mod N$).
+
+### The algorithm for factoring
+
+**Algorithm:** (factoring with subroutine of order finding)
+
+1. Make sure the input N is not even (else return 2 as a factor) and not power of some prime (else return such prime as factor).
+2. Randomly choose $1<x<N$. Compute $\gcd (x,N)$, if $\gcd(x,N)>1$, return it as a factor, else continue.
+3. Determine the order r of x modulo N.
+4. If r is even and $x^{r/2}\neq -1\mod N$, continue, else the algorithm fails, try another x to repeat the algorithm.
+5. Compute $\gcd (x^{r/2}-1,N)$, and test to see which is a non-trivial factor of N. Return such factor.
+
+**Correctness**: The correctness of the above algorithm is obvious following theorem following thm 5.1 and 5.2. In the first two steps, we are creating the condition of thm 5.2. The step 4 is successful with probability more than one half. So the randomized algorithm can achieve exponential success probability with several more trials. Step 5 is following thm 5.1.
+
+**Complexity analysis**: It is obvious all steps can be done in polynomial time except step 3. The factor finding subroutine has no known classical algorithm with P complexity (though no theoretical lower bound of complexity, either). However, step 3 can be achieved by quantum algorithm named after Shor in polynomial times.
+
+The complexity of step 1: check whether N is power of some prime. The approach is as following. We calculate $N^{1/k}$ for $k=2,…\log_2 N=L$. If any of these is an integer, we have found a factor. Otherwise, such N is not a power of an integer. So the complexity is still in polynomial time.
+
+Finally the input of the above algorithm is promised to be a composite number. What if the input might be prime itself. Firstly, we already have determinstic primality test known as AKS primality test which is in P. And we can use such a subroutine before step 1 to make sure N is not a prime. Secondly, the algorithm itself is a good randomized primality test procedure. If the algorithm fails sufficient rounds, we are confident that the input N is a prime with high probability.
 
 ## References
 
