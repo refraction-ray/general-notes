@@ -17,7 +17,7 @@
 
 ### Fundamental Theorem of Arithmetic
 
-**Theorem 1:** Any integer a greater than 1 has a prime factorization of the form $a=\Pi_i p_i^{a_i}$, where $p_i$ are distinct prime numbers. And such prime factorization is unique.
+**Theorem 1.1:** Any integer a greater than 1 has a prime factorization of the form $a=\Pi_i p_i^{a_i}$, where $p_i$ are distinct prime numbers. And such prime factorization is unique.
 
 **Proof:** 1. It is easy to show the existence of such factorization by induction and the definition of composite number. 2. The uniqueness of such factorization can be easily shown by Euclid's lemma. And there is also direct argument by contradiction, see [here](https://en.wikipedia.org/wiki/Fundamental_theorem_of_arithmetic#Elementary_proof_of_uniqueness).
 
@@ -26,6 +26,33 @@
 **Euclid's Lemma:** If prime p, $p\vert ab$, then $p\vert a$ or $p\vert b$ at least one of them is true.
 
 **Proof**: We prove this lemma without Bezout's identity. Say $p\nmid a$, since $p\vert ab$, there is integer m s.t. $mp=ab$, namely $p:a=b:m$. Since $p,a$ is coprime, then $\frac{p}{a}$ is the simplest fraction. And all other fractions of the same value take the form $$\frac{np}{na}$$. That is to say, $b=np$, namely $p\vert b$. QED.
+
+### Factorization of Factorial
+
+**Definition:** $[a]$ give the largest integer no more than a. eg. $[b]=0$ for $0<b<1$.
+
+**Lemma 1.1:** Suppose a and b two positive integers, count of integers t which $$t\leq a$$ and $b\vert t$ is $[a/b]$.
+
+**Theorem 1.2:** In the prime factorization of $n!$, the index of p is given by
+$$
+h=\sum_{r=1}^\infty[\frac{n}{p^r}].
+$$
+**Proof:** Note only a few terms are nonzero, so the sum to infinite make sense. Imagine we factorize every integer from 2 to n, say among them there are $n_j$ numbers with factor p of power $j$ , then
+$$
+\begin{align}
+h&=n_1+2n_2+3n_3+...\\
+&= N_1+N_2+N_3
+\end{align}
+$$
+where $N_j=n_j+n_{j+1}+…$ is just the count of numbers which can be divide by $p^j$ and no more than $n$, which truns out as $N_j=[n/p^j]$. QED.
+
+**Corollary 1.1:** $\frac{n!}{k!(n-k)!}$ is an integer.
+
+**Proof:** $[n/p^r]\geq [(n-k)/p^r]+[k/p^r]$. Therefore we have
+$$
+\prod_{p\leq n}p^{{\sum_{r=1}[(n-k)/p^r]+[k/p^r]}}~\vert\prod_{p\leq n}p^{\sum_{r=1}[n/p^r]}.
+$$
+The above formula is just $k!(n-k)!\vert n!$ 
 
 ## Modular Arithmetic
 
@@ -47,7 +74,7 @@ Suppose $a_i=b_i\mod n$, we have
 
 **Definition:** The greates common divisor of a and b, written as $\gcd (a,b)$, is the greatest common elements from the divisor lists of a and b.
 
-**Comments:** (Naive complexity) Based on the definition of gcd, the problem of finding gcd of two numbers is not easier than prime factorization. We will show clever algorithms finding gcd below which is in P.
+**Comment:** (Naive complexity) Based on the definition of gcd, the problem of finding gcd of two numbers is not easier than prime factorization. We will show clever algorithms finding gcd below which is in P.
 
 **Definition** of coprime: a,b are said to be coprime, if $\gcd (a,b)=1$.
 
@@ -79,7 +106,7 @@ In this section, we will focus on the euclid's algorithm for finding gcd, includ
 
 ### Theorem for the equivalence of gcd
 
-**Theorem 3:** Let r be the remainder when a is divided by b (a>b), then $\gcd (a,b)=\gcd (b,r)$.
+**Theorem 3.1:** Let r be the remainder when a is divided by b (a>b), then $\gcd (a,b)=\gcd (b,r)$.
 
 **Proof:** Since $r=a-kb$ and $\gcd (a,b)\vert a,b$, we have $\gcd (a,b)\vert b,r$. By corollary 2.1, we have $lhs\vert rhs$.
 
@@ -89,7 +116,7 @@ On the other hand, $a=kb+r$, we have $\gcd(b,r)\vert b,a$, then $rhs\vert lhs$. 
 
 **Euclid's Algorithm:** Iteratively replace the larger number with the remainder, until the remainder is zero. Then the divider (smaller number) in the last round is the gcd. The correctness of the algorithm is ensured by theorem 3.
 
-**Comment:** (Algorithm finding the representation of gcd) As a byproduct, this algorithm can also be used to decompose gcd into standard representation as in theorem 2. Namely, find integer x,y, s.t. $ax+by=\gcd (a,b)$. This is done be go into the reverse direction on Euclid's algorithm, which take the larger and larger numbers into the expression, until we are back with the two numbers a and b, and the prefactor of them are x and y.
+**Comment:** (Algorithm finding the representation of gcd) As a byproduct, this algorithm can also be used to decompose gcd into standard representation as in theorem 2. Namely, find integer x,y, s.t. $ax+by=\gcd (a,b)$. This is done by going into the reverse direction on Euclid's algorithm, which take the larger and larger numbers into the expression, until we are back with the two numbers a and b, and the prefactor of them are x and y.
 
 ### Complexity analysis
 
@@ -100,6 +127,10 @@ Suppose a, b can be represented by L bit strings. Namely $a,b<2^L$. The key obse
 Euclid's Algorithm can also be used to find the modular inverse. This idea is directly from corollary 2.3. Since $aa^{-1}+n(-k)=1$, we only need to run Euclid's algorithm to find the representation of $\gcd (a,n)=1$. The corresponding coefficient is $a^{-1}$.
 
 Now we are equiped with algorithms to solve linear equation in modular arithmetic as $ax+b=c\mod n$, where a and n are coprime. The solution is $x=a^{-1}(c-b)\mod n$, and can be solved efficiently.
+
+**Theorem 3.2:** $ax=b\mod m, a\neq 0\mod m$ has solution iff $\gcd (a,m)\vert b$. If it has solution, then the number of solutions (in the sense of modulo m) is $d=\gcd(a,m)$.
+
+**Proof:** The eq. has solution iff $ax-my=b$. According to Bezout's identity (thm 7.2), this is equivalent to $d\vert b$. If there is a solution $x$, then all solution can be expressed as $x=mt/d+x_0$ for any integer d. Under modulo m, there is d different solutions. QED.
 
 ## From Chinese remainder theorem to Fermat's little theorem
 
@@ -222,10 +253,151 @@ The complexity of step 1: check whether N is power of some prime. The approach i
 
 Finally the input of the above algorithm is promised to be a composite number. What if the input might be prime itself. Firstly, we already have determinstic primality test known as AKS primality test which is in P. And we can use such a subroutine before step 1 to make sure N is not a prime. Secondly, the algorithm itself is a good randomized primality test procedure. If the algorithm fails sufficient rounds, we are confident that the input N is a prime with high probability.
 
+### Reduce order finding to factoring
+
+Let's finally explore the other direction and finish concluding the equivalence between the two problems. The idea is from [this answer](https://math.stackexchange.com/a/1025593). Suppose we have efficient way to factor composite number and get prime factorizations. To find the least r such that $a^r=1\mod N$ where a and N is coprime, we first factorize N to get $\varphi(N)$ using Euler thm 4.3. Then we factorize $\varphi(N)=\prod_{j=1}^kp_j^{\alpha_j}$. Note $a^{\varphi(N)}=1\mod N$ based on thm 4.4, r must be of the form $r=\prod_{j=1}^kp_j^{\beta_j}$, where $0\leq\beta_j\leq \alpha_j$. Let $m=\varphi(N)$, we divide $m$ by $p_j$ each time, and compute $a^{m/p_j}\mod N$, if this value is 1, we let $m=m/p_j$. Continue the process until for all $p_j$, $a^{m/p_j}\neq 1\mod N$.
+
+**Algorithm**: (order finding with subroutine of factoring)
+
+1. With input N and a coprime with each other, factorize $N$ to compute $\varphi(N)$ and then factor $\phi(N)$ to get its prime factors $p_j$.
+2. Let $m=\varphi(N)$, for each $p_j$, if $m/p_j$ is an integer and $a^{m/p_j}=1$, let $m=m/p_j$, continue step 2. Else, m is the final result of the order.
+
+**Complexity analysis:** The correctness of the above algorithm is obvious. The complexity except the factoring part is also in polynomial time. To see this, note $\sum_{j=1}^k\alpha_j\leq \log_2 N$ , $k\leq \log_2N$ and $m\leq \varphi(N)\leq N$. We try loop in step 2 at most $\sum_{j=1}^k\alpha_j$ round, in each round we reduce $\varphi(N)$ with one prime factor, in each loop we test at most $k$ integers and each check $a^{m/p_j}\mod N$ can also be carried out in $O(\log_2 m)=O(\log_2 N)$ steps by divide and conquer of the multiplication. To sum up, the total complexity is $O(\log_2^3N)=O(L^3)$.
+
+**Comment:** (main conclusion) Factoring problem is equivalent to order finding problem in the sense of complexity. No one is harder than the other.
+
+## Continued Fractions
+
+### Notation
+
+Say real number $s=a_0+\frac{1}{a_1+\frac{1}{a_2+\frac{1}{a_3+...}}}$ which can be written as $s=[a_0,a_1,a_2,a_3…]$, such an expression for real numbers are continued fractions. The idea is to describe real number with integer alone and without affection of base.
+
+A finite simple continued fraction is finite, such an expression occurs iff the number to be expressed is rational. Simple denotes that all $a_i$ are integers. Finite denote the sequence of $a_i$ is finite.
+
+nth convergent of a continued fraction is the first n digit of the continued fraction.
+
+### Continued fraction algorithm
+
+**Theorem 6.1:** A rational number $x$ great than 1 has a representation as a finite continued fraction. Such representation can be found by continued fraction algorithm.
+
+**Proof:** Directly construct by the algorithm. The algorithm iteratively decompose the number into integer part and true fraction part (which can be treat as the reciprocal of the denominator), continue the process until we meet 1 in the numerator of the decomposition. In this algorithm, the numerator decreases strictly, so rational number must have finite continued fraction.
+
+**Comment:** (ambiguity of the above algorithm) The only possible ambiguity comes at the final stage of the above algorithm. Namely, either $a=a$ or $a=(a-1)+1/1$. That is to say, $[…a_n]=[…a_n-1,1]$.
+
+**Theorem 6.2:** (expression for given continued fraction) Given $a_0,…a_N$, we have $[a_0,..a_n]=\frac{p_n}{q_n}$. $p_n,q_n$ are defined inductively by $p_0=a_0,q_0=1$ and $p_1=1+a_0a_0,q_1=a_1$. And for $2\leq n\leq N$, 
+$$
+p_n = a_n p_{n-1}+p_{n-2}~~~q_n=a_nq_{n-1}+q_{n-2}
+$$
+**Proof:** Proof by induction, case for $n=0,1,2$ is easy to check. For $n\geq 3$, $[a_0…a_n]=[a_0…a_{n-2},a_{n-1}+1/a_n]$. By induction hypothesis, let ${\hat p_{n-1}}/{\hat q_{n-1}}=rhs$, based on the recusive formula and the hypothesis that $\hat p_{n-3}=p_{n-3},\hat p_{n-2}=p_{n-2}$ (the same is true for q), we have $$\hat p_{n-1}/\hat q_{n-1}=p_n/q_n=lhs$$. QED. 
+
+**Comment:** Note in thm 6.2, $a_i$ needn't be integers. But if they are integers, so are p and q. 
+
+**Corollary 6.1: ** $q_np_{n-1}-p_nq_{n-1}=(-1)^n$. And thus $\gcd (p_n,q_n)=1$.
+
+**Proof:** Use induction on n to show the first half. If the first half is true, based on corollary 2.2, $p_n, q_n$ are coprime.
+
+### Approximation Accuracy
+
+**Comment:** (length of continued fraction to represent a rational number) Based on thm 6.2, $p_n$ is increasing with n and $p_n=a_n p_{n-1}+p_{n-2}\geq 2p_{n-2}$ and similarly $q_n\geq 2q_{n-2}$. Therefore $p_n,q_n\geq 2^{[N/2]}$ and thus $2^{[N/2]}\leq q\leq p$ and $N=O(\log p)$ which is the legth of correspoding continued fraction.
+
+**Theorem 6.3:** Let x be a rational number and suppose $\vert p/q-x\vert \leq 1/(2q^2)$. Then $p/q$ is a convergent of the continued fraction for x.
+
+**Proof:** Let $p/q=[a_0,…a_n]$, and $p_n,q_n$ is the approximation given by thm 6.2. Namely $p_n/q_n=p/q$. Define $\delta$ as $x=p/q+\delta/(2q^2)$, so $\vert \delta\vert<1$. Define $\lambda$ as 
+$$
+\lambda = 2\frac{q_np_{n-1}-p_nq_{n-1}}{\delta}-\frac{q_{n-1}}{q_n}
+$$
+Then we have $x=\frac{\lambda p_n +p_{n-1}}{\lambda q_n+q_{n-1}}$ (check this by plug the definition of $\lambda$). Namely, $x=[a_0…a_n,\lambda]$. Choosinng n even and based on corollary 6.1, we have $\lambda = 2/\delta-q_{n-1}/q_n>1$. Therefore $\lambda=[b_0,b_1…b_m]$ and $x=[a_0,…a_n,b_0,…b_m]$, where $p/q$ is the convergent of x. QED.
+
+**Theorem 6.4:** (optimal approximation) $\alpha$ is a real number, $p_k/q_k$ is its kth convergent. Then for any rational number with denominator no more than $q_k$, $p_k/q_k$ is the closest one wth $\alpha$.
+
+*The summary above are complete for understanding on RSA or Shor algorithm. Below are some more results relevant to number theory, and the proof might be omitted.*
+
+## Indefinite Equation
+
+### Linear indefinite equation with one variable
+
+**Theorem 7.1:** Equation $ax+by=c$ with a,b,c as integers and a,b nonzero, suppose such equation has a solution $(x_0,y_0)$. Let $d=\gcd(a,b)$ and $a=a_1d, b=b_1d$, all solutions can be expressed as $(x_0-b_1t,y_0+a_1t)$, where t is any integer.
+
+**Proof:** The given expressions are easy to check are solutions. To show they are all solutions, use the fact $a_1\delta x = -b_1\delta y$. Since $\gcd {a_1,b_1}=1$, then we have $\delta x = tb_1$ and similar for $\delta y$. QED.
+
+**Theorem 7.2:** (Bezout's identity) Eq. in thm 7.1 has integer solution iff $\gcd (a,b)\vert c$.
+
+**Proof:** obvious considering the fact in thm 2.
+
+**Comment:** (solve such eq. in practical) Namely how we can solve $ax+by=1$, where a and b are coprime. This is just the problem we meet in the comment of Euclid's algorithm and we have solved such problem by utilizing Euclid's algorithm there.
+
+### Linear indefinite equation with multiple variables
+
+**Theorem 7.3:** Eq. $\sum_i a_i x_i=N$, where $a_i, N$ are all integers and WLOG let all $a_i$ nonzero. The equation has integer solution iff $\gcd (a_1,a_2…a_n)\vert N$.
+
+**Proof:** If there is a set of solution $x_i'$, then $\gcd (a_1…a_n)\vert \sum_i a_ix_i'=N$. 
+
+If $d\vert N$, we prove it by induction on n. $n=2$ case is thm 7.2. Let $d_2=\gcd (a_1,a_2)$, then $\gcd (d_2,a_3,a_4…a_n)=d\vert N$. Following the induction hypothesis, we have solution $t_2',x_i'$ s.t. $d_2t_2+a_3x_3+…+a_nx_n=N$. Now we are left with $a_1x_1+a_2x_2=d_2t_2'$. According to thm 7.2 again, this equation has integer solution.QED.
+
+**Comment:** The above proof also provide an approach to solve the linear indefinite equation with multiple variables in practice. Just do it recursively as equations with two variables.
+
+## More on equations in modular arithmetic
+
+### Solve higher order equations
+
+**Comment:** Firstly, for $f(x)=0\mod m$, suppose m has prime factorization $m=\prod_j p_j^{\alpha_j}$, due to thm 4.1, we have shown it has one to one correspondence with a set of equations  $f(x)=0\mod p_j^{\alpha_j}$. We now explore how to solve such equations.
+
+**Theorem 8.1:** Let $x=x_1\mod p$ is a solution for $f(x)=0\mod p$, where p is a prime and $p\nmid f'(x)$. Then such a solution $x=x_\alpha\mod p^\alpha$ ($x_a=x_1\mod p$) is also a solution for $f(x)=0\mod p^\alpha$.
+
+**Example:** Instead of a general proof, let's show how to do this by an specific example. Problem let $f(x)=x^4+7x+4$, solve $f(x)=0\mod 27$.
+
+$27=3^3$. $f(x)=0\mod 3$ has solution $x=1+3t_1$. For $f(1+3t_1)=0\mod 9$, by Taylor expansion, we have $f(1)+3t_1f'(1)=0\mod 9$, since the higher order of the expansion is 0 modulo 9. This is $3+6t_1=0\mod 9$. We are back to $2t_1+1=0\mod 3$. Therefore, $t_1=1+3t_2$, and $x=4+9t_2$ is the solution for $f(x)=0\mod 9$. Repeat the process by pluging the solution into $f(x)=0\mod 27$, we have
+
+$f(4)+9t_2f'(4)=0\mod 27$, which is $2t_2+2=0\mod 3$, therefore, $t_2=2+3t_3$. We have $x=22+27t_3$ as the final solution.
+
+**Comment:** Base on thm 8.1, we can use solution for mod p equation to get solution for mod power of p equation and finally get solution for mod any integer equation. The problem is reduced to solve equation with mod prime. We introduce some property of such equation below without proof.
+
+**Theorem 8.2:** Consider the equation $f(x)=0\mod p$, where $f(x)$ is order n polynomial and p is prime, such a equation is equivalent to $r(x)=0\mod p$, where $r(x)$ is polynomial with order less than p.
+
+**Theorem 8.3:** If the order of $f(x)$ is no more than p, then $f(x)=0\mod p$ has n solution iff $f(x)/(x^p-x)$ is a polynomial with all coefficients as mutiple of p. In other case, such equation has solutions less than n.
+
+### Definition of quadratic residue
+
+We focus on second order equation now.
+
+**Definition:** $x^2=a\mod m$ where a is coprime to m. If such equation has a solution, we call a is qudratic residue modulo m. Otherwise a is called qudratic nonresidue modulo m.
+
+**Comment:** The backgroud of this is that, for the existence of solutions, we can reduce $ax^2+bx+c=0\mod n$ to equation $x^2=a\mod p^\alpha$ where a and $p^\alpha$ are coprime.
+
+### Modulo prime
+
+**Theorem 8.4:** (Euler criteria) $x^2=a\mod p, \gcd(a,p)=1$, (a is quadratic residue module p) iff $a^{(p-1)/2}=1\mod p$. And a is qudratic nonresidue iff $a^{(p-1)/2}=-1\mod p$.
+
+**Theorem 8.5:** For $Z/pZ$, the number of quadratic residue and quadratic nonresidue are both $(n-1)/2$.
+
+### Legendre symbol
+
+**Definition:** Define $(\frac{a}{p})$ where p is prime. This function gives 1 if a is quadratic residue modulo p and -1 if a is quadratic nonresidue. Otherwise gives 0 if $p\vert a$. According to thm 8.4, we have $(\frac{a}{p})=a^{(p-1)/2}\mod p$.
+
+**Propeties** of Legendre symbol:
+
+* If $a=r\mod p$, the $(\frac{a}{p})=(\frac{r}{p})$.
+* $(\frac{a_1...a_n}{p})=(\frac{a_1}{p})...(\frac{a_n}{p})$.
+* $(\frac{1}{p})=1, (\frac{-1}{p})=(-1)^{(p-1)/2}$.
+* $(\frac{ab^2}{p})=(\frac{a}{p}),p\nmid b$. 
+* $(\frac{2}{p})=(-1)^{(p^2-1)/8}$.
+
+**Theorem 8.6:** (Quadratic reciprocity) $(\frac{p}{q})(\frac{q}{p})=(-1)^{(p-1)(q-1)/4}$.
+
+Combined these tools, one can quickly determin whether some value is quadratic residue.
+
+### Primitive root
+
+**Definition:** Suppose r is the order of a modulo n. If $r=\varphi(n)$, we call $a$ a primitive root modulo n.
+
+**Comment:** Due to thm 4.5, there is primitive root modulo n iff n is $2,4,p^\alpha,2p^\alpha$ where p is odd prime The primitive root is just the generator of corresponding cyclic group. For one modulo n, there might be more than one primitive root.
+
+### Index
+
+**Definition:** Say m has primitive root g, $a=g^\gamma\mod m$, we call $\gamma$ the index of a based g modulo m. (the least nonnegative one is written as $\text{ind}~a=\gamma$).
+
+**Theorem 8.7:** There is primitive root modulo m and $d=\gcd (n, \varphi(m))$, $\gcd (a,m)=1$, the equation $x^n=a\mod m$ has solution iff $d\vert \text{ind} ~a$, the number of solutions is d.
+
 ## References
 
 * Michael A. Nielsen and Isaac L. Chuang, *Quantum Computation and Quantum Information*, mainly Appendix 4.
-
-## TODO
-
-- [ ] Bezout's identity
