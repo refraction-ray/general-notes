@@ -1,0 +1,155 @@
+# Compiler
+
+*from Oct 13, 2018, everything abouth the compiler* 
+
+[TOC]
+
+## Syntax
+
+### Backus Normal Form
+
+V ::= expression (ts and vs), teminals are recoginzed by the zero occurence in left side, [] zero or one times, {} zero or many times in exteded BNF.
+
+### preparation set
+
+Null set of non-termianls: non-terminals which can generate empty in several steps
+
+Follow(A): A is a nonterminal, the set of terminals that may follow A, may include lamba. i.e. all terminals that can occur on the right side of A in any sentence from the language.
+
+First(V): the set of terminals can be as a beginner from something derived from V.
+
+Follow and First function can defined on arbitrary long sequence of terminals and nonterminals. But these things are too many and should be computed on need instead of save as dicts.
+
+The iterative logic to do the tasks above: coumpte_first() on arbitrary sequence, using compute_first to fill_first() on single nonterminals to get the array, fill_follow() which utilized compute_first()
+
+Extension first_k(V), the k beginning sequence of V derivation
+
+### top down parser
+
+leftmost derivation, LL
+
+LL(1), one look ahead, for A: X_1…X_m, if lookahead is in First(X_1…X_m) or if lambda in First(X_1…X_m) then the look ahead may be in Follow(A) too. Everytime such a lookahed is matched, the prediction is made. If no conflict for such a scheme, the grammar is said to be LL(1). 
+
+`T[A][t]` A is a nonterminal to be matched and t is the lookahead token, Error also be a matrix element, the element is one of the production rule.
+
+LL Driver pseudocode: 
+
+```
+stack.push(s)
+a = first token
+while !stack.empty()
+	x = stack.pop()	
+	if x is nonterminal and T[X][a] = X:Y_1...Y_m:
+		stack.push(Y_m...Y_1)
+	else if x is terminal and x=a:
+		a = next token
+	else:
+		raise SytaxError
+		
+```
+
+LL(1) table T and a driver can form an LL(1) parser. The driver is simply implemented by a stack storing the unmatched nonterminals. Such an implementation can simply include the semantic action also sharing the same symbol stack.
+
+LL(1) conflicts: common prefixes and left recursion. 1) Production rules with same lhs share the same prefix of rhs (can be resolved by introduce a new nonterminal for the prefix). 2) the first symbol of rhs is the same as lhs (can also be resolved by introducing new nonterminals.). 
+
+$\{[^i]^j\vert i\geq j\geq 0\}$ is not a lang in LL(k) for any k.
+
+### bottom up parser
+
+rightmost derivation, LR
+
+There are two tables in shift-reduce parser. 1) Action table, (terminal and nonterminal symbols, state(int) ) = (S, A, R_n, Error) , A is accept while S is shift. 2) Goto table, (terminal and nonterminal symbols, state(int)) = state number or error
+
+LR driver pseudocode
+
+```
+# S is the start state (int)
+stack.push(S)
+t = first token
+while true:
+	s = stack.pop()
+	switch(action[s][t])
+		case A:
+			finish successfully
+		case S:
+			stack.push(Goto[s][t])
+			t = next token
+		case R_i:
+			# Ri: X=Y_1...Y_m
+			stack.pop(m states for rhs)
+			s' = stack.top()
+			stack.push(Goto[s'][X])	
+```
+
+#### LR(0)
+
+configuration: dot in somewhere in the rhs of production rules, construct closure for configuration set: substitute the leftmost nonterminal right to the dot with its own rules with dot in the leftmost of rhs.
+
+Sarting with the augmenting rule as configuration set $closure(\{S=\cdot \alpha \$\})$. The configuration dot auto advance lambda.
+
+goto function given an old configuration set and a look ahead symbol, find the successor configuration set. (just advance the dot and recaculate the closure). If return is empty set, it implies syntax error. 
+
+CFSM: characteristic finite state machine. build by start form start configuration set and try different tokens.
+
+Some notations: 
+
+* simple or prime phrase: phrase containing no smaller phrase, which are directly derived from a nonterminal.
+* sentential form: something derived from start may including both terminal and nonterminal
+* handle: the leftmost simple phrase for a sentential form.
+* right sentential form: sentential from derived by rightmost derivation.
+* viable prefix: (of a rightmost sentential form) the prefix doesn't extend beyond handle.
+
+P: $S\rightarrow 2^Q$, S is a set of configurations from CFSM states, Q is the set of A or R_i or S. P(s) is defined as
+
+$P(s)=\{R_i\vert B\rightarrow \rho\cdot \in s \& P_i:   B\rightarrow \rho\}\cup \{S\vert A\rightarrow \alpha\cdot a\beta \in s for a \in V_t\}$.
+
+G is LR(0) iff for each s $\vert P(s)\vert=1$. More than 1 give two types of conflict: shift-reduce and reduce-reduce.
+
+LR(0) grammar exists for any lang expressed in LR(k) grammar! (Note the difference between the power to parse any lang and any grammar)
+
+#### LR(1)
+
+The configuration is with one more lookahead l, which is the first element after the corresponding rules. Not the one directly following the dot!! This time the start configuration is with the token lambda. The closure function this time is defined as below.
+
+```
+closure(s):
+	s' = s
+	while(more configuration has beed added)
+		if (B=d\dot Ar, l in s')
+			Add all A=\dot g, u where u \in First(rl)
+	return s'
+```
+
+similarly, LR(1) machine namely the finite state automaton can be constructed. The lookahead in shift phase, serving as the element behind the dot. All terminals are considered is such case due to the closure(). And the lookahead in reduce case, where there are more than 1 state with dot rightmost, to resolve the reduce reduce conflict. Note to differentiate the lookhead in configuration (which is the possible terminal after the full rule) and the lookhead in practical when parsing, which is the next token. They are totally different things.
+
+#### SLR(1)
+
+The FSM is the same as LR(0) case, no lookhead is included in the configuration sets. The lookhead is only used when there is some conflicts. The function P is defined as 
+
+$P(s,a)=\{R_i\vert B\rightarrow \rho\cdot\in s, a\in Follow(B), P_i=B\rightarrow\rho\}\cup\{ S\vert A\rightarrow \alpha\cdot a\beta\in s, a \in V_t\}$.
+
+G is SLR(1) iff for all state s and lookahead a, the set P is no larger than 1.
+
+#### LALR(1)
+
+LALR(1) first construct the finite state machine as LR(1) and then merge all states with the same configuration set omitting lookahead in the configurations.  We call the merged state the *core* of the corresponding states in LALR(1). The merged states also include the lookahead info, but with the union set of the original ones in LR(1) machine.
+
+In terms of practical construction, the first LR(1) then merge policy is too resource consuming to use. The alternative approach is to build LR(0) CFSM first and propagate the lookahead. There are two types of propagate links: one with normal dot advance and the other with closure expansion.
+
+
+### Earley's algorithm
+
+general approach to CFG parsing. time and space consuming (beyond linear).
+
+## Misc
+
+*a temporary memo here*
+
+* type compatibility and scoping rules are context-sensitive
+* ambiguity of CFG is undecidable, (by reducing this to PCP, see [this post](https://cstheory.stackexchange.com/questions/4352/how-is-proving-a-context-free-language-to-be-ambiguous-undecidable))
+* python is not CFG, the lexer part is stronger than a simple reg matcher
+* uncomputable: whether a given CFG is ambiguous, whether two grammar are the same
+
+## Reference
+
+1. C. N. Fischer, R. J. LeBlanc, Crafting a Compiler with C

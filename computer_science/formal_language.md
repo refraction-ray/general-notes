@@ -20,7 +20,7 @@ all sentence is a language L(G)
 
 2) context sensitive grammar (CSG), type I, where right is no shorter than left in all production rules  
 
-3) context free grammar (CFG), type II, CSG and all left part pf production is in V
+3) context free grammar (CFG), type II, CSG and all left part of production is in V
 
 4) regular grammar (RG), type III, CFG where all production rules are like A: wB or A: w, w is in $T^+$.
 
@@ -116,7 +116,7 @@ $A\rightarrow T\vert VV$. Any CFG can transform as CNF
 
 ### Greibach normal form
 
-$A\rightarrow TV^*$. Any CFG can transform as GNF. (left recursive transform technic)
+$A\rightarrow TV^*$. Any CFG can transform as GNF. (left recursive transform technique)
 
 ## Pushdown automaton
 
