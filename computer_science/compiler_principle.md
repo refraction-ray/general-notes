@@ -1,6 +1,6 @@
 # Compiler
 
-*from Oct 13, 2018, everything abouth the compiler* 
+*from Oct 13, 2018, everything about the compiler* 
 
 [TOC]
 
@@ -134,7 +134,9 @@ G is SLR(1) iff for all state s and lookahead a, the set P is no larger than 1.
 
 LALR(1) first construct the finite state machine as LR(1) and then merge all states with the same configuration set omitting lookahead in the configurations.  We call the merged state the *core* of the corresponding states in LALR(1). The merged states also include the lookahead info, but with the union set of the original ones in LR(1) machine.
 
-In terms of practical construction, the first LR(1) then merge policy is too resource consuming to use. The alternative approach is to build LR(0) CFSM first and propagate the lookahead. There are two types of propagate links: one with normal dot advance and the other with closure expansion.
+In terms of practical construction, the first LR(1) machine then merge policy is too resource consuming to use. The alternative approach is to build LR(0) CFSM first and propagate the lookaheads. There are two types of propagate links: one with normal dot advance and the other with closure expansion.
+
+To sum up, for LR(0) and LR(1), you both need token input. In LR(0) case, such input is only used in goto table, which is states cross vocabs. The action table is only determined by stack top states instead of input token. The parser is general irrespective with LR(0) or LR(1) scheme as long as the action and goto table is well defined. The runtime parser case nothing about how these tables are generated.  The input token is only consumed in shift case. In reduce case, such token plays role in resolving conflicts in LR(1) case, and plays no role in LR(0). Or in other words, the action table for LR(0) is the same for each input token. The lookahead in LR(1) is the inner state to diff degenrated state in LR(0) case so that reduce-reduce conflicts may be resolved. As for the implementation of all above, i.e yacc, the only hard part is an efficient implementation of LALR(1) lookahead sets. How to correctly (not NOLALR) and efficiently get the lookheads for configurations in each states? 
 
 
 ### Earley's algorithm
@@ -148,6 +150,7 @@ general approach to CFG parsing. time and space consuming (beyond linear).
 * type compatibility and scoping rules are context-sensitive
 * ambiguity of CFG is undecidable, (by reducing this to PCP, see [this post](https://cstheory.stackexchange.com/questions/4352/how-is-proving-a-context-free-language-to-be-ambiguous-undecidable))
 * python is not CFG, the lexer part is stronger than a simple reg matcher
+* html is not CFG
 * uncomputable: whether a given CFG is ambiguous, whether two grammar are the same
 
 ## Reference
