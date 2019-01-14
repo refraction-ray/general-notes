@@ -143,6 +143,42 @@ To sum up, for LR(0) and LR(1), you both need token input. In LR(0) case, such i
 
 general approach to CFG parsing. time and space consuming (beyond linear).
 
+## Semantic processing
+
+### General
+
+* Action controlled vs Parser controlled semantic stacks
+* Intermediate reps (IR): tuples or trees
+
+### Symbol Table
+
+* Implementation: Hash table vs binary tree
+* Store names as a whole char string to save space
+* Symbol table for nested scopes: Individual table for each scope: tables in a stack (scope stack) vs. a single symbol table, name is associated with a scope number, while the hash is still applied to names, the result is a hash table with linked list of terms with same name but different scope number. Multipass compiler in general use symbol table for each scope.
+* Issue: import and export mechanism to overwrite the scope, oveload of names, forward reference, implicit decalration
+
+### Storage Organization
+
+* Static Allocation: static and extern in C
+
+* Stack Allocation: activation record(AR), frame in python (control infor and local variables.)? Managed by a run-time stack. Within AR, each variable is label as the address offset determined at compile time. Better to allocate literals in functions in a static area called literal pool. For dynamic array, only a dope vector including the size and bounds of the array is put into AR. The array itself can allocated in the run-time stack atop of current AR.
+
+  Static in C: lifetime across calls. Allocated as the literals outside AR. Coroutine like functions interface can be implemented by more than 1 stacks in heap allocation. Variables sharing by several local funcs: cactus stacks.
+
+  Display register: address of ARs. Restore the display after each call.
+
+  Procedure level AR vs. Block level AR
+
+* Heap Allocation: new in C++, deallocation strategy is complicated. No dellocation policy. Explicit deallocation. Implicit deallocation (garbage collection): ref counts, mark and sweep garbage collection, work only be done when the heap space is full. Heap obj may have a refback pointer. Compaction may also performed together, to make the still-in-used heap obj together.
+
+Program memory layout (bottom to top, not heap is developed from the top): Reserved Locations, Program Code, Literal Pool, Static Data, Similar things for libraries, Stack space,       Heap Space.
+
+Formal Procedures: func as parameters. Pointers in AR, static link (for static structure, in the src sense, to restore the env context) and dynamic link (always point the previous one in the runtime stack). 
+
+### Processing Declarations
+
+
+
 ## Misc
 
 *a temporary memo here*
