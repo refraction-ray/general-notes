@@ -177,7 +177,11 @@ Formal Procedures: func as parameters. Pointers in AR, static link (for static s
 
 ### Processing Declarations
 
+## Code generation and optimization
 
+### Temporary management
+
+Registers: 1) allocatable registers (active managed by corresponding routine) 2) reserved registers 3) volatile registers (no free and easy to be changed by other routine)
 
 ## Misc
 
