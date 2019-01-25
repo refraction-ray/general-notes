@@ -183,6 +183,16 @@ Formal Procedures: func as parameters. Pointers in AR, static link (for static s
 
 Registers: 1) allocatable registers (active managed by corresponding routine) 2) reserved registers 3) volatile registers (no free and easy to be changed by other routine)
 
+Code generator: 1) Instruction selection 2) Address-mode selection 3) Register allocation
+
+Peephole optimization: short range pattern substitution
+
+Tree to Tuples in IR: depth first, left to right traversal, other order may be better to save registers. Sethi-Ullman numbering for evaluation on the minimum number of registers for the tree.
+
+Tanslating DAG
+
+Coder generator generator
+
 ## Misc
 
 *a temporary memo here*

@@ -99,6 +99,12 @@ Opcode `BUILD_CLASS`, class init opcode is just like an ordinary function call, 
 
 `PyClassObject`, `PyInstanceObject`: in_class pointer, there is dict in class and dict in instance, `dir` automatically include all attrs from parents' dict. `im_func,im_class,im_self` for method in class `PyMethodObject`
 
+## Generators
+
+Fast way to implement iterators by function with yield within it.
+
+`YIELD_VALUE` opcode. `genobject.h`. PyGenObject, gi_running, guard self call within generator. genobject.c
+
 ## Reference
 
 1. http://pgbovine.net/cpython-internals.htm
