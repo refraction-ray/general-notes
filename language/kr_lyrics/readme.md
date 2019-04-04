@@ -6,7 +6,7 @@
 
 ## DOING
 
-* [사계 - 태연](language/kr_lyrics/사계%20-%20태연.md)
+* [사계 - 태연](사계%20-%20태연.md)
 
 ## TODO
 
