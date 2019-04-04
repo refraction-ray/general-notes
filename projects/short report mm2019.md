@@ -20,6 +20,8 @@ Recast the many body version XXZ model to Fock space Anderson model.
 
 Spin basis: sz configuration in zero sector. (without xy coupling) Fock basis: basis diagonalize free fermion part (without zz coupling). ED calculation. S1/ln N is crossing near MBL criticality. 
 
+Employed so called shift invert ED, size up to 24! See [here](https://scipost.org/SciPostPhys.5.5.045/pdf) for details of the numerical methods.
+
 Conclusion: $D_{q,MBL}\propto 1/h$, multifractal behavior across the phase instead of in the phase boundary.
 
 Take home message: how about define localization length in Fock lattice, it may suffer from finite size effect less. How about construt graph with Anderson localization directly representing behavior of MBL?
