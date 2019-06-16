@@ -8,7 +8,7 @@
 
 ## DOING
 
+* [You are not alone - GFRIEND](You are not alone - GFRIEND.md)
+
 
 ## TODO
-
-* You are not alone - GFRIEND
