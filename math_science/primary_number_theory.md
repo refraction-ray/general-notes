@@ -161,7 +161,7 @@ Suppose x and x' are two different solutions to the system of equations. Then $x
 
 **Proof:** Consider $p(p-1)…(p-k+1)=C_p^k k(k-1)…1$. Since $lhs\vert p$, then $rhs\vert p$. However $p>k$, so $p\vert C_p^k$.
 
-**Theorem 4.2:** (Fermat's little theorem) Suppose p is prime, then for any integer a: $a^p=a\mod p$. Moreover, if $p\nmid a$, then $a^{p-1}\mod p$.
+**Theorem 4.2:** (Fermat's little theorem) Suppose p is prime, then for any integer a: $a^p=a\mod p$. Moreover, if $p\nmid a$, then $a^{p-1}=1\mod p$.
 
 **Proof**: The second half is easy. Since $p\nmid a$ means $\gcd(p,a)=1$. Then $a^{-1}\mod p$ is well defined. We have $a^{p-1}=a^{-1}a^p=a^{-1}a=1\mod p$.
 

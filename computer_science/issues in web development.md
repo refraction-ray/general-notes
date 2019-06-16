@@ -1,6 +1,6 @@
 # Web development: issues summary
 
-*In this file, issues occured in web development and their solutions or workaournds are listed. Flask, sqlalchemy, vue are several important aspects in this note.*
+*In this file, issues occured in web development and their solutions or workarounds are listed. Flask, sqlalchemy, vue are several important aspects in this note.*
 
 *The main part is finished around 2018.12 to 2019.01, when I actively develop myarxiv.club.*
 

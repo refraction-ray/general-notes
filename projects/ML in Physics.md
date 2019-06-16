@@ -45,6 +45,8 @@
 4. Frontier: complexity, possibility and quantum computer.
 
 
+**Note:** The two versions of this paper in arxiv are …. just two totally different papers. no idea why. v1 is definitely better. It is trivial that nature or science published verison is always worse that the authors' original manuscript.
+
 ### Neural Network vs. RG
 
 **Reference**: arxiv: 1802.02840
