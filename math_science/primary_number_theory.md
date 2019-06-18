@@ -270,7 +270,7 @@ Let's finally explore the other direction and finish concluding the equivalence 
 
 ### Notation
 
-Say real number $s=a_0+\frac{1}{a_1+\frac{1}{a_2+\frac{1}{a_3+...}}}$ which can be written as $s=[a_0,a_1,a_2,a_3…]$, such an expression for real numbers are continued fractions. The idea is to describe real number with integer alone and without affection of base.
+Say real number $s=a_0+\frac{1}{a_1+\frac{1}{a_2+\frac{1}{a_3+...}}}$ which can be written as $s=[a_0,a_1,a_2,a_3…]$, such an expression for real numbers are continued fractions. The idea is to describe real number with integer alone and without base dependence.
 
 A finite simple continued fraction is finite, such an expression occurs iff the number to be expressed is rational. Simple denotes that all $a_i$ are integers. Finite denote the sequence of $a_i$ is finite.
 
@@ -298,7 +298,7 @@ $$
 
 ### Approximation Accuracy
 
-**Comment:** (length of continued fraction to represent a rational number) Based on thm 6.2, $p_n$ is increasing with n and $p_n=a_n p_{n-1}+p_{n-2}\geq 2p_{n-2}$ and similarly $q_n\geq 2q_{n-2}$. Therefore $p_n,q_n\geq 2^{[N/2]}$ and thus $2^{[N/2]}\leq q\leq p$ and $N=O(\log p)$ which is the legth of correspoding continued fraction.
+**Comment:** (length of continued fraction to represent a rational number) Based on thm 6.2, $p_n$ is increasing with n and $p_n=a_n p_{n-1}+p_{n-2}\geq 2p_{n-2}$ and similarly $q_n\geq 2q_{n-2}$. Therefore $p_n,q_n\geq 2^{[N/2]}$ and thus $2^{[N/2]}\leq q\leq p$ and $N=O(\log p)$ which is the legth of corresponding continued fraction.
 
 **Theorem 6.3:** Let x be a rational number and suppose $\vert p/q-x\vert \leq 1/(2q^2)$. Then $p/q$ is a convergent of the continued fraction for x.
 
@@ -306,7 +306,7 @@ $$
 $$
 \lambda = 2\frac{q_np_{n-1}-p_nq_{n-1}}{\delta}-\frac{q_{n-1}}{q_n}
 $$
-Then we have $x=\frac{\lambda p_n +p_{n-1}}{\lambda q_n+q_{n-1}}$ (check this by plug the definition of $\lambda$). Namely, $x=[a_0…a_n,\lambda]$. Choosinng n even and based on corollary 6.1, we have $\lambda = 2/\delta-q_{n-1}/q_n>1$. Therefore $\lambda=[b_0,b_1…b_m]$ and $x=[a_0,…a_n,b_0,…b_m]$, where $p/q$ is the convergent of x. QED.
+Then we have $x=\frac{\lambda p_n +p_{n-1}}{\lambda q_n+q_{n-1}}$ (check this by plug the definition of $\lambda$). Namely, $x=[a_0…a_n,\lambda]$. Choosing n even and based on corollary 6.1, we have $\lambda = 2/\delta-q_{n-1}/q_n>1$. Therefore $\lambda=[b_0,b_1…b_m]$ and $x=[a_0,…a_n,b_0,…b_m]$, where $p/q$ is the convergent of x. QED.
 
 **Theorem 6.4:** (optimal approximation) $\alpha$ is a real number, $p_k/q_k$ is its kth convergent. Then for any rational number with denominator no more than $q_k$, $p_k/q_k$ is the closest one wth $\alpha$.
 
