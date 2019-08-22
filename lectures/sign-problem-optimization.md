@@ -51,6 +51,8 @@ Marshall sign rules in Heisenberg model : [notes](https://www.escholar.mancheste
 
 MPS input as wavefunction stick to local unitaries composed quantum circuit, the whole can be treated as the wavefunction after transformation
 
+Case study model: 8 sites two-leg ladder with J1J2 Heisenberg model plus possible four spin exchange terms
+
 Subtleties:
 
 * Perfect smapling of MPS
@@ -67,11 +69,25 @@ To learn sketch on worldline QMC, see Troyer's paper on NPC of sign problem: [pa
 
 The single particle basis transformation doesn't have univeral features agnostic of system size.
 
+Average sign determines the uncertainty (inverse) of the result and is given by $e^{-\Delta E}$.
+
 Model: doped Fermion Hubbard model
 
 Small size system: ED + [Nelder-Mead optimization](http://wuli.wiki/online/NelMea.html) (gradient free)
 
 Large size system: The authors uses numerical differentiations in QMC simulation to locate the best single particle basis transformation (with random *not stochastic* gradient descent).
+
+* 1906.02309
+
+Object: quantity characterizing non-stoquasticality of Hamiltian matrix. (Not always correlated to average sign), norm of the non-stoquastic part of Hamiltonian, positive or zero for off diagonal terms.
+
+Transform: on site (single qubit gate?) 
+
+Sign Easing is NPC for 2-local Hamiltonian and simple on site Clifford operation.
+
+Optimizer: conjugate gradient descent, Signal processing 89, 1704 (2009)
+
+Parameter is sparse since the author only consider translation invariant case, indicating that all on site (two sites?) transformation are the same.
 
 ## Summary and comments
 
