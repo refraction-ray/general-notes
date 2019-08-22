@@ -83,11 +83,21 @@ Object: quantity characterizing non-stoquasticality of Hamiltian matrix. (Not al
 
 Transform: on site (single qubit gate?) 
 
-Sign Easing is NPC for 2-local Hamiltonian and simple on site Clifford operation.
+Sign Easing is NPC for 2-local Hamiltonian and simple on site Clifford operation. A stronger thm from Nature Communciation 10 1571 (2019). (curing in NPC to easing in NPC: curing for 2 local XYZ is in P while easing XYZ is in NPC, musch harder than curing!)
 
 Optimizer: conjugate gradient descent, Signal processing 89, 1704 (2009)
 
 Parameter is sparse since the author only consider translation invariant case, indicating that all on site (two sites?) transformation are the same.
+
+* 1906.08800
+
+More results on complexity of curing sign problem: bridge between Nature Communications, 2019 and Quantum, vol. 3, p. 139.
+
+Conclusions: 
+
+There exist 2-local Hamiltonians where LocalSignCure is NPC (with 1-local external fields).
+
+But if 2-local is exact (each two local term can be decomposed as direct product of local Pauli operators), Curing can be in P  (O(n^3)).
 
 ## Summary and comments
 
