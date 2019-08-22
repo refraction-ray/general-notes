@@ -23,7 +23,7 @@ For forward AD, one only need to keep the value of last layer, but if the input 
 
 Applied to QR SVD and eigen decom of real matrix with well defined expression.
 
-If the object is real, than complex decomp AD is also possible. [1907.13422](https://arxiv.org/pdf/1907.13422.pdf)
+If the object is real, then complex decomp AD is also possible (though with more warnings and subtleties). [1907.13422](https://arxiv.org/pdf/1907.13422.pdf)
 
 Technically, a ML library contains two essential parts, general acceleration(GPU accelerated linear algebra and vectorization to make linear algebra as compact and as often as possible), and auto differentiation.
 
@@ -47,7 +47,11 @@ AD has also came to condensed matter physics field, as shown by arXiv:1903.09650
 
 1906.04654
 
-Marshall sign rules in Heisenberg model : [notes](https://www.escholar.manchester.ac.uk/api/datastream?publicationPid=uk-ac-man-scw:1a7072&datastreamId=POST-PEER-REVIEW-PUBLISHERS.PDF). Opposite sign of amplitude for spin configuration with different number parity of spin ups. Can be easily shown by directly considering $\lang \psi\vert H\vert\psi\rang$.
+Some facts why wavefunction positivization may be interesting:
+
+* Marshall sign rules in Heisenberg model : [notes](https://www.escholar.manchester.ac.uk/api/datastream?publicationPid=uk-ac-man-scw:1a7072&datastreamId=POST-PEER-REVIEW-PUBLISHERS.PDF). Opposite sign of amplitude for spin configuration with different number parity of spin ups. Can be easily shown by directly considering $\lang \psi\vert H\vert\psi\rang$.
+* Stoquastic Hamiltonian gives groud state with all amplitude positive (may have connection with sign problem in QMC).
+* Sign structure of wavefunction has relation with its entanglement. Typical random positive wave function exhibits a constant law for Renyi entropy with index n>1, while states with Renyi entropy scaling as a volume law have complex sign structure. PRA 92, 042308.
 
 MPS input as wavefunction stick to local unitaries composed quantum circuit, the whole can be treated as the wavefunction after transformation
 
@@ -98,6 +102,24 @@ Conclusions:
 There exist 2-local Hamiltonians where LocalSignCure is NPC (with 1-local external fields).
 
 But if 2-local is exact (each two local term can be decomposed as direct product of local Pauli operators), Curing can be in P  (O(n^3)).
+
+* 1907.11298
+
+SPSA scheme for optimizer. (random direction descending)
+
+Object: averaged sign evaluated directly
+
+Input: general rotation on site.
+
+Case study model: SOC multi-orbital Hubbard model.
+
+* Comparison
+
+There are basically two approximation for basis transformations. Single particle basis transformation which is nonlocal utilized in 1907.02076 and on site transformation utilized in other papers. The benefit of the latter one is that it can easily be generalized to larger systems if translation invariant is assumed.
+
+The optimization goals of these works are different, though they all aim to easing sign problem. In particular, energy of couterpart hard-core boson model, averaged sign and non-stoquasticity of Hamiltonian matrix are all explored.
+
+The optimizers are also different in details. But they all appear to be variants of gradient descend.
 
 ## Summary and comments
 
