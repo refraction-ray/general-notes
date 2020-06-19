@@ -41,6 +41,31 @@ Possible arguments for stongness: robust against thermal bath inclusion as the t
 
 * missing count for size 600: py script modification
 
+## Further experiments on more general settings
+
+* Results on different wavevectors
+
+  Ref: arXiv:1901.06971, typical wavevector in their paper: $$\sqrt{2}/2,\sqrt{2}$$. ($$\sqrt{2}/2$$ is the most different one)
+
+* Results on different interaction V
+
+* Random hopping model (no well defined localization length?)
+
+* QP hopping model
+
+* Sum of different cosine potential
+
+* Exactly solvable potential for mobility edge
+
+  Ref: PRL 114, 146601 (2015)
+
+  $$V_n=2\lambda \frac{\cos(2\pi nb+\phi)}{1-\alpha \cos(2\pi nb+\phi)}$$, $$\alpha\in (-1,1)$$, $$\alpha=0$$ is AA model limit. 
+
+### New results
+
+* Weirdly, wavevector smaller than 1 gives a shift of critical value towards larger value, and there is a three stage curve. But it is hard to differetiate them in chemical potential distribution. (spectrum after finite hopping term?)
+* The universal property of double qp wave case seems to be close to random criticality. This may be attribute to that there is no nned in the two way case and actually the system nearly has no gap when multiple frequency wave is enabled.
+
 ## Background
 
 * Time evolution of EE for a prepared initial state: thermal phase: power law increase to saturate; r-MBL: (PRL 109, 017202 (2012)) log increase in slow time (rapid increase in short time), with saturation of smaller value in finite system though predicted infinite increase for infinite system (the saturation seems irelevant of how ddep in MBL); Anderson localization, saturate in slow time. qp-MBL: (PRB 96, 075146 (2017)), log increase in slow time, too. As a comparison, it is reported (PRB 85, 094417(2012)) ee increase as loglogt at the generic critical point of random field trasverse ising chain.
@@ -49,12 +74,13 @@ Possible arguments for stongness: robust against thermal bath inclusion as the t
 * science.aaa7432, supp: formula for non-interacting imbalance evolving. stationary imbalance is expected as $I(\infty)\propto (w-w_c)^\eta$.
 * time evolving of r-MBL,  Griffith region in thermal side, $S\propto t^{1/z}$, $I\propto t^{-\chi}$. Krylov space time evolution.
 * [1812.10283](https://arxiv.org/pdf/1812.10283.pdf): formula on fractal dimensions
+* Interesting quatities: typical DOS $$\rho(E)=\exp(\frac{1}{L}\sum_{i=1}^L\log \rho_i(E))$$. This order parameter is finite in the delocalized phase, zero in the localized phase, and goes to zero at the transition. This value can be calculated by kernel polynomial method efficiently. For details on this ,see PRL 114, 146601 (2015). This quantity is claimed to be easily generalize to many-body version.
 
 ## More MBL paper reading
 
 ### 1906.10701
 
-Compute correlator in random Heisenberg model, including SzSz and S+S-. They found that the distribution of such correlator is deviating from Gaussian in thermal phase by charaterizing KL divergence (interesting to further understand why there is a deviation peak in thermal phase instead of MBL phase), which may be the reason for rare thermal region and Griffith effect. Beside, they apply pertubation theory to argue some features in their results distribution. 
+Compute correlator in random Heisenberg model, including SzSz and S+S-. They found that the distribution of such correlator is deviating from Gaussian in thermal phase by charaterizing KL divergence (interesting to further understand why there is a deviation peak in thermal phase instead of MBL phase), which may be the reason for rare thermal region and Griffith effect. Beside, they apply pertubation theory to argue some features in their results distribution. It may also be interesting to note that there are two drop near center peak for spin flip correlator in strong MBL phase.
 
 ## Future work
 
@@ -63,3 +89,6 @@ Compute correlator in random Heisenberg model, including SzSz and S+S-. They fou
 - [x] try more on different wavevectors according to the paper: arxiv: 1901.06971: no qulitative change
 - [ ] MBL phase boundary scaling form near AL critical point
 - [ ] SSH model with quasiperiodic potential (topology enhanced localization or qp induced quantum scar?)
+- [ ] Model with two different QP potentials
+- [ ] Asymmetry of universality on MBL criticality two sides
+- [ ] EE spectrum distribution, power law vs. expoenential decay?

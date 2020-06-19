@@ -153,7 +153,7 @@ Best so far alg is $\Theta(n^{2.376})$.
 
 * VLSI (very large scale integration) layout
 
-Problem: complete binary tree with n leaves, embed into agrid with minimum area. (embed meaning: nodes on vortex and link on edge of the square grid without crossing)
+Problem: complete binary tree with n leaves, embed into a grid with minimum area. (embed meaning: nodes on vortex and link on edge of the square grid without crossing)
 
 naive embedding: just drawing as the original structure of the tree on the grid. The height $H(n)=H(n/2)+\Theta(1)$, the weights $W(n)=2W(n/2)+O(1)$. The area is $\Theta(n\log n)$. Not a minimum configuration.
 
@@ -173,7 +173,7 @@ sorts in place (in terms of space); D&C; practical (with tuning)
 
 subroutine partition:
 
-> input A[p..q], pick pivot as A[p], compare all elements to the pivot by loop, if the elements is small than the pivot, exchange it with the one one the boundary, which is an integer index tracked by the loop at the same time
+> input A[p..q], pick pivot as A[p], compare all elements to the pivot by loop, if the elements is small than the pivot, exchange it with the one on the boundary, which is an integer index tracked by the loop at the same time
 
 subroutine complexity: $\Theta(n)$. 
 
