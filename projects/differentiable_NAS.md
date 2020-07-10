@@ -48,7 +48,7 @@ Since DARTS is rather time consuming and less epoch training is important. So th
 
 **relevant work**
 
-[sharpDARTS](https://arxiv.org/pdf/1903.09900.pdf): Cosine Power Annealing learning rate schedule and other better training/generalization tricks therein (such a max W weighting to suppress the max weighted operation for better minimum).
+[sharpDARTS](https://arxiv.org/pdf/1903.09900.pdf): Cosine Power Annealing learning rate schedule and other better training/generalization tricks therein (such as max W weighting to suppress the max weighted operation for better minimum).
 
 * regularization term on trainning loss term
 
@@ -86,11 +86,13 @@ In such setups, we evaluate a separate neural network architecture on each run w
 
 The following two works are nearly identical and the setup is presented above.
 
-[SNAS](https://arxiv.org/abs/1812.09926): the focus in on the relation and link between this setup and other NAS methods, resouce contraint as one loss term is also considered
+[SNAS](https://arxiv.org/abs/1812.09926): the focus in on the relation and link between this setup and other NAS methods, resource contraint as one loss term is also considered
 
 [GDAS](https://arxiv.org/pdf/1910.04465.pdf): note in this work, reduction cell seems to be fixed by hand 
 
-[PARSEC](https://arxiv.org/pdf/1902.05116.pdf): this work utilize score function estimator of MC gradients instead of reparameterization by Gumbel trick in the above two works.
+[PARSEC](https://arxiv.org/pdf/1902.05116.pdf): this work utilize score function estimator of MC gradients instead of reparameterization by Gumbel trick in the above two works. More promising due to neat theoretical nature for subnets training, but may suffer from higher variance.
+
+[DSNAS](https://arxiv.org/pdf/2002.09128.pdf): Discrete Stochastic Neural Architecture Search (DSNAS). keep single connections between layers in each run for real and BP aware.
 
 * annealing idea
 
@@ -98,11 +100,15 @@ The following two works are nearly identical and the setup is presented above.
 
 [ASAP](https://arxiv.org/pdf/1904.04123.pdf): merge two stage of darts into continuous one by incrementally prune ops. The softmax of weights is decorated with temperature T, by lowering T on the fly with an exponential decay, the prune is done one some weight go below the threhold.
 
+[SGAS](https://arxiv.org/abs/1912.00195): Sequential Greedy Architecture Search is not annealing, but the idea is similar. In this setup, within trainning, edges with highest certainty are picked and pruned progressively, until we approach to a final network.
+
 * other continuos parameterization scheme for NAS
 
 **relevant work**
 
 [YOSO/DSO-NAS](https://arxiv.org/pdf/1811.01567.pdf): starting from a full connected DAG is possible, each output/input edge is rescaled by trainable parameters $$\lambda$$ determined by input layer, output layer and operation types of the two layers. (4-tuple). sparsity L1 regularization is added into loss (and thus optimization becomes challenging). APG-NAG optimization method is utilized due to L1 (see paper for details). 
+
+[NAO](https://arxiv.org/pdf/1808.07233.pdf): Neural architecture optimization utilize a very different continous approach to encode NAS problem. The setup includes encoder, predictor and decoder, where encoder encode network strcture into continuous values. And the three nets can be trained altogether. Since this approach strongly deviates from DARTS idea, please refer to the paper for more details.
 
 Other memory or time cost are also considered as part of the loss.
 
@@ -124,6 +130,6 @@ In the 1st stage of DARTS, one learns the optimal network structure on given sma
 
 [P-DARTS](https://arxiv.org/pdf/1904.12760.pdf): this work aims at bridging the depth gap, i.e. 1st stage of DARTS training is carried out with small number of cells (8) and 2nd stage evaluation is carried out with large number of stacking cells (20). To avoid the performance drop with deeper structure, the authors proposed training DARTS in multiple stages. In each stage, the number of stacking cells increases, and to keep the computation effcient, the operations kept on each edge have to decrease respectively. Besides to overcome the biased preference towards param free connection operations in original DARTS, the authors introduced search space regularization, i.e. add dropout on skip connections with gradually decaying rate. Also this work utilize the reseting policy to keep skip-connections less. See training tricks parts for this.
 
-[Proxyless DARTS](https://openreview.net/pdf?id=HylVB3AqYm): this work focus on directly training DARTS on ImageNet to bridge the transfer gap. To fit into GPU memory, the highlight of such work is the desgin of setups, in this persepctive, this work shares the philosophy of SNAS and NASP in the above. Similar to NASP, which introduce discrete restrictions to force the structure parameter to be one-hot, this work introduce binarized path to achieve this which is similar to category sample in SNAS. To make them BP aware, BinaryConnect approach is applied where $$\partial_p$$ is replace as $$\partial_g$$ where g is a one-hot sampled based on p (this also need evaluation of N pathes, so it is not the crux). The crux is, one always firstly choose two pathes in detach fashion (no BP here) and then do the probalistic choice only between the two operations and the training in each step only updates structure parameters for these two operations. *This method seems to be not as good as SNAS or NASP at least from theory perspective*. 
+[Proxyless DARTS](https://openreview.net/pdf?id=HylVB3AqYm): this work focus on directly training DARTS on ImageNet to bridge the transfer gap. To fit into GPU memory, the highlight of such work is the desgin of setups, in this persepctive, this work shares the philosophy of SNAS and NASP in the above. Similar to NASP, which introduce discrete restrictions to force the structure parameter to be one-hot, this work introduce binarized path to achieve this which is similar to category sample in SNAS. To make them BP aware, BinaryConnect approach is applied where $$\partial_p$$ is replace as $$\partial_g$$ where g is a one-hot sampled based on p (this also need evaluation of N pathes, so it is not the crux). The crux is, one always firstly choose two pathes in detach fashion (no BP here) and then do the probalistic choice only between the two operations and the training in each step only updates structure parameters for these two operations. *This method seems to be not as good as SNAS or NASP at least from theory perspective, though original SNAS still requirese the supernetwork for backward propagation capacity, DSNAS can keep single connection*. 
 
 [PC-DARTS](https://arxiv.org/pdf/1907.05737.pdf): only partial of the channels are sent into mixed sum of operations while other channels are direct go through identity. This reduce memory consumptions in GPU to 1/K, when 1/K fraction of channels are chosen (channel mask is different for each output edge). Besides, edge normalization is also introduce for stability of trainings. Namely, extra sets of weights as structure parameters are introduced which are agnostic with operations but only related to edges. The final descision on operations and edges pruning are then determined by the product of two sets of structure weights. Note such edge normalization trick can be also used in other DARTS variants and not necessarily tie to partial channel ideas.
