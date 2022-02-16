@@ -290,7 +290,7 @@ Algorithm to locate the most dense part of dataset in the feature space. The bas
 
 ### Spectral Clustering
 
-Define a graph with no self-edges. The wieght of edge is a measure of similarity. Therefore, we have the weight matrix of such graph. The goal is to divided the graph into pieces without cutting too much edges. A typical goal is called sparsity:
+Define a graph with no self-edges. The weight of edge is a measure of similarity. Therefore, we have the weight matrix of such graph. The goal is to divided the graph into pieces without cutting too much edges. A typical goal is called sparsity:
 $$
 goal=\frac{Cut(G_1,G_2)}{Mass(G_1)Mass(G_2)},
 $$
@@ -381,6 +381,8 @@ The way to find the two linear combination of two random variable vector respect
 Basically, it is to find an optimal hyperplane to seperate data, which is also one type of linear classfier with supervised learning. The aim of the separation is based on the evaluation of distance to the hyperplane from nearest data point, specifically we need to minimize $${\displaystyle \|{\vec {w}}\|} $$ subject to $${\displaystyle y_{i}({\vec {w}}\cdot {\vec {x}}_{i}-b)\geq 1,} $$ for $$ {\displaystyle i=1,\,\ldots ,\,n} $$, where $$y_i$$ is the label $$\pm1$$ of the data $$x_i$$.
 The application of SVM require the data can be linearly separated. If not, either kernel trick or **soft margin target** can be applied.
 See integrated [blog](http://blog.csdn.net/v_july_v/article/details/7624837) for more info on SVM (kernel trick and the formula derivation of optimal problem are included). For the difference between LDA and SVM, see [this question](https://stats.stackexchange.com/questions/243932/what-is-the-difference-between-svm-and-lda).
+
+For KKT condition and dual problem in SVM optimization derivation, see [this post](https://zhuanlan.zhihu.com/p/26514613).
 
 ### Decision Trees
 
@@ -686,7 +688,7 @@ Since the inner structure of LSTM is complicated, as long as we change something
 
 * Recursive Neural Network
 
-This type of NN has noting to do with recurrent neural network. But it is also abbreviated as RNN and suitable for NLP (syntax tree parser), so I list this item here. For details, see [this note](https://zybuluo.com/hanbingtao/note/626300).
+This type of NN has nothing to do with recurrent neural network. But it is also abbreviated as RNN and suitable for NLP (syntax tree parser), so I list this item here. For details, see [this note](https://zybuluo.com/hanbingtao/note/626300).
 
 ### Autoencoder
 

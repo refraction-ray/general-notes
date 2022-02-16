@@ -90,6 +90,8 @@ The following two works are nearly identical and the setup is presented above.
 
 [GDAS](https://arxiv.org/pdf/1910.04465.pdf): note in this work, reduction cell seems to be fixed by hand 
 
+[DATA](https://papers.nips.cc/paper/8374-data-differentiable-architecture-approximation): Differentiable ArchiTecture Approximation utilize gumble ensembles to output architectures more than one hot in each interlayer; sampling multiple one-hot and keep all ones. There is no gain in memory efficient part, but the generalization capability for the training may be better as the linking is not directly determined by structure parameters but instead of being binarized.
+
 [PARSEC](https://arxiv.org/pdf/1902.05116.pdf): this work utilize score function estimator of MC gradients instead of reparameterization by Gumbel trick in the above two works. More promising due to neat theoretical nature for subnets training, but may suffer from higher variance.
 
 [DSNAS](https://arxiv.org/pdf/2002.09128.pdf): Discrete Stochastic Neural Architecture Search (DSNAS). keep single connections between layers in each run for real and BP aware.

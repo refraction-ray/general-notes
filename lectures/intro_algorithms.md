@@ -348,7 +348,7 @@ Proof: for unsuccessful search, first hit and with $n/m$ probability to get coll
 
 idea: choose a hash function at random to avoid delibrately collision. *Within one hashtable, we dont randomly pick hash functions everytime, instead it is only selected when initilizing the hash table once. See [this post](https://stackoverflow.com/questions/10416404/finding-items-in-an-universal-hash-table) in stackoverflow*
 
-U be a universe of keys, and H be a finite collection of hash functions: maping U to to sorts 1 to m.
+U be a universe of keys, and H be a finite collection of hash functions: maping U to sorts 1 to m.
 
 Definition: We say H is universal if for all paris of distinct keys,  the number of h in H, which map the two keys into the same slot, is $|H|/m$. i.e. if h is chosen randomly from H, the probability of collision between two keys is $1/m$.
 
